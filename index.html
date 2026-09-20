@@ -62,7 +62,7 @@
   <!-- Notification Toast Container -->
   <div id="toastContainer" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 pointer-events-none"></div>
 
-  <!-- ================= AUTH SCREEN (LOGIN & REGISTER USULAN USAHA) ================= -->
+  <!-- ================= AUTH SCREEN (MANUAL LOGIN & DAFTAR USAHA) ================= -->
   <div id="loginScreen" class="fixed inset-0 z-50 flex h-full w-full bg-slate-950 lg:bg-slate-900 overflow-y-auto lg:overflow-hidden select-none">
     <div class="flex flex-col lg:flex-row w-full h-full min-h-screen lg:min-h-0">
       
@@ -88,7 +88,7 @@
         <!-- Center Value Proposition -->
         <div class="relative z-10 my-auto max-w-xl py-8">
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-xs font-extrabold uppercase tracking-wider mb-5 backdrop-blur-sm">
-            <i class="w-3.5 h-3.5 text-amber-400"></i> Solusi Point of Sale & Inventaris F&B
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Solusi Point of Sale & Inventaris F&B
           </div>
           <h2 class="text-3xl xl:text-5xl font-black text-white tracking-tight leading-[1.15] mb-5">
             Satu Platform untuk <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-primary to-emerald-400">Kasir, Bahan Baku</span> & Absensi Karyawan.
@@ -164,14 +164,14 @@
               <label class="block text-[11px] font-black text-slate-600 uppercase tracking-wider mb-1.5">Email / Nama Pengguna</label>
               <div class="relative">
                 <i data-lucide="user" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="loginUsername" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all shadow-sm" />
+                <input type="text" id="loginUsername" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all shadow-sm" placeholder="Email atau username..." />
               </div>
             </div>
 
             <div>
               <div class="flex justify-between items-center mb-1.5">
                 <label class="block text-[11px] font-black text-slate-600 uppercase tracking-wider">Kata Sandi / PIN</label>
-                <!-- Trigger Automated Admin Reset Password Modal -->
+                <!-- Automated Admin Reset Password Modal Trigger -->
                 <button type="button" onclick="openForgotPasswordModal()" class="text-[11px] font-bold text-primary hover:underline cursor-pointer flex items-center gap-1">
                   <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Lupa Kata Sandi?
                 </button>
@@ -220,7 +220,7 @@
               </p>
               <div>
                 <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Toko / Kafe / Resto *</label>
-                <input type="text" id="regStoreName" required placeholder="Kopi Tuku" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                <input type="text" id="regStoreName" required placeholder="Kopi Senja Utama" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
               </div>
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
@@ -247,7 +247,7 @@
               </p>
               <div>
                 <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Lengkap Owner *</label>
-                <input type="text" id="regOwnerName" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                <input type="text" id="regOwnerName" required placeholder="Pak Hendra" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
               </div>
               <div>
                 <label class="block text-[10px] font-bold text-slate-600 mb-1">
@@ -255,14 +255,14 @@
                 </label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold text-slate-400">+62</span>
-                  <input type="tel" id="regAdminPhone" required class="w-full pl-12 pr-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                  <input type="tel" id="regAdminPhone" required placeholder="81234567890" class="w-full pl-12 pr-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
                 </div>
                 <p class="text-[9px] text-indigo-600 font-semibold mt-1">*Pesan permintaan reset password kasir otomatis dikirim ke nomor ini.</p>
               </div>
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
                   <label class="block text-[10px] font-bold text-slate-600 mb-1">Email Owner *</label>
-                  <input type="email" id="regOwnerEmail" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                  <input type="email" id="regOwnerEmail" required placeholder="owner@tokomu.id" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
                 </div>
                 <div>
                   <label class="block text-[10px] font-bold text-slate-600 mb-1">Kata Sandi Owner *</label>
@@ -279,11 +279,11 @@
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
                   <label class="block text-[10px] font-bold text-slate-600 mb-1">Username Kasir</label>
-                  <input type="text" id="regCashierUsername" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                  <input type="text" id="regCashierUsername" required placeholder="kasir" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
                 </div>
                 <div>
                   <label class="block text-[10px] font-bold text-slate-600 mb-1">PIN Kasir (6 Angka)</label>
-                  <input type="password" id="regCashierPin" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
+                  <input type="password" id="regCashierPin" required placeholder="123456" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-primary shadow-xs" />
                 </div>
               </div>
             </div>
@@ -371,9 +371,9 @@
           <span id="activeShiftBadgeSidebar" class="ml-auto bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm hidden">0 Aktif</span>
         </button>
 
-        <button onclick="navigateTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center py-3.5 px-3 rounded-2xl transition-all text-sm font-bold group relative text-slate-500 hover:bg-slate-100/60 hover:text-slate-900" title="Konfigurasi Sistem">
+        <button onclick="navigateTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center py-3.5 px-3 rounded-2xl transition-all text-sm font-bold group relative text-slate-500 hover:bg-slate-100/60 hover:text-slate-900" title="Konfigurasi Toko">
           <i data-lucide="settings" class="w-5 h-5 mx-auto lg:mr-3 shrink-0"></i>
-          <span class="nav-text whitespace-nowrap transition-all duration-300 hidden">Konfigurasi Sistem</span>
+          <span class="nav-text whitespace-nowrap transition-all duration-300 hidden">Konfigurasi Toko</span>
         </button>
 
         <!-- Cashier specific shift box in sidebar -->
@@ -423,12 +423,6 @@
           <button onclick="openClockModal()" id="headerStaffShiftPill" class="hidden px-3 py-2 rounded-xl text-xs font-extrabold items-center gap-2 transition-all shadow-sm border bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 cursor-pointer">
             <i data-lucide="clock" class="w-4 h-4 text-primary animate-pulse"></i>
             <span id="headerShiftTimerText">Shift: 00:00:00</span>
-          </button>
-
-          <!-- Sync Google Sheets Button (Owner Only) -->
-          <button onclick="syncWithGAS()" id="syncBtn" class="px-3 lg:px-4 py-2 lg:py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm border bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 cursor-pointer active:scale-95" title="Sinkronisasi Cloud GAS">
-            <i data-lucide="cloud-upload" id="syncIcon" class="w-4 h-4"></i>
-            <span class="hidden sm:inline" id="syncBtnText">Sync GAS</span>
           </button>
 
           <!-- Held Orders Button -->
@@ -580,6 +574,7 @@
             </div>
           </div>
 
+          <!-- Product Grid -->
           <div id="posProductsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-28"></div>
 
           <!-- Floating Cart Button -->
@@ -789,53 +784,6 @@
             </div>
           </div>
 
-          <!-- Google Drive Menu Images Integration -->
-          <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
-            <div class="p-5 lg:p-8 border-b border-slate-100 bg-indigo-50/40 flex justify-between items-center">
-              <div>
-                <h3 class="font-extrabold text-lg lg:text-xl text-slate-800 flex items-center gap-2">
-                  <i data-lucide="image" class="w-5 h-5 text-indigo-600"></i> Folder Gambar Menu Google Drive
-                </h3>
-                <p class="text-xs text-slate-500 mt-1">Sinkronisasikan foto menu langsung dari folder Google Drive Anda ke kasir POS.</p>
-              </div>
-              <button onclick="fetchDriveImages()" id="btnSyncDriveImages" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                <span>Tarik Gambar Drive</span>
-              </button>
-            </div>
-            <div class="p-5 lg:p-8 space-y-4">
-              <div>
-                <label class="text-[10px] lg:text-xs font-bold text-slate-500 block mb-2 uppercase tracking-wide">ID Folder Google Drive (Khusus Menu)</label>
-                <input type="text" id="settingDriveFolderId" placeholder="Misal: 1vK8l_2M49fW_EXAMPLE_FOLDER_ID" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm text-slate-700" />
-                <p class="text-[11px] text-slate-400 font-medium mt-2">
-                  *Tips: Buka folder di Google Drive, copy ID dari URL di browser. Pastikan akses folder diatur ke <b>Anyone with the link (Viewer)</b>.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Google Apps Script Backend URL Connection -->
-          <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
-            <div class="p-5 lg:p-8 border-b border-slate-100 bg-emerald-50/40 flex justify-between items-center">
-              <div>
-                <h3 class="font-extrabold text-lg lg:text-xl text-slate-800 flex items-center gap-2">
-                  <i data-lucide="cloud-upload" class="w-5 h-5 text-emerald-600"></i> Google Apps Script (GAS) Webhook
-                </h3>
-                <p class="text-xs text-slate-500 mt-1">Hubungkan Google Sheet sebagai database cloud real-time Anda.</p>
-              </div>
-              <button onclick="openModal('gasCodeModal')" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
-                <i data-lucide="code" class="w-3.5 h-3.5 text-emerald-600"></i>
-                <span>Lihat Kode GAS</span>
-              </button>
-            </div>
-            <div class="p-5 lg:p-8 space-y-4">
-              <div>
-                <label class="text-[10px] lg:text-xs font-bold text-slate-500 block mb-2 uppercase tracking-wide">Web App URL (exec)</label>
-                <input type="url" id="settingGasUrl" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-sm text-slate-700" />
-              </div>
-            </div>
-          </div>
-
           <!-- Staff Hourly Wage -->
           <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
             <div class="p-5 lg:p-8 border-b border-slate-100 bg-slate-50/50">
@@ -944,6 +892,7 @@
 
   </div>
 
+  <!-- ================= MODAL CONTAINERS ================= -->
   <!-- Cart Drawer Modal -->
   <div id="cartModal" class="hidden fixed inset-0 z-50 flex items-end lg:items-center justify-center lg:justify-end p-0 lg:p-6">
     <div onclick="closeCartDrawer()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
@@ -1054,6 +1003,7 @@
           </div>
         </div>
 
+        <!-- Cash Calculation -->
         <div id="cashTenderContainer" class="space-y-3">
           <div>
             <label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase">Nominal Uang Diterima</label>
@@ -1142,12 +1092,12 @@
       <form onsubmit="handleForgotPasswordSubmit(event)" class="p-5 space-y-4">
         <div>
           <label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Nama Lengkap Pemohon</label>
-          <input type="text" id="forgotStaffName" required class="w-full px-3.5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-amber-500 shadow-sm" />
+          <input type="text" id="forgotStaffName" required placeholder="Cth: Rian (Kasir)" class="w-full px-3.5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-amber-500 shadow-sm" />
         </div>
 
         <div>
           <label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Email / Username Akun Anda</label>
-          <input type="text" id="forgotUsername" required class="w-full px-3.5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-amber-500 shadow-sm" />
+          <input type="text" id="forgotUsername" required placeholder="kasir@managepro.id" class="w-full px-3.5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-amber-500 shadow-sm" />
         </div>
 
         <div>
@@ -1203,35 +1153,6 @@
             <span id="clockActionBtnText">Absen Masuk (Clock In)</span>
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Google Apps Script Source Code Viewer Modal -->
-  <div id="gasCodeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div onclick="closeModal('gasCodeModal')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-    <div class="bg-surface rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10 overflow-hidden border border-white/20">
-      <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0">
-        <div>
-          <h3 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
-            <i data-lucide="code" class="w-5 h-5 text-emerald-600"></i> Backend Google Apps Script (GAS)
-          </h3>
-          <p class="text-xs text-slate-500 mt-0.5">Salin script ini ke Extensions &gt; Apps Script di Google Sheet Anda.</p>
-        </div>
-        <button onclick="closeModal('gasCodeModal')" class="text-slate-400 hover:text-slate-700 cursor-pointer">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="p-5 flex-1 overflow-y-auto bg-slate-950 text-slate-200">
-        <pre class="text-xs font-mono leading-relaxed select-all" id="gasCodeDisplay"></pre>
-      </div>
-
-      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center shrink-0">
-        <span class="text-xs font-semibold text-slate-500">Deploy as Web App &gt; Access: Anyone</span>
-        <button onclick="copyGasScriptCode()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-md transition-all cursor-pointer">
-          <i data-lucide="copy" class="w-4 h-4"></i> Salin Seluruh Script
-        </button>
       </div>
     </div>
   </div>
@@ -1306,9 +1227,8 @@
         </div>
 
         <div>
-          <label class="text-xs font-bold text-slate-500 mb-1 block">URL Gambar Produk (Google Drive / Web)</label>
-          <input type="url" id="prodImageInput" placeholder="https://drive.google.com/thumbnail?id=... atau link web" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-primary shadow-sm" />
-          <p class="text-[10px] text-slate-400 mt-1">Dapat terisi otomatis dari Google Drive berdasarkan SKU / Nama Produk.</p>
+          <label class="text-xs font-bold text-slate-500 mb-1 block">URL Gambar Produk (Opsional)</label>
+          <input type="url" id="prodImageInput" placeholder="https://images.unsplash.com/..." class="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs font-mono font-bold outline-none focus:border-primary shadow-sm" />
         </div>
 
         <!-- Recipe / BOM Builder -->
@@ -1413,7 +1333,11 @@
   <!-- Hidden Print Receipt Container for Physical Thermal Printer -->
   <div id="printableReceipt" class="hidden"></div>
 
+  <!-- ================= APPLICATION JAVASCRIPT LOGIC ================= -->
   <script>
+    // URL Web App Google Apps Script Aktif (Backend Spreadsheet)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw-LIQx-glqigX9JLqqre0lCZe2aLIYZYrM1jiDH3FivUofUr7ibdtRH8MC1QqtVvCT/exec";
+
     /* Default Initial State */
     const DEFAULT_SETTINGS = {
       storeName: 'Kopi Kenangan Senja',
@@ -1422,8 +1346,6 @@
       adminEmail: 'owner@managepro.id',
       taxRate: 11,
       hourlyWage: 15000,
-      driveFolderId: '1_SAMPLE_DRIVE_FOLDER_ID',
-      gasUrl: 'https://script.google.com/macros/s/AKfycbwFyowiorGdaezm4bU0QDrWHtk2kQYnULrYZxSoZolZ2Rmlsd14PzDZueuJPSlyDI86/exec',
       paymentMethods: [
         { bank: 'BCA', no: '1234567890', name: 'PT Kenangan Senja' },
         { bank: 'QRIS Gopay', no: '081234567890', name: 'Kopi Senja Utama' }
@@ -1543,153 +1465,6 @@
       { date: '19/09/2026', ref: 'PO-012', desc: 'Beli Biji Kopi Supplier', amount: 1200000, type: 'out' },
     ];
 
-    const GAS_BACKEND_SCRIPT_RAW = `const SS = SpreadsheetApp.getActiveSpreadsheet();
-
-function doGet(e) {
-  const action = e.parameter ? e.parameter.action : '';
-  if (action === 'GET_DATA') {
-    return createJsonResponse({
-      settings: getSettings(),
-      inventory: getSheetData("Inventory"),
-      products: getProductsWithDriveImages(),
-      transactions: getSheetData("Transactions"),
-      cashLogs: getSheetData("CashLogs"),
-      attendance: getSheetData("Attendance")
-    });
-  }
-  if (action === 'SYNC_DRIVE_IMAGES') {
-    const folderId = e.parameter.folderId || (getSettings() ? getSettings().driveFolderId : '');
-    return createJsonResponse({ status: 'success', images: getDriveMenuImagesMap(folderId) });
-  }
-  return createJsonResponse({ status: 'connected', message: 'ManagePro GAS Backend Ready.' });
-}
-
-function doPost(e) {
-  let result = { status: 'success' };
-  try {
-    const postData = JSON.parse(e.postData.contents);
-    const action = postData.action;
-    const data = postData.data;
-    if (action === 'SAVE_ALL') {
-      if (data.settings) saveSettings(data.settings);
-      if (data.inventory) saveSheetData("Inventory", data.inventory);
-      if (data.products) saveSheetData("Products", data.products);
-      if (data.transactions) saveSheetData("Transactions", data.transactions);
-      if (data.cashLogs) saveSheetData("CashLogs", data.cashLogs);
-      if (data.attendance) saveSheetData("Attendance", data.attendance);
-    } else if (action === 'SAVE_TRANSACTION') {
-      appendRow("Transactions", data);
-      updateInventoryFromTransaction(data.items);
-    }
-  } catch (err) {
-    result = { status: 'error', message: err.toString() };
-  }
-  return createJsonResponse(result);
-}
-
-function createJsonResponse(data) {
-  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
-}
-
-function getDriveMenuImagesMap(folderId) {
-  const imageMap = {};
-  if (!folderId || folderId.includes('SAMPLE')) return imageMap;
-  try {
-    const folder = DriveApp.getFolderById(folderId);
-    const files = folder.getFiles();
-    while (files.hasNext()) {
-      const file = files.next();
-      const name = file.getName().toLowerCase();
-      const id = file.getId();
-      const thumbUrl = "https://drive.google.com/thumbnail?id=" + id + "&sz=w600";
-      const baseName = name.replace(/\\.[^/.]+$/, "");
-      imageMap[baseName] = thumbUrl;
-      imageMap[name] = thumbUrl;
-    }
-  } catch (err) {
-    Logger.log("Error Drive scan: " + err);
-  }
-  return imageMap;
-}
-
-function getProductsWithDriveImages() {
-  const products = getSheetData("Products");
-  const settings = getSettings();
-  const folderId = settings ? settings.driveFolderId : '';
-  const images = getDriveMenuImagesMap(folderId);
-  return products.map(prod => {
-    const keyName = String(prod.name || '').toLowerCase().trim();
-    const keySku = String(prod.sku || prod.id || '').toLowerCase().trim();
-    if (images[keyName]) prod.imageUrl = images[keyName];
-    else if (images[keySku]) prod.imageUrl = images[keySku];
-    return prod;
-  });
-}
-
-function getSheetData(sheetName) {
-  const sheet = SS.getSheetByName(sheetName);
-  if (!sheet) return [];
-  const values = sheet.getDataRange().getValues();
-  if (values.length <= 1) return [];
-  const headers = values[0];
-  return values.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((h, i) => {
-      let val = row[i];
-      if (typeof val === 'string' && (val.startsWith('[') || val.startsWith('{'))) {
-        try { val = JSON.parse(val); } catch(e) {}
-      }
-      obj[h] = val;
-    });
-    return obj;
-  });
-}
-
-function saveSheetData(sheetName, data) {
-  let sheet = SS.getSheetByName(sheetName) || SS.insertSheet(sheetName);
-  sheet.clear();
-  if (!data || data.length === 0) return;
-  const headers = Object.keys(data[0]);
-  sheet.appendRow(headers);
-  const rows = data.map(item => headers.map(h => typeof item[h] === 'object' ? JSON.stringify(item[h]) : item[h]));
-  sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
-}
-
-function appendRow(sheetName, data) {
-  let sheet = SS.getSheetByName(sheetName) || SS.insertSheet(sheetName);
-  const headers = sheet.getDataRange().getValues()[0] || Object.keys(data);
-  if (sheet.getLastRow() === 0) sheet.appendRow(headers);
-  const row = headers.map(h => typeof data[h] === 'object' ? JSON.stringify(data[h]) : (data[h] !== undefined ? data[h] : ''));
-  sheet.appendRow(row);
-}
-
-function getSettings() {
-  const data = getSheetData("Settings");
-  return data.length > 0 ? data[0] : null;
-}
-
-function saveSettings(settings) {
-  saveSheetData("Settings", [settings]);
-}
-
-function updateInventoryFromTransaction(items) {
-  if (!items || !Array.isArray(items)) return;
-  const inventory = getSheetData("Inventory");
-  const products = getSheetData("Products");
-  items.forEach(item => {
-    const product = products.find(p => p.id == item.id);
-    if (product && product.recipe && Array.isArray(product.recipe)) {
-      product.recipe.forEach(r => {
-        const invItem = inventory.find(i => i.sku == r.sku);
-        if (invItem) {
-          invItem.stock = Math.max(0, Number((invItem.stock - (r.qty * item.qty)).toFixed(3)));
-        }
-      });
-    }
-  });
-  saveSheetData("Inventory", inventory);
-}`;
-
     let appState = {
       settings: JSON.parse(localStorage.getItem('managepro_settings')) || DEFAULT_SETTINGS,
       users: JSON.parse(localStorage.getItem('managepro_users')) || DEFAULT_USERS,
@@ -1712,11 +1487,138 @@ function updateInventoryFromTransaction(items) {
       shippingFee: 0,
       paymentMode: 'Tunai',
       currentInvoiceText: '',
-      isSidebarCollapsed: true
+      isSidebarCollapsed: true,
+      isSyncingCloud: false
     };
 
     let revenueChart = null;
     let shiftTimerInterval = null;
+
+    /**
+     * Mengambil data terbaru secara real-time dari Google Sheets backend
+     * Termasuk produk dengan link gambar Google Drive otomatis.
+     */
+    async function fetchFromGAS() {
+      if (!GAS_URL) return;
+      appState.isSyncingCloud = true;
+      try {
+        const response = await fetch(`${GAS_URL}?action=GET_DATA`, {
+          method: 'GET',
+          redirect: 'follow'
+        });
+        const resText = await response.text();
+        let jsonResult = null;
+        try {
+          jsonResult = JSON.parse(resText);
+        } catch (_) {
+          console.warn('Respon GAS bukan JSON valid:', resText);
+        }
+
+        if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
+          const cloudData = jsonResult.data;
+          let hasUpdated = false;
+
+          if (Array.isArray(cloudData.inventory) && cloudData.inventory.length > 0) {
+            appState.inventory = cloudData.inventory;
+            hasUpdated = true;
+          }
+          if (Array.isArray(cloudData.products) && cloudData.products.length > 0) {
+            appState.products = cloudData.products;
+            hasUpdated = true;
+          }
+          if (Array.isArray(cloudData.transactions) && cloudData.transactions.length > 0) {
+            appState.transactions = cloudData.transactions;
+            hasUpdated = true;
+          }
+          if (Array.isArray(cloudData.cashLogs) && cloudData.cashLogs.length > 0) {
+            appState.cashLogs = cloudData.cashLogs;
+            hasUpdated = true;
+          }
+          if (Array.isArray(cloudData.attendance) && cloudData.attendance.length > 0) {
+            appState.attendance = cloudData.attendance;
+            hasUpdated = true;
+          }
+          if (cloudData.settings && cloudData.settings.storeName) {
+            appState.settings = { ...appState.settings, ...cloudData.settings };
+            hasUpdated = true;
+          }
+
+          // Jika spreadsheet baru dan masih kosong, lakukan inisialisasi unggah data awal
+          const isSpreadsheetEmpty = (!cloudData.inventory || cloudData.inventory.length === 0) &&
+                                     (!cloudData.products || cloudData.products.length === 0);
+          if (isSpreadsheetEmpty) {
+            await syncAllToGAS(false);
+          }
+
+          if (hasUpdated) {
+            saveState();
+            refreshActiveView();
+            showToast('Sinkronisasi Cloud Berhasil', 'Data produk, stok, dan Google Drive diperbarui dari Spreadsheet.', 'success');
+          }
+        }
+      } catch (err) {
+        console.warn('Koneksi background ke Spreadsheet offline atau terhalang:', err);
+      } finally {
+        appState.isSyncingCloud = false;
+      }
+    }
+
+    /**
+     * Mengirim payload POST ke Google Apps Script tanpa preflight CORS
+     */
+    async function sendPostToGAS(action, data) {
+      if (!GAS_URL) return;
+      try {
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({ action, data })
+        });
+        const txt = await response.text();
+        try {
+          return JSON.parse(txt);
+        } catch (_) {
+          return { status: 'success' };
+        }
+      } catch (err) {
+        console.warn(`Gagal mengirim aksi [${action}] ke GAS:`, err);
+      }
+    }
+
+    /**
+     * Mengirim transaksi baru ke GAS untuk dicatat dan memotong stok BOM
+     */
+    async function syncTransactionToGAS(transaction) {
+      await sendPostToGAS('SAVE_TRANSACTION', transaction);
+    }
+
+    /**
+     * Mengirim seluruh data master ke GAS (Settings, Inventory, Products, dll.)
+     */
+    async function syncAllToGAS(showNotification = true) {
+      const payload = {
+        settings: appState.settings,
+        inventory: appState.inventory,
+        products: appState.products,
+        transactions: appState.transactions,
+        cashLogs: appState.cashLogs,
+        attendance: appState.attendance
+      };
+      await sendPostToGAS('SAVE_ALL', payload);
+      if (showNotification) {
+        showToast('Data Tersimpan', 'Perubahan disinkronkan ke database Spreadsheet.', 'success');
+      }
+    }
+
+    /**
+     * Mengirim log presensi & upah ke GAS
+     */
+    async function syncAttendanceToGAS(attendanceData) {
+      await sendPostToGAS('SAVE_ATTENDANCE', attendanceData);
+    }
 
     function saveState() {
       localStorage.setItem('managepro_settings', JSON.stringify(appState.settings));
@@ -1729,6 +1631,19 @@ function updateInventoryFromTransaction(items) {
       localStorage.setItem('managepro_heldorders', JSON.stringify(appState.heldOrders));
       localStorage.setItem('managepro_attendance', JSON.stringify(appState.attendance));
       localStorage.setItem('managepro_reset_requests', JSON.stringify(appState.resetRequests));
+    }
+
+    function refreshActiveView() {
+      if (appState.activeTab === 'dashboard') renderDashboardView();
+      if (appState.activeTab === 'pos') renderPosProducts();
+      if (appState.activeTab === 'gudang') renderInventoryTable();
+      if (appState.activeTab === 'produk') renderProductsCards();
+      if (appState.activeTab === 'promosi') renderPromotions();
+      if (appState.activeTab === 'laporan') renderCashLogsTable();
+      if (appState.activeTab === 'absen') renderAttendanceTable();
+      if (appState.activeTab === 'pengaturan') renderSettingsView();
+      updateNotifications();
+      lucide.createIcons();
     }
 
     const formatCurrency = (v) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v || 0);
@@ -1813,7 +1728,6 @@ function updateInventoryFromTransaction(items) {
       const usernameInput = (document.getElementById('loginUsername')?.value || '').trim().toLowerCase();
       const passwordInput = document.getElementById('loginPassword')?.value || '';
 
-      // Match against users database
       const matchedUser = appState.users.find(u => 
         ((u.username && u.username.toLowerCase() === usernameInput) || 
          (u.email && u.email.toLowerCase() === usernameInput)) &&
@@ -1844,13 +1758,11 @@ function updateInventoryFromTransaction(items) {
         return;
       }
 
-      // Format admin phone (convert 08xx to 628xx for WhatsApp link compatibility)
       let cleanPhone = adminPhoneRaw.replace(/\D/g, '');
       if (cleanPhone.startsWith('0')) {
         cleanPhone = '62' + cleanPhone.slice(1);
       }
 
-      // Update store settings with new registered business info
       appState.settings.storeName = storeName;
       appState.settings.adminName = ownerName;
       appState.settings.adminPhone = cleanPhone;
@@ -1858,7 +1770,6 @@ function updateInventoryFromTransaction(items) {
       appState.settings.storeAddress = address;
       appState.settings.storeCategory = category;
 
-      // Create new Owner account
       const newOwnerAccount = {
         username: ownerEmail,
         email: ownerEmail,
@@ -1870,7 +1781,6 @@ function updateInventoryFromTransaction(items) {
         initialTab: 'dashboard'
       };
 
-      // Create new Cashier account
       const newCashierAccount = {
         username: cashierUser,
         email: `${cashierUser}@${storeName.toLowerCase().replace(/\s+/g, '')}.com`,
@@ -1882,18 +1792,16 @@ function updateInventoryFromTransaction(items) {
         initialTab: 'pos'
       };
 
-      // Register users and avoid duplicate usernames
       appState.users = appState.users.filter(u => u.username !== ownerEmail && u.username !== cashierUser);
       appState.users.unshift(newCashierAccount);
       appState.users.unshift(newOwnerAccount);
 
       saveState();
+      syncAllToGAS(false);
 
-      // Update UI displays
       document.getElementById('sidebarStoreName').textContent = storeName;
       document.getElementById('headerStoreBadge').textContent = storeName;
 
-      // Auto login as the newly registered Owner
       showToast('Registrasi Berhasil!', `Usaha "${storeName}" berhasil didaftarkan. Selamat datang!`, 'success');
       completeLogin(newOwnerAccount);
     }
@@ -1919,7 +1827,6 @@ function updateInventoryFromTransaction(items) {
         return;
       }
 
-      // Construct automated WhatsApp message
       const resetMsg = `🚨 *PERMINTAAN RESET PASSWORD - MANAGEPRO F&B* 🚨\n\n` +
         `Halo Admin/Owner *${storeName}*,\n` +
         `Ada permohonan reset kata sandi workstation:\n\n` +
@@ -1928,7 +1835,6 @@ function updateInventoryFromTransaction(items) {
         `• *Waktu Pengajuan:* ${nowStr}\n\n` +
         `Mohon bantuannya untuk memeriksa atau mereset password/PIN akun terkait. Terima kasih!`;
 
-      // Log request into admin notification list
       if (!appState.resetRequests) appState.resetRequests = [];
       appState.resetRequests.unshift({
         id: 'RST-' + Date.now().toString().slice(-4),
@@ -1939,12 +1845,15 @@ function updateInventoryFromTransaction(items) {
       saveState();
       updateNotifications();
 
-      // Copy text to clipboard as safety
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(resetMsg).catch(() => {});
-      }
+      try {
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = resetMsg;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+      } catch (_) {}
 
-      // Open WhatsApp
       const waUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(resetMsg)}`;
       window.open(waUrl, '_blank');
 
@@ -1989,7 +1898,6 @@ function updateInventoryFromTransaction(items) {
       const ownerOnlySidebarNavs = ['nav-dashboard', 'nav-gudang', 'nav-produk', 'nav-promosi', 'nav-laporan', 'nav-absen', 'nav-pengaturan'];
       const ownerOnlyMobNavs = ['mob-dashboard', 'mob-gudang', 'mob-produk', 'mob-laporan', 'mob-absen', 'mob-pengaturan'];
       
-      const syncBtn = document.getElementById('syncBtn');
       const notifWrapper = document.getElementById('headerNotifWrapper');
       const sidebarStaffShiftBox = document.getElementById('sidebarStaffShiftBox');
       const sidebarMenuTitle = document.getElementById('sidebarMenuTitle');
@@ -2000,7 +1908,6 @@ function updateInventoryFromTransaction(items) {
         document.getElementById('mob-pos')?.classList.remove('hidden');
         document.getElementById('mob-clock')?.classList.remove('hidden');
 
-        if (syncBtn) syncBtn.classList.add('hidden');
         if (notifWrapper) notifWrapper.classList.add('hidden');
         if (sidebarStaffShiftBox) sidebarStaffShiftBox.classList.remove('hidden');
         if (sidebarMenuTitle) {
@@ -2009,7 +1916,6 @@ function updateInventoryFromTransaction(items) {
       } else {
         ownerOnlySidebarNavs.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
         ownerOnlyMobNavs.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
-        if (syncBtn) syncBtn.classList.remove('hidden');
         if (notifWrapper) notifWrapper.classList.remove('hidden');
         if (sidebarStaffShiftBox) sidebarStaffShiftBox.classList.add('hidden');
         if (sidebarMenuTitle) {
@@ -2106,7 +2012,7 @@ function updateInventoryFromTransaction(items) {
         promosi: 'Promosi & Bundle',
         laporan: 'Buku Kas (Laporan)',
         absen: 'Absensi & Upah Karyawan',
-        pengaturan: 'Konfigurasi Sistem'
+        pengaturan: 'Konfigurasi Toko'
       };
       const headingEl = document.getElementById('currentTabHeading');
       if (headingEl) headingEl.textContent = headings[tabId] || 'Menu';
@@ -2142,7 +2048,6 @@ function updateInventoryFromTransaction(items) {
 
       renderRevenueChart();
 
-      // Top Selling Products container
       const topContainer = document.getElementById('topProductsContainer');
       if (topContainer) {
         const prodSalesMap = {};
@@ -2691,7 +2596,7 @@ function updateInventoryFromTransaction(items) {
         change: Math.max(0, cashReceived - grandTotal)
       };
 
-      // Auto Decrement Inventory based on BOM
+      // Potong stok lokal real-time dari resep BOM
       appState.cart.forEach(cartItem => {
         const prod = appState.products.find(p => p.id === cartItem.id);
         if (prod && Array.isArray(prod.recipe)) {
@@ -2704,7 +2609,6 @@ function updateInventoryFromTransaction(items) {
         }
       });
 
-      // Record in cash logs
       appState.cashLogs.unshift({
         date: dateStr,
         ref: trxId,
@@ -2716,7 +2620,9 @@ function updateInventoryFromTransaction(items) {
       appState.transactions.unshift(newTrx);
       saveState();
 
-      // Generate invoice WhatsApp text
+      // Sinkronisasi otomatis transaksi ke database Spreadsheet di background
+      syncTransactionToGAS(newTrx);
+
       let invoice = `*${appState.settings.storeName.toUpperCase()}*\n`;
       invoice += `No: #${trxId}\n`;
       invoice += `Waktu: ${newTrx.date}\n`;
@@ -2762,12 +2668,16 @@ function updateInventoryFromTransaction(items) {
 
     function copyInvoiceText() {
       const txt = appState.currentInvoiceText || document.getElementById('invoiceTextarea').value;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(txt).then(() => {
-          showToast('Teks Disalin', 'Format struk nota WhatsApp siap dibagikan ke pelanggan!', 'success');
-        }).catch(() => {
-          showToast('Gagal Salin', 'Silakan blok dan salin manual dari kotak teks.', 'warning');
-        });
+      try {
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = txt;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        showToast('Teks Disalin', 'Format struk nota WhatsApp siap dibagikan ke pelanggan!', 'success');
+      } catch (_) {
+        showToast('Gagal Salin', 'Silakan blok dan salin manual dari kotak teks.', 'warning');
       }
     }
 
@@ -2925,15 +2835,17 @@ function updateInventoryFromTransaction(items) {
       }
 
       saveState();
+      syncAllToGAS(false);
       renderInventoryTable();
       updateNotifications();
       closeModal('stockModal');
-      showToast('Stok Disimpan', 'Data persediaan berhasil diperbarui.', 'success');
+      showToast('Stok Disimpan', 'Data persediaan berhasil diperbarui dan disinkronkan.', 'success');
     }
 
     function deleteStockItem(sku) {
       appState.inventory = appState.inventory.filter(i => i.sku !== sku);
       saveState();
+      syncAllToGAS(false);
       renderInventoryTable();
       updateNotifications();
       showToast('Item Dihapus', 'Barang inventaris berhasil dihapus.', 'info');
@@ -3101,15 +3013,17 @@ function updateInventoryFromTransaction(items) {
       }
 
       saveState();
+      syncAllToGAS(false);
       renderProductsCards();
       renderPosProducts();
       closeModal('productModal');
-      showToast('Menu Disimpan', 'Master menu dan komposisi resep berhasil disimpan.', 'success');
+      showToast('Menu Disimpan', 'Master menu dan komposisi resep berhasil diperbarui.', 'success');
     }
 
     function deleteProduct(prodId) {
       appState.products = appState.products.filter(p => p.id !== prodId);
       saveState();
+      syncAllToGAS(false);
       renderProductsCards();
       renderPosProducts();
       showToast('Menu Dihapus', 'Menu telah dihapus dari daftar katalog.', 'info');
@@ -3177,6 +3091,7 @@ function updateInventoryFromTransaction(items) {
       });
 
       saveState();
+      syncAllToGAS(false);
       renderPromotions();
       renderPosProducts();
       closeModal('promoModal');
@@ -3195,6 +3110,7 @@ function updateInventoryFromTransaction(items) {
     function deletePromo(id) {
       appState.promos = appState.promos.filter(p => p.id !== id);
       saveState();
+      syncAllToGAS(false);
       renderPromotions();
       showToast('Promo Dihapus', 'Paket bundle promosi berhasil dihapus.', 'info');
     }
@@ -3253,6 +3169,7 @@ function updateInventoryFromTransaction(items) {
 
       appState.cashLogs.unshift({ date: dateStr, ref, desc, amount, type });
       saveState();
+      syncAllToGAS(false);
       renderCashLogsTable();
       closeModal('addCashLogModal');
       document.getElementById('cashLogDesc').value = '';
@@ -3263,12 +3180,12 @@ function updateInventoryFromTransaction(items) {
     function deleteCashLog(idx) {
       appState.cashLogs.splice(idx, 1);
       saveState();
+      syncAllToGAS(false);
       renderCashLogsTable();
       showToast('Catatan Dihapus', 'Mutasi kas telah dihapus.', 'info');
     }
 
     function openClockModal() {
-      const modal = document.getElementById('clockModal');
       const staffName = document.getElementById('clockModalStaffName');
       const userName = appState.currentUser?.name || 'Kasir';
       const hourlyRate = appState.settings.hourlyWage || 15000;
@@ -3349,6 +3266,7 @@ function updateInventoryFromTransaction(items) {
         document.getElementById('headerStaffShiftPill')?.classList.add('hidden');
 
         saveState();
+        syncAttendanceToGAS(appState.attendance);
         updateClockModalUI();
         renderAttendanceTable();
         closeModal('clockModal');
@@ -3437,11 +3355,6 @@ function updateInventoryFromTransaction(items) {
       document.getElementById('settingStoreName').value = appState.settings.storeName || '';
       document.getElementById('settingTaxRate').value = appState.settings.taxRate || 0;
       document.getElementById('settingHourlyWage').value = appState.settings.hourlyWage || 15000;
-      document.getElementById('settingDriveFolderId').value = appState.settings.driveFolderId || '';
-      document.getElementById('settingGasUrl').value = appState.settings.gasUrl || '';
-
-      const gasDisplay = document.getElementById('gasCodeDisplay');
-      if (gasDisplay) gasDisplay.textContent = GAS_BACKEND_SCRIPT_RAW;
 
       const container = document.getElementById('paymentMethodsList');
       container.innerHTML = (appState.settings.paymentMethods || []).map((pay, idx) => `
@@ -3487,117 +3400,11 @@ function updateInventoryFromTransaction(items) {
       appState.settings.storeName = document.getElementById('settingStoreName').value.trim() || 'ManagePro F&B';
       appState.settings.taxRate = parseFloat(document.getElementById('settingTaxRate').value) || 0;
       appState.settings.hourlyWage = parseInt(document.getElementById('settingHourlyWage').value) || 15000;
-      appState.settings.driveFolderId = document.getElementById('settingDriveFolderId').value.trim();
-      appState.settings.gasUrl = document.getElementById('settingGasUrl').value.trim();
 
       saveState();
+      syncAllToGAS(true);
       document.getElementById('sidebarStoreName').textContent = appState.settings.storeName;
       document.getElementById('headerStoreBadge').textContent = appState.settings.storeName;
-      showToast('Setelan Disimpan', 'Konfigurasi sistem, upah, dan folder Drive berhasil diperbarui.', 'success');
-    }
-
-    async function syncWithGAS() {
-      const url = appState.settings.gasUrl?.trim();
-      if (!url || url.includes('...')) {
-        showToast('URL GAS Belum Diisi', 'Silakan masukkan Web App URL di menu Konfigurasi Sistem.', 'warning');
-        navigateTab('pengaturan');
-        return;
-      }
-
-      const syncBtnText = document.getElementById('syncBtnText');
-      const syncIcon = document.getElementById('syncIcon');
-      syncBtnText.textContent = 'Menyinkronkan...';
-      syncIcon.classList.add('animate-pulse');
-
-      try {
-        const payload = {
-          action: 'SAVE_ALL',
-          data: {
-            settings: appState.settings,
-            inventory: appState.inventory,
-            products: appState.products,
-            transactions: appState.transactions,
-            cashLogs: appState.cashLogs,
-            attendance: appState.attendance
-          }
-        };
-
-        const res = await fetch(url, {
-          method: 'POST',
-          mode: 'cors',
-          redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-
-        await res.text();
-        showToast('Sinkronisasi Sukses', 'Seluruh data berhasil disinkronkan ke Google Sheets!', 'success');
-      } catch (err) {
-        console.error('GAS Sync Error:', err);
-        showToast('Gagal Sinkronisasi', 'Periksa izin publikasi Web App Google Apps Script (Who has access: Anyone).', 'error');
-      } finally {
-        syncBtnText.textContent = 'Sync GAS';
-        syncIcon.classList.remove('animate-pulse');
-      }
-    }
-
-    async function fetchDriveImages() {
-      const url = appState.settings.gasUrl?.trim();
-      const folderId = appState.settings.driveFolderId?.trim();
-
-      if (!url || url.includes('...')) {
-        showToast('URL GAS Belum Diisi', 'Silakan masukkan Web App URL Google Apps Script.', 'warning');
-        return;
-      }
-      if (!folderId || folderId.includes('SAMPLE')) {
-        showToast('Folder ID Kosong', 'Masukkan ID folder Google Drive yang berisi gambar menu.', 'warning');
-        return;
-      }
-
-      const btn = document.getElementById('btnSyncDriveImages');
-      if (btn) btn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Memuat Foto...';
-
-      try {
-        const fetchUrl = `${url}?action=SYNC_DRIVE_IMAGES&folderId=${encodeURIComponent(folderId)}`;
-        const res = await fetch(fetchUrl, { method: 'GET', redirect: 'follow' });
-        const data = await res.json();
-
-        if (data && data.images) {
-          let updatedCount = 0;
-          appState.products.forEach(prod => {
-            const keyName = prod.name.toLowerCase().trim();
-            const keySku = (prod.sku || prod.id || '').toString().toLowerCase().trim();
-            if (data.images[keyName]) {
-              prod.imageUrl = data.images[keyName];
-              updatedCount++;
-            } else if (data.images[keySku]) {
-              prod.imageUrl = data.images[keySku];
-              updatedCount++;
-            }
-          });
-
-          saveState();
-          renderPosProducts();
-          renderProductsCards();
-          showToast('Foto Drive Berhasil Disinkronkan', `${updatedCount} foto menu berhasil dikaitkan dari Google Drive!`, 'success');
-        } else {
-          showToast('Tidak Ada Gambar', 'Folder terbaca tetapi tidak ditemukan file gambar yang sesuai.', 'info');
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('Gagal Tarik Gambar', 'Pastikan folder Drive diset "Anyone with link" & GAS Web App sudah di-deploy.', 'error');
-      } finally {
-        if (btn) btn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> <span>Tarik Gambar Drive</span>';
-        lucide.createIcons();
-      }
-    }
-
-    function copyGasScriptCode() {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(GAS_BACKEND_SCRIPT_RAW).then(() => {
-          showToast('Kode Disalin', 'Seluruh script Google Apps Script berhasil disalin ke clipboard!', 'success');
-        });
-      }
     }
 
     function toggleNotificationDropdown() {
@@ -3632,7 +3439,6 @@ function updateInventoryFromTransaction(items) {
         
         let htmlContent = '';
         
-        // Render reset password requests
         resetAlerts.forEach(req => {
           htmlContent += `
             <div class="p-3 bg-amber-50/70 hover:bg-amber-100/60 rounded-2xl cursor-pointer transition-colors border border-amber-200/70 flex items-start gap-2.5 mb-1.5">
@@ -3648,7 +3454,6 @@ function updateInventoryFromTransaction(items) {
           `;
         });
 
-        // Render low stock alerts
         lowStockItems.forEach(item => {
           htmlContent += `
             <div onclick="navigateTab('gudang'); toggleNotificationDropdown();" class="p-3 hover:bg-slate-50 rounded-2xl cursor-pointer transition-colors border border-transparent hover:border-slate-100 flex items-start gap-2.5">
@@ -3691,9 +3496,6 @@ function updateInventoryFromTransaction(items) {
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('sidebarStoreName').textContent = appState.settings.storeName;
       document.getElementById('headerStoreBadge').textContent = appState.settings.storeName;
-      
-      const gasDisplay = document.getElementById('gasCodeDisplay');
-      if (gasDisplay) gasDisplay.textContent = GAS_BACKEND_SCRIPT_RAW;
 
       collapseSidebar(true);
 
@@ -3709,6 +3511,9 @@ function updateInventoryFromTransaction(items) {
       updateNotifications();
       renderDraftsList();
       lucide.createIcons();
+
+      // Menghubungkan dan menarik data langsung dari Spreadsheet Google Apps Script
+      fetchFromGAS();
     });
   </script>
 </body>
