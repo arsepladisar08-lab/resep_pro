@@ -1372,25 +1372,7 @@
   <!-- ================= APPLICATION JAVASCRIPT LOGIC ================= -->
   <script>
     // URL Web App Google Apps Script Multi-Tenant Aktif
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxLx5bpRsTazN9kV-Mit93Zz2qo6Ln5kDQMPjrc24YnCIufSV8J4G2Q_5XM-gNPbx4G/exec";
-    const SESSION_STORAGE_KEY = "managepro_session_v3";
-
-    function getSessionToken() {
-      try { return sessionStorage.getItem(SESSION_STORAGE_KEY) || ""; } catch (_) { return ""; }
-    }
-
-    function setSessionToken(token) {
-      try {
-        if (token) sessionStorage.setItem(SESSION_STORAGE_KEY, token);
-        else sessionStorage.removeItem(SESSION_STORAGE_KEY);
-      } catch (_) {}
-      appState.authToken = token || "";
-    }
-
-    function clearSessionToken() {
-      try { sessionStorage.removeItem(SESSION_STORAGE_KEY); } catch (_) {}
-      appState.authToken = "";
-    }
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyt_QF6456AelWMf6SPWe-68YxhINcr2Q9ij_VXCLMUE3weWadoB3cGliIjbSZjyNil/exec";
 
     function readStorageJson(key, fallback = null) {
       try {
@@ -1477,7 +1459,6 @@
 
     // Application State
     let appState = {
-      authToken: getSessionToken(),
       currentStore: readStorageJson('managepro_current_store', null),
       currentUser: readStorageJson('managepro_auth_user', null),
       settings: null,
@@ -1519,31 +1500,19 @@
      * Mengambil seluruh data toko secara 2-arah dari Google Sheets
      */
     async function fetchStoreData(storeId, silent = true) {
-      if (!GAS_URL || !storeId || !appState.authToken) return;
+      if (!GAS_URL || !storeId) return;
       appState.isSyncingCloud = true;
       const indicator = document.getElementById('cloudSyncIndicator');
       if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping mr-1.5"></span> Sinkronisasi...';
 
       try {
-        const query = new URLSearchParams({
-          action: 'GET_DATA',
-          storeId: String(storeId),
-          sessionToken: appState.authToken
-        });
-
-        const response = await fetch(`${GAS_URL}?${query.toString()}`, {
+        const response = await fetch(`${GAS_URL}?action=GET_DATA&storeId=${encodeURIComponent(storeId)}`, {
           method: 'GET',
           redirect: 'follow'
         });
-
         const resText = await response.text();
         let jsonResult = null;
         try { jsonResult = JSON.parse(resText); } catch (_) {}
-
-        if (jsonResult?.code === 'UNAUTHORIZED') {
-          handleLogout('Sesi login telah kedaluwarsa. Silakan login kembali.');
-          return;
-        }
 
         if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
           const cloud = jsonResult.data;
@@ -1552,39 +1521,15 @@
           appState.transactions = Array.isArray(cloud.transactions) ? cloud.transactions : [];
           appState.cashLogs = Array.isArray(cloud.cashLogs) ? cloud.cashLogs : [];
           appState.attendance = Array.isArray(cloud.attendance) ? cloud.attendance : [];
-
           if (cloud.settings) {
             appState.settings = cloud.settings;
             appState.currentStore = cloud.settings;
-          }
-
-          // Pulihkan shift aktif dari record server bila browser sebelumnya tertutup.
-          if (appState.currentUser?.role === 'karyawan' && !appState.activeShift) {
-            const openAttendance = appState.attendance
-              .find(a => String(a.status || '').toLowerCase() === 'berjalan');
-            if (openAttendance) {
-              appState.activeShift = {
-                id: openAttendance.id,
-                storeId: openAttendance.storeId,
-                name: openAttendance.name,
-                username: openAttendance.username,
-                clockIn: openAttendance.clockIn,
-                clockInEpoch: Number(openAttendance.clockInEpoch) || Date.now(),
-                hourlyRate: Number(openAttendance.hourlyRate) || Number(appState.settings?.hourlyWage) || 15000
-              };
-              localStorage.setItem(
-                getStoreCacheKey(appState.currentStore?.storeId, `activeShift_${appState.currentUser?.username || 'user'}`),
-                JSON.stringify(appState.activeShift)
-              );
-            }
           }
 
           saveState();
           refreshActiveView();
           if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Live Sync';
           if (!silent) showToast('Data Tersinkronisasi', 'Data toko berhasil diperbarui dari Spreadsheet.', 'success');
-        } else if (jsonResult?.status === 'error' && !silent) {
-          showToast('Sinkronisasi Gagal', jsonResult.message || 'Gagal mengambil data cloud.', 'error');
         }
       } catch (err) {
         console.warn('Gagal menarik data dari GAS:', err);
@@ -1596,19 +1541,13 @@
 
     async function sendPostToGAS(action, data) {
       if (!GAS_URL) return { status: 'error', message: 'GAS_URL belum dikonfigurasi.' };
-
       try {
         const response = await fetch(GAS_URL, {
           method: 'POST',
           redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action,
-            data: data || {},
-            sessionToken: appState.authToken || ''
-          })
+          body: JSON.stringify({ action, data })
         });
-
         const txt = await response.text();
         let parsed = null;
         try { parsed = JSON.parse(txt); } catch (_) {}
@@ -1616,15 +1555,9 @@
         if (!response.ok) {
           return { status: 'error', message: parsed?.message || `HTTP ${response.status}` };
         }
-
         if (!parsed) {
           return { status: 'error', message: 'Backend mengembalikan respons bukan JSON.' };
         }
-
-        if (parsed.code === 'UNAUTHORIZED') {
-          handleLogout('Sesi login telah kedaluwarsa. Silakan login kembali.');
-        }
-
         return parsed;
       } catch (err) {
         console.warn(`Gagal mengirim POST [${action}]:`, err);
@@ -1733,13 +1666,19 @@
       lucide.createIcons();
 
       try {
-        const json = await sendPostToGAS('LOGIN', { username, password });
+        const res = await fetch(`${GAS_URL}?action=LOGIN&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+          method: 'GET',
+          redirect: 'follow'
+        });
+        const json = JSON.parse(await res.text());
 
         if (json && json.status === 'success') {
-          completeLogin(json.user, json.store, json.data, json.sessionToken);
+          completeLogin(json.user, json.store, json.data);
         } else {
-          showToast('Login Gagal', json?.message || 'Username/Password salah di Google Sheets.', 'error');
+          showToast('Login Gagal', json.message || 'Username/Password salah di Google Sheets.', 'error');
         }
+      } catch (err) {
+        showToast('Koneksi Gagal', 'Tidak dapat terhubung ke Google Apps Script backend.', 'error');
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>Masuk ke Sistem Workstation</span>`;
@@ -1786,8 +1725,7 @@
       }
     }
 
-    function completeLogin(user, store, data, sessionToken = '') {
-      if (sessionToken) setSessionToken(sessionToken);
+    function completeLogin(user, store, data) {
       appState.currentUser = user || null;
       appState.currentStore = store || null;
       appState.settings = store || {};
@@ -2018,7 +1956,7 @@
       lucide.createIcons();
     }
 
-    function handleLogout(message = 'Anda telah keluar dari workstation.') {
+    function handleLogout() {
       if (pollingInterval) clearInterval(pollingInterval);
       appState.currentUser = null;
       appState.currentStore = null;
@@ -2032,7 +1970,6 @@
       appState.activeShift = null;
       appState.cart = [];
       appState.geminiApiKey = '';
-      clearSessionToken();
       localStorage.removeItem('managepro_auth_user');
       localStorage.removeItem('managepro_current_store');
       localStorage.removeItem('managepro_gemini_key');
@@ -2040,7 +1977,7 @@
       document.getElementById('appScreen')?.classList.add('hidden');
       document.getElementById('loginScreen')?.classList.remove('hidden');
       toggleAuthView('login');
-      showToast('Sesi Berakhir', message, 'info');
+      showToast('Sesi Berakhir', 'Anda telah keluar dari workstation.', 'info');
       lucide.createIcons();
     }
 
@@ -3659,7 +3596,7 @@
       }
     }
 
-    async function handleClockActionToggle() {
+    function handleClockActionToggle() {
       const now = new Date();
       const timeStr = now.toLocaleDateString('id-ID') + ', ' + now.toLocaleTimeString('id-ID');
       const user = appState.currentUser || { name: 'Kasir', username: 'kasir' };
@@ -3677,26 +3614,6 @@
 
         appState.activeShift = newShift;
         localStorage.setItem(getStoreCacheKey(newShift.storeId, `activeShift_${appState.currentUser?.username || 'user'}`), JSON.stringify(newShift));
-
-        const openRecordResult = await sendPostToGAS('SAVE_ATTENDANCE', {
-          storeId: appState.currentStore?.storeId,
-          record: {
-            ...newShift,
-            status: 'Berjalan',
-            clockOut: '',
-            clockOutEpoch: '',
-            durationHours: 0,
-            totalWage: 0
-          }
-        });
-
-        if (openRecordResult?.status !== 'success') {
-          appState.activeShift = null;
-          localStorage.removeItem(getStoreCacheKey(newShift.storeId, `activeShift_${appState.currentUser?.username || 'user'}`));
-          showToast('Absen Gagal', openRecordResult?.message || 'Shift belum tersimpan ke server.', 'error');
-          return;
-        }
-
         checkActiveShiftTimer();
         updateClockModalUI();
         showToast('Absen Masuk Berhasil', `Selamat bertugas, ${user.name}!`, 'success');
@@ -3720,24 +3637,7 @@
           status: 'Selesai'
         };
 
-        const attendanceResult = await sendPostToGAS('SAVE_ATTENDANCE', {
-          storeId: appState.currentStore?.storeId,
-          record
-        });
-
-        if (attendanceResult?.status !== 'success') {
-          showToast('Shift Gagal Disimpan', attendanceResult?.message || 'Perubahan shift tidak berhasil disimpan ke server.', 'error');
-          return;
-        }
-
-        appState.attendance = appState.attendance.filter(
-          a => String(a.id) !== String(record.id)
-        );
-        appState.attendance.unshift({
-          ...record,
-          hourlyRate: Number(appState.settings?.hourlyWage) || record.hourlyRate,
-          totalWage: Math.round(durationHours * (Number(appState.settings?.hourlyWage) || record.hourlyRate))
-        });
+        appState.attendance.unshift(record);
         appState.activeShift = null;
         localStorage.removeItem(getStoreCacheKey(appState.currentStore?.storeId, `activeShift_${appState.currentUser?.username || 'user'}`));
 
@@ -3745,6 +3645,11 @@
         document.getElementById('headerStaffShiftPill')?.classList.add('hidden');
 
         saveState();
+        sendPostToGAS('SAVE_ATTENDANCE', {
+          storeId: appState.currentStore?.storeId,
+          records: appState.attendance
+        });
+
         updateClockModalUI();
         renderAttendanceTable();
         closeModal('clockModal');
@@ -4083,7 +3988,7 @@
       collapseSidebar(true);
       updateClock();
 
-      if (appState.authToken && appState.currentUser && appState.currentStore) {
+      if (appState.currentUser && appState.currentStore) {
         completeLogin(appState.currentUser, appState.currentStore, {
           inventory: appState.inventory,
           products: appState.products,
@@ -4091,10 +3996,9 @@
           cashLogs: appState.cashLogs,
           attendance: appState.attendance,
           heldOrders: appState.heldOrders
-        }, appState.authToken);
+        });
         fetchStoreData(appState.currentStore.storeId, true);
       } else {
-        clearSessionToken();
         document.getElementById('loginScreen')?.classList.remove('hidden');
         document.getElementById('appScreen')?.classList.add('hidden');
         toggleAuthView('login');
