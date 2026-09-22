@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4F46E5" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ManagePro" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ManagePro F&B - Multi-Tenant Cloud POS</title>
@@ -424,6 +432,12 @@
             </div>
           </div>
 
+          <!-- Tombol Install PWA -->
+          <button id="pwaInstallBtn" onclick="triggerPwaInstall()" class="hidden px-3.5 py-2 rounded-xl text-xs font-black items-center gap-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-indigo-600 text-white shadow-md shadow-primary/20 transition-all cursor-pointer">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Pasang Aplikasi</span>
+          </button>
+
           <!-- Logout Button -->
           <button onclick="handleLogout()" title="Keluar Akun" class="w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white hover:bg-rose-50 hover:text-rose-600 border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 transition-colors cursor-pointer">
             <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -740,6 +754,109 @@
             </div>
           </div>
         </section>
+
+<!-- ================= TAB: PANDUAN PENGGUNAAN APLIKASI ================= -->
+<section id="tab-panduan" class="tab-content hidden max-w-6xl mx-auto space-y-6 pb-16">
+  <!-- Header Banner Panduan -->
+  <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 lg:p-8 rounded-3xl text-white border border-slate-800 shadow-xl relative overflow-hidden">
+    <div class="relative z-10 max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs font-black uppercase tracking-wider mb-3 text-indigo-300">
+        <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Pusat Bantuan & Manual Operasional
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-black tracking-tight mb-2">Panduan Pengoperasian Workstation</h3>
+      <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+        Pelajari alur transaksi kasir, manajemen stok BOM, presensi kerja, pencatatan kas, dan integrasi Google Sheets.
+      </p>
+    </div>
+  </div>
+
+  <!-- Pencarian Cepat Bantuan -->
+  <div class="relative w-full">
+    <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+    <input type="text" id="guideSearchInput" oninput="filterGuideTopics(this.value)" placeholder="Cari topik panduan (cth: split bill, lembur, nota, kurir, resep)..." class="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:border-primary shadow-sm" />
+  </div>
+
+  <!-- Kartu-Kartu Panduan Operasional -->
+  <div id="guideCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    
+    <!-- 1. Operasional Kasir & POS -->
+    <div class="guide-card bg-surface p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3" data-keywords="kasir pos order draft keranjang nota struk checkout kurir takeaway dine-in delivery">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-primary flex items-center justify-center font-bold">
+          <i data-lucide="calculator" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">1. Alur Transaksi Kasir (POS)</h4>
+          <p class="text-[11px] text-slate-400 font-semibold">Memproses pesanan pelanggan dari menu ke checkout</p>
+        </div>
+      </div>
+      <ul class="text-xs text-slate-600 space-y-2 pt-2 border-t border-slate-100 list-disc pl-4 font-medium">
+        <li><strong>Memilih Menu:</strong> Klik menu yang diinginkan pada etalase. Gunakan tab kategori atau bilah pencarian.</li>
+        <li><strong>Catatan Tambahan:</strong> Buka keranjang lalu ketik instruksi khusus per item pada kolom teks (misal: <em>less sugar</em> atau <em>pedas level 2</em>).</li>
+        <li><strong>Tipe Pesanan:</strong> Tentukan <em>Dine-In</em>, <em>Takeaway</em>, atau <em>Delivery</em>. Khusus Delivery, pilih ekspedisi kurir dan input biaya ongkos kirim.</li>
+        <li><strong>Simpan Sementara (Draft):</strong> Tekan tombol jeda (Hold) pada drawer pesanan jika pelanggan ingin menunda pembayaran.</li>
+        <li><strong>Cetak Struk & Salin WA:</strong> Setelah pembayaran selesai, pilih cetak nota termal 80mm/58mm, tiket dapur, atau salin teks invoice WhatsApp.</li>
+      </ul>
+    </div>
+
+    <!-- 2. Bahan Baku & Resep BOM -->
+    <div class="guide-card bg-surface p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3" data-keywords="gudang stok inventory bom resep bahan hpp ai faktur scan gemini">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+          <i data-lucide="package" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">2. Manajemen Stok & Resep (BOM)</h4>
+          <p class="text-[11px] text-slate-400 font-semibold">Kalkulasi modal otomatis dan pemotongan bahan</p>
+        </div>
+      </div>
+      <ul class="text-xs text-slate-600 space-y-2 pt-2 border-t border-slate-100 list-disc pl-4 font-medium">
+        <li><strong>Pencatatan Bahan:</strong> Daftarkan bahan baku dasar di tab Gudang lengkap dengan satuan (Gram, Pcs, Liter) serta harga beli rata-rata.</li>
+        <li><strong>Scan Faktur AI:</strong> Unggah foto struk belanja atau dokumen PDF supplier. Gemini AI secara otomatis membaca nama item, volume, dan harga beli.</li>
+        <li><strong>Resep Produk (BOM):</strong> Saat membuat menu baru, hubungkan bahan baku terkait. Stok gudang akan berkurang otomatis tiap menu terjual di kasir.</li>
+        <li><strong>Notifikasi Menipis:</strong> Sistem otomatis menandai ikon merah jika bahan memiliki sisa stok di bawah batas minimal (10 item/unit).</li>
+      </ul>
+    </div>
+
+    <!-- 3. Presensi Shift & Upah -->
+    <div class="guide-card bg-surface p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3" data-keywords="absen upah presensi shift lembur gaji slip kasir karyawan jam kerja break istirahat">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">3. Presensi Shift & Penggajian</h4>
+          <p class="text-[11px] text-slate-400 font-semibold">Pencatatan durasi kerja, lembur, dan slip gaji</p>
+        </div>
+      </div>
+      <ul class="text-xs text-slate-600 space-y-2 pt-2 border-t border-slate-100 list-disc pl-4 font-medium">
+        <li><strong>Clock In:</strong> Kasir wajib menekan tombol Absen Masuk saat shift dimulai.</li>
+        <li><strong>Fitur Break (Istirahat):</strong> Gunakan tombol istirahat untuk menjeda shift. Durasi istirahat otomatis dipotong dari jam kerja efektif.</li>
+        <li><strong>Lembur Otomatis:</strong> Durasi yang melampaui batas jam reguler (default: 8 jam) dikalikan pengali lembur yang diatur pemilik usaha.</li>
+        <li><strong>Cetak Slip:</strong> Tekan tombol "Slip" untuk mencetak rincian gaji ke printer struk atau salin teks format WhatsApp.</li>
+      </ul>
+    </div>
+
+    <!-- 4. Buku Kas & Sinkronisasi -->
+    <div class="guide-card bg-surface p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3" data-keywords="kas laporan keuangan masuk keluar saldo sinkronisasi spreadsheet sheets cloud">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+          <i data-lucide="line-chart" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">4. Buku Kas & Sinkronisasi Cloud</h4>
+          <p class="text-[11px] text-slate-400 font-semibold">Pemantauan arus kas bersih dan sinkronisasi real-time</p>
+        </div>
+      </div>
+      <ul class="text-xs text-slate-600 space-y-2 pt-2 border-t border-slate-100 list-disc pl-4 font-medium">
+        <li><strong>Pencatatan Kas Masuk:</strong> Pendapatan dari transaksi kasir otomatis ditambahkan ke pos Kas Masuk.</li>
+        <li><strong>Kas Keluar Operasional:</strong> Gunakan tombol "Catat Kas Manual" untuk mendokumentasikan pengeluaran belanja harian atau operasional outlet.</li>
+        <li><strong>Sinkronisasi Google Sheets:</strong> Data otomatis dikirim ke backend Google Apps Script secara dua arah dan dicadangkan di memori lokal saat jaringan offline.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
 
         <!-- ================= TAB: PENGATURAN (OWNER ONLY) ================= -->
         <section id="tab-pengaturan" class="tab-content hidden max-w-4xl mx-auto space-y-6 pb-12">
@@ -1498,7 +1615,44 @@
   <div id="printableReceipt" class="hidden"></div>
 
   <!-- ================= APPLICATION JAVASCRIPT LOGIC ================= -->
+  
   <script>
+      let deferredPrompt = null;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('PWA Service Worker terdaftar'))
+          .catch((err) => console.warn('PWA Service Worker gagal:', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.remove('hidden');
+    });
+
+    async function triggerPwaInstall() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        showToast('Aplikasi Terpasang', 'ManagePro telah dipasang ke beranda perangkat.', 'success');
+      }
+      deferredPrompt = null;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.add('hidden');
+    }
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.add('hidden');
+      showToast('Instalasi Sukses', 'ManagePro siap digunakan langsung layaknya aplikasi native.', 'success');
+    });
+
     // URL Web App Google Apps Script Multi-Tenant Aktif
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxLx5bpRsTazN9kV-Mit93Zz2qo6Ln5kDQMPjrc24YnCIufSV8J4G2Q_5XM-gNPbx4G/exec";
 
@@ -1962,6 +2116,11 @@
             <i data-lucide="clock" class="w-5 h-5 mx-auto lg:mr-3 shrink-0"></i>
             <span class="nav-text whitespace-nowrap hidden">Presensi Shift</span>
           </button>
+
+          <button onclick="navigateTab('panduan')" id="nav-panduan" class="nav-btn w-full flex items-center py-3.5 px-3 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+          <i data-lucide="book-open" class="w-5 h-5 mx-auto lg:mr-3 shrink-0"></i>
+          <span class="nav-text whitespace-nowrap hidden">Buku Panduan</span>
+          </button>
         `;
 
         mobileContainer.innerHTML = `
@@ -2026,6 +2185,11 @@
           <button onclick="navigateTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center py-3.5 px-3 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
             <i data-lucide="settings" class="w-5 h-5 mx-auto lg:mr-3 shrink-0"></i>
             <span class="nav-text whitespace-nowrap hidden">Konfigurasi Toko</span>
+          </button>
+          
+          <button onclick="navigateTab('panduan')" id="nav-panduan" class="nav-btn w-full flex items-center py-3.5 px-3 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+          <i data-lucide="book-open" class="w-5 h-5 mx-auto lg:mr-3 shrink-0"></i>
+          <span class="nav-text whitespace-nowrap hidden">Panduan Sistem</span>
           </button>
         `;
 
@@ -2185,9 +2349,11 @@
 
     function toggleSidebar() { collapseSidebar(!appState.isSidebarCollapsed); }
 
+// Izinkan kasir membuka tab pos, absen, dan panduan
+
     function navigateTab(tabId) {
-      if (appState.currentUser?.role === 'karyawan' && tabId !== 'pos' && tabId !== 'absen') {
-        showToast('Akses Dibatasi Mutlak', 'Akun Kasir hanya dapat mengakses Kasir & Absen.', 'warning');
+      if (appState.currentUser?.role === 'karyawan' && tabId !== 'pos' && tabId !== 'absen' && tabId !== 'panduan') {
+        showToast('Akses Dibatasi', 'Akun Kasir hanya dapat mengakses Kasir, Absen, dan Panduan.', 'warning');
         return;
       }
 
@@ -2212,7 +2378,8 @@
         produk: 'Master Menu & BOM',
         laporan: 'Buku Kas (Laporan)',
         absen: 'Absensi & Upah Karyawan',
-        pengaturan: 'Konfigurasi Toko'
+        pengaturan: 'Konfigurasi Toko',
+        panduan: 'Panduan Operasional Workstation'
       };
       const headingEl = document.getElementById('currentTabHeading');
       if (headingEl) headingEl.textContent = headings[tabId] || 'Menu';
@@ -2225,6 +2392,22 @@
 
       refreshActiveView();
       lucide.createIcons();
+    }
+
+// Logika filter pencarian pada modul panduan
+
+    function filterGuideTopics(query) {
+      const q = (query || '').toLowerCase().trim();
+      const cards = document.querySelectorAll('.guide-card');
+      cards.forEach(card => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        const text = card.textContent.toLowerCase();
+        if (!q || keywords.includes(q) || text.includes(q)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
     }
 
     function refreshActiveView() {
