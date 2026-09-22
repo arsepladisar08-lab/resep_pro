@@ -244,7 +244,7 @@
               <div class="grid grid-cols-2 gap-2">
                 <div>
                   <label class="block text-[10px] font-bold text-slate-600 mb-1">Kategori Usaha</label>
-                  <select id="regCategory" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-primary shadow-xs">
+                  <select id="regCategory" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-primary shadow-xs">
                     <option value="Coffee Shop">Coffee Shop</option>
                     <option value="Restoran / Cafe">Restoran / Cafe</option>
                     <option value="Kedai Minuman">Kedai Minuman</option>
@@ -558,6 +558,7 @@
             </div>
           </button>
         </section>
+
         <!-- ================= TAB: GUDANG / INVENTORY (OWNER ONLY) ================= -->
         <section id="tab-gudang" class="tab-content hidden max-w-7xl mx-auto space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-surface p-5 lg:p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 gap-4">
@@ -608,6 +609,7 @@
 
           <div id="productsGridContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6"></div>
         </section>
+
         <!-- ================= TAB: LAPORAN / BUKU KAS (OWNER ONLY) ================= -->
         <section id="tab-laporan" class="tab-content hidden max-w-6xl mx-auto space-y-6">
           <div class="flex flex-col md:flex-row gap-4">
@@ -650,70 +652,87 @@
 
         <!-- ================= TAB: ABSENSI & UPAH ================= -->
         <section id="tab-absen" class="tab-content hidden max-w-6xl mx-auto space-y-6">
-          <div class="bg-gradient-to-r from-indigo-600 to-primary p-6 lg:p-8 rounded-3xl text-white flex flex-col md:flex-row justify-between items-center shadow-xl shadow-indigo-500/20 gap-4 text-center md:text-left">
+          <div class="bg-gradient-to-r from-indigo-600 via-primary to-indigo-700 p-6 lg:p-8 rounded-3xl text-white flex flex-col md:flex-row justify-between items-center shadow-xl shadow-indigo-500/20 gap-4 text-center md:text-left">
             <div>
               <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs font-extrabold uppercase tracking-wider mb-2">
-                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-300"></i> Presensi Shift Kerja
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-300"></i> Presensi & Manajemen Upah
               </div>
-              <h3 class="font-extrabold text-xl lg:text-2xl mb-1">Presensi Shift & Rekap Upah</h3>
-              <p class="text-indigo-100 text-xs lg:text-sm font-medium">Rekam jam masuk/pulang kasir dan hitung upah jam kerja secara otomatis.</p>
+              <h3 class="font-extrabold text-xl lg:text-2xl mb-1">Presensi Shift & Penggajian Karyawan</h3>
+              <p class="text-indigo-100 text-xs lg:text-sm font-medium">Rekam jam masuk, jeda istirahat, lembur otomatis, dan cetak slip upah karyawan.</p>
             </div>
             <div class="flex gap-2">
               <button onclick="openClockModal()" class="bg-white text-primary px-5 py-3 rounded-2xl font-black text-xs hover:bg-slate-50 transition-all flex items-center gap-2 shadow-md cursor-pointer">
-                <i data-lucide="clock" class="w-4 h-4"></i> Catat Absensi
+                <i data-lucide="clock" class="w-4 h-4"></i> Catat Presensi
               </button>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="ownerPayrollCards">
-            <div class="bg-surface p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                <i data-lucide="user-check" class="w-6 h-6"></i>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="ownerPayrollCards">
+            <div class="bg-surface p-4 lg:p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <i data-lucide="user-check" class="w-5 h-5"></i>
               </div>
-              <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Shift Berjalan</p>
-                <h4 id="statActiveShiftsCount" class="text-xl font-black text-slate-900">0 Karyawan</h4>
-              </div>
-            </div>
-
-            <div class="bg-surface p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-primary flex items-center justify-center shrink-0">
-                <i data-lucide="clock" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Jam Kerja</p>
-                <h4 id="statTotalHoursWorked" class="text-xl font-black text-slate-900">0.0 Jam</h4>
+              <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">Shift Aktif</p>
+                <h4 id="statActiveShiftsCount" class="text-base lg:text-xl font-black text-slate-900 truncate">0 Staf</h4>
               </div>
             </div>
 
-            <div class="bg-surface p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                <i data-lucide="banknote" class="w-6 h-6"></i>
+            <div class="bg-surface p-4 lg:p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-primary flex items-center justify-center shrink-0">
+                <i data-lucide="timer" class="w-5 h-5"></i>
               </div>
-              <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Upah Terkumpul</p>
-                <h4 id="statTotalWages" class="text-xl font-black text-amber-600">Rp 0</h4>
+              <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">Total Jam Kerja</p>
+                <h4 id="statTotalHoursWorked" class="text-base lg:text-xl font-black text-slate-900 truncate">0.0 Jam</h4>
+              </div>
+            </div>
+
+            <div class="bg-surface p-4 lg:p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <i data-lucide="wallet" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">Upah Belum Bayar</p>
+                <h4 id="statUnpaidWages" class="text-base lg:text-xl font-black text-amber-600 truncate">Rp 0</h4>
+              </div>
+            </div>
+
+            <div class="bg-surface p-4 lg:p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                <i data-lucide="badge-check" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider truncate">Upah Terbayar</p>
+                <h4 id="statPaidWages" class="text-base lg:text-xl font-black text-emerald-700 truncate">Rp 0</h4>
               </div>
             </div>
           </div>
 
           <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
-            <div class="p-5 lg:p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+            <div class="p-5 lg:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
-                <h4 class="font-extrabold text-base lg:text-lg text-slate-800">Log Riwayat Presensi</h4>
-                <p class="text-xs text-slate-500 mt-0.5">Dihitung otomatis: Durasi Jam &times; Tarif Upah Per Jam.</p>
+                <h4 class="font-extrabold text-base lg:text-lg text-slate-800">Riwayat Presensi & Slip Gaji</h4>
+                <p class="text-xs text-slate-500 mt-0.5">Dihitung otomatis: Jam Reguler & Lembur &times; Tarif Upah.</p>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="attendancePeriodFilter" onchange="filterAttendancePeriod(this.value)" class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-primary shadow-xs">
+                  <option value="all">Semua Riwayat</option>
+                  <option value="today">Hari Ini</option>
+                  <option value="month">Bulan Ini</option>
+                </select>
               </div>
             </div>
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm min-w-[700px]">
+              <table class="w-full text-left text-sm min-w-[760px]">
                 <thead class="text-slate-400 bg-white border-b border-slate-100 text-[10px] uppercase tracking-widest font-black">
                   <tr>
-                    <th class="p-4 lg:p-5">Nama Karyawan</th>
-                    <th class="p-4 lg:p-5">Masuk</th>
-                    <th class="p-4 lg:p-5">Pulang</th>
-                    <th class="p-4 lg:p-5">Durasi</th>
-                    <th class="p-4 lg:p-5 text-right">Upah Dihasilkan</th>
+                    <th class="p-4 lg:p-5">Karyawan / Shift</th>
+                    <th class="p-4 lg:p-5">Waktu Kerja</th>
+                    <th class="p-4 lg:p-5">Durasi (Efektif)</th>
+                    <th class="p-4 lg:p-5 text-right">Rincian Upah</th>
                     <th class="p-4 lg:p-5 text-center">Status</th>
+                    <th class="p-4 lg:p-5 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="attendanceTableBody" class="divide-y divide-slate-100"></tbody>
@@ -721,6 +740,7 @@
             </div>
           </div>
         </section>
+
         <!-- ================= TAB: PENGATURAN (OWNER ONLY) ================= -->
         <section id="tab-pengaturan" class="tab-content hidden max-w-4xl mx-auto space-y-6 pb-12">
           <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
@@ -765,15 +785,26 @@
           <div class="bg-surface rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden">
             <div class="p-5 lg:p-8 border-b border-slate-100 bg-slate-50/50">
               <h3 class="font-extrabold text-lg lg:text-xl text-slate-800 flex items-center gap-2">
-                <i data-lucide="coins" class="w-5 h-5 text-amber-500"></i> Standar Upah Shift Karyawan
+                <i data-lucide="coins" class="w-5 h-5 text-amber-500"></i> Standar Upah & Kebijakan Lembur
               </h3>
-              <p class="text-xs text-slate-500 mt-1">Tarif dasar per jam untuk perhitungan upah otomatis kasir.</p>
+              <p class="text-xs text-slate-500 mt-1">Tarif dasar per jam dan pengali lembur otomatis untuk kasir dan staf.</p>
             </div>
-            <div class="p-5 lg:p-8">
-              <div class="max-w-xs">
-                <label class="text-[10px] font-bold text-slate-500 block mb-2 uppercase tracking-wide">Upah Dasar Per Jam (Rp)</label>
-                <input type="number" id="settingHourlyWage" min="0" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-black text-amber-600 outline-none focus:border-primary focus:bg-white transition-all shadow-sm" />
+            <div class="p-5 lg:p-8 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-2 uppercase tracking-wide">Upah Dasar Per Jam (Rp)</label>
+                  <input type="number" id="settingHourlyWage" min="0" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-black text-amber-600 outline-none focus:border-primary focus:bg-white transition-all shadow-sm" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-2 uppercase tracking-wide">Batas Jam Reguler (Jam)</label>
+                  <input type="number" id="settingOvertimeThreshold" min="1" max="16" value="8" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:border-primary focus:bg-white transition-all shadow-sm" />
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-2 uppercase tracking-wide">Pengali Lembur (Multiplier)</label>
+                  <input type="number" step="0.1" id="settingOvertimeMultiplier" min="1" max="3" value="1.5" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-primary outline-none focus:border-primary focus:bg-white transition-all shadow-sm" />
+                </div>
               </div>
+              <p class="text-[11px] text-slate-400">Jam kerja melebihi batas reguler otomatis dikalikan tarif lembur pada slip gaji.</p>
             </div>
           </div>
 
@@ -807,10 +838,10 @@
   </div>
 
   <!-- ================= RESPONSIVE CART DRAWER / MODAL (PORTRAIT & LANDSCAPE OPTIMIZED) ================= -->
-  <div id="cartModal" class="hidden fixed inset-0 z-50 flex items-end lg:items-center justify-center lg:justify-center p-0 lg:p-6">
+  <div id="cartModal" class="hidden fixed inset-0 z-50 flex items-end lg:items-center justify-center lg:justify-center p-0 lg:p-4 xl:p-6">
     <div onclick="closeCartDrawer()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
     <!-- Cart Modal Container: Auto Split 2-Column on Desktop & Landscape Orientation -->
-    <div class="cart-modal-container bg-surface w-full lg:w-[860px] xl:w-[940px] h-[92vh] lg:h-[720px] rounded-t-[2.5rem] lg:rounded-3xl shadow-2xl flex flex-col lg:flex-row relative z-10 overflow-hidden border border-white/20">
+    <div class="cart-modal-container bg-surface w-full lg:max-w-4xl xl:max-w-5xl w-full h-[92vh] lg:h-[85vh] lg:max-h-[720px] lg:min-h-[560px] rounded-t-[2.5rem] lg:rounded-3xl shadow-2xl flex flex-col lg:flex-row relative z-10 overflow-hidden border border-white/20">
       
       <!-- Left Column: Items List -->
       <div class="cart-modal-left flex-1 flex flex-col bg-white overflow-hidden min-h-0">
@@ -840,7 +871,7 @@
       </div>
 
       <!-- Right Column: Order Configuration & Sticky Checkout -->
-      <div class="cart-modal-right w-full lg:w-[380px] bg-slate-900 text-white flex flex-col justify-between p-5 shrink-0 overflow-y-auto relative">
+      <div class="cart-modal-right w-full lg:w-[340px] xl:w-[380px] bg-slate-900 text-white flex flex-col justify-between p-5 shrink-0 overflow-y-auto relative">
         <div class="space-y-4">
           <!-- Order Type Segment -->
           <div>
@@ -1057,15 +1088,15 @@
   <!-- ================= AI INVOICE & RECEIPT SCANNER MODAL (SUPPORTS IMAGES & PDF) ================= -->
   <div id="aiInvoiceModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div onclick="closeModal('aiInvoiceModal')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-    <div class="bg-surface rounded-3xl shadow-2xl w-full max-w-xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden border border-white/20">
+    <div class="bg-surface rounded-3xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden border border-white/20">
       <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
             <i data-lucide="sparkles" class="w-5 h-5 text-amber-300"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-base text-slate-800">Scan Faktur Belanja Gudang (AI)</h3>
-            <p class="text-[10px] font-bold text-slate-400">Ekstraksi Bahan & HPP dari Gambar & Dokumen PDF Supplier</p>
+            <h3 class="font-extrabold text-base text-slate-800">Scan Faktur Belanja Gudang (AI Gemini)</h3>
+            <p class="text-[10px] font-bold text-slate-400">Ekstraksi Akurat Gambar & PDF ke Inventaris & Buku Kas</p>
           </div>
         </div>
         <button onclick="closeModal('aiInvoiceModal')" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-400 hover:text-rose-500 shadow-sm cursor-pointer">
@@ -1074,16 +1105,25 @@
       </div>
 
       <div class="p-5 overflow-y-auto space-y-4">
-        <!-- Upload Dropzone (Supports image/* and application/pdf) -->
+        <!-- Upload & Camera Trigger Buttons -->
         <div id="aiUploadSection" class="space-y-3">
-          <div onclick="document.getElementById('invoiceFileInput').click()" class="border-2 border-dashed border-indigo-200 hover:border-indigo-500 bg-indigo-50/40 hover:bg-indigo-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all">
-            <i data-lucide="file-up" class="w-10 h-10 text-primary mx-auto mb-2"></i>
-            <p class="text-xs font-black text-slate-800">Pilih atau seret foto faktur atau dokumen PDF ke sini</p>
-            <p class="text-[10px] text-slate-500 mt-1">Mendukung file Gambar (JPG, PNG, WEBP) & Dokumen Nota PDF.</p>
-            <input type="file" id="invoiceFileInput" accept="image/*,application/pdf" onchange="handleInvoiceFileSelected(event)" class="hidden" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div onclick="document.getElementById('invoiceFileInput').click()" class="border-2 border-dashed border-indigo-200 hover:border-indigo-500 bg-indigo-50/40 hover:bg-indigo-50/80 rounded-2xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center">
+              <i data-lucide="file-up" class="w-8 h-8 text-primary mb-2"></i>
+              <p class="text-xs font-black text-slate-800">Unggah Foto / Dokumen PDF</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">JPG, PNG, WEBP, atau file PDF faktur</p>
+              <input type="file" id="invoiceFileInput" accept="image/*,application/pdf" onchange="handleInvoiceFileSelected(event)" class="hidden" />
+            </div>
+
+            <div onclick="document.getElementById('cameraFileInput').click()" class="border-2 border-dashed border-emerald-200 hover:border-emerald-500 bg-emerald-50/40 hover:bg-emerald-50/80 rounded-2xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center">
+              <i data-lucide="camera" class="w-8 h-8 text-emerald-600 mb-2"></i>
+              <p class="text-xs font-black text-slate-800">Jepret Kamera Langsung</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Foto langsung nota fisik di kasir / dapur</p>
+              <input type="file" id="cameraFileInput" accept="image/*" capture="environment" onchange="handleInvoiceFileSelected(event)" class="hidden" />
+            </div>
           </div>
 
-          <!-- Preview & API Key Input -->
+          <!-- Preview & Process Trigger -->
           <div id="aiPreviewBox" class="hidden p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center gap-3">
             <div id="aiPreviewMediaContainer" class="w-14 h-14 rounded-xl border border-slate-200 flex items-center justify-center overflow-hidden bg-white shrink-0">
               <img id="aiPreviewImg" src="" alt="Faktur" class="w-full h-full object-cover hidden" />
@@ -1098,7 +1138,7 @@
             </div>
             <button onclick="startAiInvoiceAnalysis()" id="aiProcessBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-black flex items-center gap-1.5 shadow-md cursor-pointer">
               <i data-lucide="cpu" class="w-4 h-4"></i>
-              <span>Analisa Sekarang</span>
+              <span>Analisa Faktur</span>
             </button>
           </div>
         </div>
@@ -1106,31 +1146,66 @@
         <!-- Processing Indicator -->
         <div id="aiLoadingBox" class="hidden py-10 text-center space-y-3">
           <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p class="text-xs font-black text-indigo-700">Gemini AI sedang membaca dan mengekstrak rincian faktur...</p>
-          <p class="text-[10px] text-slate-400">Mendeteksi nama barang, jumlah kuantitas, satuan, dan harga per unit secara teliti.</p>
+          <p class="text-xs font-black text-indigo-700">Gemini 3 Flash sedang membaca dan menyusun JSON faktur...</p>
+          <p class="text-[10px] text-slate-400">Mengekstrak nama supplier, tanggal nota, kuantitas, satuan, dan kalkulasi HPP unit.</p>
         </div>
 
         <!-- Extracted Results Table (Review & Edit Before Import) -->
-        <div id="aiResultsBox" class="hidden space-y-3">
+        <div id="aiResultsBox" class="hidden space-y-4">
+          <!-- Supplier Metadata Header -->
+          <div class="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div>
+              <label class="block text-[9px] font-black text-indigo-700 uppercase">Nama Supplier</label>
+              <input type="text" id="aiExtractedSupplier" class="w-full text-xs font-extrabold text-slate-800 bg-white border border-indigo-100 rounded-lg px-2 py-1 mt-0.5 outline-none focus:border-primary" placeholder="Supplier" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-black text-indigo-700 uppercase">No. Faktur / Nota</label>
+              <input type="text" id="aiExtractedInvoiceNo" class="w-full text-xs font-bold text-slate-800 bg-white border border-indigo-100 rounded-lg px-2 py-1 mt-0.5 outline-none focus:border-primary" placeholder="INV-001" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-black text-indigo-700 uppercase">Tanggal Nota</label>
+              <input type="text" id="aiExtractedDate" class="w-full text-xs font-bold text-slate-800 bg-white border border-indigo-100 rounded-lg px-2 py-1 mt-0.5 outline-none focus:border-primary" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-black text-indigo-700 uppercase">Total Terdeteksi</label>
+              <p id="aiExtractedTotalDisplay" class="text-sm font-black text-indigo-900 mt-1">Rp 0</p>
+            </div>
+          </div>
+
           <div class="flex justify-between items-center">
-            <span class="text-xs font-black text-slate-700">Hasil Pembacaan Faktur:</span>
+            <span class="text-xs font-black text-slate-700">Daftar Bahan & Komponen Terdeteksi:</span>
             <button onclick="addAiExtractedRow()" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer">
               <i data-lucide="plus" class="w-3 h-3"></i> Tambah Baris
             </button>
           </div>
+
           <div class="border border-slate-200 rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-500 font-extrabold text-[9px] uppercase tracking-wider border-b border-slate-200">
-                <tr>
-                  <th class="p-2.5">Nama Bahan</th>
-                  <th class="p-2.5 w-20">Stok (Qty)</th>
-                  <th class="p-2.5 w-20">Satuan</th>
-                  <th class="p-2.5 w-24 text-right">Modal/Unit</th>
-                  <th class="p-2.5 w-8 text-center"></th>
-                </tr>
-              </thead>
-              <tbody id="aiExtractedTableBody" class="divide-y divide-slate-100"></tbody>
-            </table>
+            <div class="overflow-x-auto max-h-60">
+              <table class="w-full text-left text-xs min-w-[550px]">
+                <thead class="bg-slate-50 text-slate-500 font-extrabold text-[9px] uppercase tracking-wider border-b border-slate-200 sticky top-0">
+                  <tr>
+                    <th class="p-2.5">Bahan / Status Cocok</th>
+                    <th class="p-2.5 w-20">Stok (Qty)</th>
+                    <th class="p-2.5 w-20">Satuan</th>
+                    <th class="p-2.5 w-28 text-right">Modal/Unit</th>
+                    <th class="p-2.5 w-24 text-right">Subtotal</th>
+                    <th class="p-2.5 w-8 text-center"></th>
+                  </tr>
+                </thead>
+                <tbody id="aiExtractedTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Auto-Record to Cash Logs Option -->
+          <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="aiRecordExpenseCheckbox" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer" />
+              <label for="aiRecordExpenseCheckbox" class="text-xs font-bold text-emerald-950 cursor-pointer">
+                Catat otomatis ke Buku Kas sebagai <strong>Kas Keluar (Belanja Bahan)</strong>
+              </label>
+            </div>
+            <span id="aiExpenseAmountBadge" class="text-xs font-black text-emerald-800">Rp 0</span>
           </div>
         </div>
       </div>
@@ -1139,11 +1214,12 @@
         <button onclick="closeModal('aiInvoiceModal')" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">Batal</button>
         <button onclick="commitAiItemsToInventory()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/25 cursor-pointer">
           <i data-lucide="check" class="w-4 h-4"></i>
-          <span>Impor ke Gudang & Simpan Sheets</span>
+          <span>Impor ke Gudang & Simpan</span>
         </button>
       </div>
     </div>
   </div>
+
   <!-- Forgot Password WhatsApp Modal -->
   <div id="forgotPasswordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div onclick="closeModal('forgotPasswordModal')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
@@ -1211,7 +1287,28 @@
             Belum Absen Masuk
           </div>
           <p id="clockShiftDurationDisplay" class="text-2xl font-black text-slate-800 mt-3 font-mono">00:00:00</p>
-          <p class="text-[11px] text-slate-400 font-semibold mt-1">Tarif upah: <span id="clockWageRateText" class="font-bold text-slate-700">Rp 0</span> / jam</p>
+          <p class="text-[11px] text-slate-400 font-semibold mt-1">
+            Tarif: <span id="clockWageRateText" class="font-bold text-slate-700">Rp 0</span> / jam 
+            <span id="clockLiveEarnedWage" class="text-emerald-600 font-black ml-1">(Est: Rp 0)</span>
+          </p>
+        </div>
+
+        <!-- Shift Type & Break Controls -->
+        <div id="clockShiftTypeContainer" class="text-left space-y-2 pt-1 border-t border-slate-100">
+          <label class="text-[10px] font-black text-slate-400 uppercase">Pilih Shift Kerja</label>
+          <select id="clockShiftSelect" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-primary">
+            <option value="Shift Pagi (07:00 - 15:00)">Shift Pagi (07:00 - 15:00)</option>
+            <option value="Shift Siang/Malam (15:00 - 23:00)">Shift Siang/Malam (15:00 - 23:00)</option>
+            <option value="Shift Fleksibel / Full Day">Shift Fleksibel / Full Day</option>
+          </select>
+        </div>
+
+        <!-- Break Button (Visible Only When Shift Active) -->
+        <div id="clockBreakContainer" class="hidden">
+          <button id="clockBreakToggleBtn" onclick="toggleShiftBreak()" class="w-full py-2.5 rounded-xl font-bold text-xs border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="coffee" class="w-4 h-4 text-amber-600"></i>
+            <span id="clockBreakBtnText">Mulai Istirahat (Break)</span>
+          </button>
         </div>
 
         <div class="pt-2">
@@ -1220,6 +1317,37 @@
             <span id="clockActionBtnText">Absen Masuk (Clock In)</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Salary Slip Modal (Receipt & WhatsApp Format) -->
+  <div id="salarySlipModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div onclick="closeModal('salarySlipModal')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="bg-surface rounded-3xl w-full max-w-sm max-h-[92vh] flex flex-col relative z-10 overflow-hidden shadow-2xl border border-white/20">
+      <div class="p-4 border-b border-slate-100 bg-indigo-50/70 flex justify-between items-center shrink-0">
+        <h3 class="font-black text-sm lg:text-base text-indigo-950 flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-indigo-600"></i> Slip Upah Kerja
+        </h3>
+        <button onclick="closeModal('salarySlipModal')" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-400 hover:text-rose-500 shadow-sm cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-3 bg-slate-50/50">
+        <label class="text-[10px] font-black text-slate-400 block uppercase tracking-widest">Format Pesan WhatsApp / Bukti</label>
+        <textarea id="salarySlipTextarea" readonly class="w-full h-44 p-3 text-[11px] font-mono bg-white border border-slate-200 rounded-2xl outline-none resize-none shadow-sm text-slate-700 leading-relaxed"></textarea>
+      </div>
+
+      <div class="p-4 border-t border-slate-100 bg-white flex gap-2 shrink-0">
+        <button onclick="printSalarySlip()" class="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl flex justify-center items-center gap-1.5 transition-all shadow-md text-xs cursor-pointer">
+          <i data-lucide="printer" class="w-4 h-4 text-amber-300"></i>
+          <span>Cetak Slip</span>
+        </button>
+        <button onclick="copySalarySlipText()" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex justify-center items-center gap-1.5 transition-all shadow-md text-xs cursor-pointer">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          <span>Salin WA</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1372,7 +1500,7 @@
   <!-- ================= APPLICATION JAVASCRIPT LOGIC ================= -->
   <script>
     // URL Web App Google Apps Script Multi-Tenant Aktif
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyt_QF6456AelWMf6SPWe-68YxhINcr2Q9ij_VXCLMUE3weWadoB3cGliIjbSZjyNil/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxLx5bpRsTazN9kV-Mit93Zz2qo6Ln5kDQMPjrc24YnCIufSV8J4G2Q_5XM-gNPbx4G/exec";
 
     function readStorageJson(key, fallback = null) {
       try {
@@ -1437,7 +1565,6 @@
       const storeId = appState.currentStore?.storeId;
       if (!storeId) return;
       const safeSettings = { ...(appState.settings || {}) };
-      // Jangan persist Gemini key di browser; simpan hanya dalam memori sampai arsitektur backend proxy tersedia.
       delete safeSettings.geminiApiKey;
 
       localStorage.setItem(getStoreCacheKey(storeId, 'settings'), JSON.stringify(safeSettings));
@@ -1452,12 +1579,10 @@
       if (appState.activeShift) localStorage.setItem(shiftKey, JSON.stringify(appState.activeShift));
       else localStorage.removeItem(shiftKey);
 
-      // Hapus cache legacy supaya tidak menjadi sumber data silang antar tenant.
       ['managepro_settings','managepro_inventory','managepro_products','managepro_transactions','managepro_cashlogs','managepro_attendance','managepro_heldorders','managepro_active_shift','managepro_gemini_key']
         .forEach(k => localStorage.removeItem(k));
     }
 
-    // Application State
     let appState = {
       currentStore: readStorageJson('managepro_current_store', null),
       currentUser: readStorageJson('managepro_auth_user', null),
@@ -1481,9 +1606,17 @@
       paymentMode: 'Tunai',
       lastCompletedTransaction: null,
       currentInvoiceText: '',
+      currentSalarySlipText: '',
+      attendancePeriodFilter: 'all',
       isSidebarCollapsed: true,
       isSyncingCloud: false,
-      isFinalizing: false
+      isFinalizing: false,
+      aiInvoiceMetadata: {
+        supplierName: '',
+        invoiceNo: '',
+        invoiceDate: '',
+        totalAmount: 0
+      }
     };
 
     if (appState.currentStore?.storeId) loadScopedStoreCache(appState.currentStore.storeId);
@@ -1495,6 +1628,24 @@
     let selectedInvoiceFile = null;
     let selectedInvoiceMimeType = 'image/jpeg';
     let aiParsedInvoiceItems = [];
+
+    async function fetchWithRetry(url, options, maxRetries = 3) {
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          const response = await fetch(url, options);
+          if ((response.status === 429 || response.status >= 500) && attempt < maxRetries - 1) {
+            const delay = Math.pow(2, attempt) * 1000;
+            await new Promise(r => setTimeout(r, delay));
+            continue;
+          }
+          return response;
+        } catch (err) {
+          if (attempt === maxRetries - 1) throw err;
+          const delay = Math.pow(2, attempt) * 1000;
+          await new Promise(r => setTimeout(r, delay));
+        }
+      }
+    }
 
     /**
      * Mengambil seluruh data toko secara 2-arah dari Google Sheets
@@ -1576,7 +1727,6 @@
         localStorage.setItem('managepro_auth_user', JSON.stringify(safeUser));
       }
       persistScopedStoreCache();
-      // Key legacy sengaja dihapus agar tidak meninggalkan secret di browser.
       localStorage.removeItem('managepro_gemini_key');
     }
 
@@ -1738,11 +1888,11 @@
       appState.isFinalizing = false;
 
       const hasFreshData = data && typeof data === 'object';
-      appState.inventory = Array.isArray(data?.inventory) ? data.inventory : (hasFreshData ? [] : []);
-      appState.products = Array.isArray(data?.products) ? data.products : (hasFreshData ? [] : []);
-      appState.transactions = Array.isArray(data?.transactions) ? data.transactions : (hasFreshData ? [] : []);
-      appState.cashLogs = Array.isArray(data?.cashLogs) ? data.cashLogs : (hasFreshData ? [] : []);
-      appState.attendance = Array.isArray(data?.attendance) ? data.attendance : (hasFreshData ? [] : []);
+      appState.inventory = Array.isArray(data?.inventory) ? data.inventory : [];
+      appState.products = Array.isArray(data?.products) ? data.products : [];
+      appState.transactions = Array.isArray(data?.transactions) ? data.transactions : [];
+      appState.cashLogs = Array.isArray(data?.cashLogs) ? data.cashLogs : [];
+      appState.attendance = Array.isArray(data?.attendance) ? data.attendance : [];
       appState.heldOrders = Array.isArray(data?.heldOrders) ? data.heldOrders : [];
       appState.activeShift = null;
       if (appState.currentStore?.storeId) {
@@ -1764,7 +1914,6 @@
 
       if (user.role === 'karyawan') {
         navigateTab('pos');
-        // Trigger automated clock-in reminder modal if shift not yet active
         if (!appState.activeShift) {
           const reminderName = document.getElementById('clockReminderStaffName');
           if (reminderName) reminderName.textContent = user.name;
@@ -1774,7 +1923,6 @@
         navigateTab('dashboard');
       }
 
-      // Background auto-polling sync every 25 seconds
       if (pollingInterval) clearInterval(pollingInterval);
       pollingInterval = setInterval(() => {
         if (appState.currentStore?.storeId) {
@@ -1817,21 +1965,21 @@
         `;
 
         mobileContainer.innerHTML = `
-          <button onclick="navigateTab('pos')" id="mob-pos" class="mob-nav-btn flex flex-col items-center px-4 py-1 transition-all snap-center text-slate-900">
+          <button onclick="navigateTab('pos')" id="mob-pos" class="mob-nav-btn flex flex-col items-center px-4 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="calculator" class="w-4 h-4"></i>
             </div>
             <span class="text-[10px] font-black">Kasir</span>
           </button>
 
-          <button onclick="openClockModal()" class="mob-nav-btn flex flex-col items-center px-4 py-1 transition-all snap-center text-slate-400">
+          <button onclick="openClockModal()" class="mob-nav-btn flex flex-col items-center px-4 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
               <i data-lucide="clock" class="w-4 h-4"></i>
             </div>
             <span class="text-[10px] font-extrabold">Absen Shift</span>
           </button>
 
-          <button onclick="handleLogout()" class="mob-nav-btn flex flex-col items-center px-4 py-1 transition-all snap-center text-slate-400 hover:text-rose-500">
+          <button onclick="handleLogout()" class="mob-nav-btn flex flex-col items-center px-4 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
               <i data-lucide="log-out" class="w-4 h-4"></i>
             </div>
@@ -1882,53 +2030,53 @@
         `;
 
         mobileContainer.innerHTML = `
-          <button onclick="navigateTab('dashboard')" id="mob-dashboard" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-900">
+          <button onclick="navigateTab('dashboard')" id="mob-dashboard" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
             </div>
             <span class="text-[9px] font-extrabold text-slate-900">Dashboard</span>
           </button>
 
-          <button onclick="navigateTab('pos')" id="mob-pos" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('pos')" id="mob-pos" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="calculator" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Kasir</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Kasir</span>
           </button>
 
-          <button onclick="navigateTab('gudang')" id="mob-gudang" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('gudang')" id="mob-gudang" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="package" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Gudang</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Gudang</span>
           </button>
 
-          <button onclick="navigateTab('produk')" id="mob-produk" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('produk')" id="mob-produk" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="tag" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Menu BOM</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Menu BOM</span>
           </button>
 
-          <button onclick="navigateTab('laporan')" id="mob-laporan" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('laporan')" id="mob-laporan" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="line-chart" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Kas</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Kas</span>
           </button>
 
-          <button onclick="navigateTab('absen')" id="mob-absen" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('absen')" id="mob-absen" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="clock" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Upah</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Upah</span>
           </button>
 
-          <button onclick="navigateTab('pengaturan')" id="mob-pengaturan" class="mob-nav-btn flex flex-col items-center px-3 py-1 transition-all snap-center min-w-[65px] text-slate-400">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 text-slate-400">
+          <button onclick="navigateTab('pengaturan')" id="mob-pengaturan" class="mob-nav-btn flex flex-col items-center px-3 py-1 rounded-2xl transition-all text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 group relative">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 bg-slate-900 text-white shadow-md">
               <i data-lucide="settings" class="w-4 h-4"></i>
             </div>
-            <span class="text-[9px] font-extrabold text-slate-400">Setelan</span>
+            <span class="text-[9px] font-extrabold text-slate-900">Setelan</span>
           </button>
         `;
       }
@@ -2526,121 +2674,114 @@
       const finalizeBtn = document.querySelector('#paymentModal button[onclick="finalizeTransaction()"]');
       if (finalizeBtn) { finalizeBtn.disabled = true; finalizeBtn.classList.add('opacity-60', 'cursor-not-allowed'); }
       try {
-      const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-      const taxRate = Number(appState.settings?.taxRate) || 0;
-      const taxAmount = Math.round(subtotal * (taxRate / 100));
-      const grandTotal = subtotal + taxAmount + (appState.orderType === 'Delivery' ? appState.shippingFee : 0);
-      const customer = document.getElementById('orderCustomerInput').value.trim() || 'Pelanggan Umum';
-      const cashReceived = parseFloat(document.getElementById('cashReceivedInput').value) || 0;
+        const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        const taxRate = Number(appState.settings?.taxRate) || 0;
+        const taxAmount = Math.round(subtotal * (taxRate / 100));
+        const grandTotal = subtotal + taxAmount + (appState.orderType === 'Delivery' ? appState.shippingFee : 0);
+        const customer = document.getElementById('orderCustomerInput').value.trim() || 'Pelanggan Umum';
+        const cashReceived = parseFloat(document.getElementById('cashReceivedInput').value) || 0;
 
-      if (appState.paymentMode === 'Tunai' && cashReceived < grandTotal) {
-        showToast('Nominal Kurang', 'Uang tunai yang diterima kurang dari total tagihan.', 'warning');
-        return;
-      }
-
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('id-ID');
-      const timeStr = now.toLocaleTimeString('id-ID');
-      const trxId = 'TRX-' + Date.now().toString().slice(-6);
-      const storeId = appState.currentStore?.storeId || '';
-
-      const newTrx = {
-        id: trxId,
-        storeId: storeId,
-        date: `${dateStr}, ${timeStr}`,
-        customer: customer,
-        type: appState.orderType,
-        deliveryCourier: appState.orderType === 'Delivery' ? appState.deliveryCourier : '-',
-        items: [...appState.cart],
-        subtotal: subtotal,
-        tax: taxAmount,
-        shipping: appState.orderType === 'Delivery' ? appState.shippingFee : 0,
-        total: grandTotal,
-        paymentMethod: appState.paymentMode,
-        cashReceived: cashReceived,
-        change: Math.max(0, cashReceived - grandTotal),
-        cashierName: appState.currentUser?.name || 'Kasir',
-        createdAt: new Date().toISOString()
-      };
-
-      appState.lastCompletedTransaction = newTrx;
-
-      // Local BOM Stock Decrement
-      appState.cart.forEach(cartItem => {
-        const prod = appState.products.find(p => String(p.id) === String(cartItem.id));
-        if (prod && Array.isArray(prod.recipe)) {
-          prod.recipe.forEach(r => {
-            const inv = appState.inventory.find(i => i.sku === r.sku);
-            if (inv) {
-              inv.stock = Math.max(0, Number((inv.stock - (r.qty * cartItem.qty)).toFixed(3)));
-            }
-          });
+        if (appState.paymentMode === 'Tunai' && cashReceived < grandTotal) {
+          showToast('Nominal Kurang', 'Uang tunai yang diterima kurang dari total tagihan.', 'warning');
+          return;
         }
-      });
 
-      appState.cashLogs.unshift({
-        id: 'CSH-' + Date.now().toString().slice(-4),
-        storeId: storeId,
-        date: dateStr,
-        ref: trxId,
-        desc: `Penjualan Kasir: ${customer} (${appState.orderType})`,
-        amount: grandTotal,
-        type: 'in'
-      });
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID');
+        const timeStr = now.toLocaleTimeString('id-ID');
+        const trxId = 'TRX-' + Date.now().toString().slice(-6);
+        const storeId = appState.currentStore?.storeId || '';
 
-      appState.transactions.unshift(newTrx);
-      saveState();
+        const newTrx = {
+          id: trxId,
+          storeId: storeId,
+          date: `${dateStr}, ${timeStr}`,
+          customer: customer,
+          type: appState.orderType,
+          deliveryCourier: appState.orderType === 'Delivery' ? appState.deliveryCourier : '-',
+          items: [...appState.cart],
+          subtotal: subtotal,
+          tax: taxAmount,
+          shipping: appState.orderType === 'Delivery' ? appState.shippingFee : 0,
+          total: grandTotal,
+          paymentMethod: appState.paymentMode,
+          cashReceived: cashReceived,
+          change: Math.max(0, cashReceived - grandTotal),
+          cashierName: appState.currentUser?.name || 'Kasir',
+          createdAt: new Date().toISOString()
+        };
 
-      // Cloud Background Sync ke Google Sheets
-      sendPostToGAS('SAVE_TRANSACTION', newTrx);
+        appState.lastCompletedTransaction = newTrx;
 
-      // Susun Format Nota Struk WhatsApp
-      let invoice = `*${(appState.currentStore?.name || 'MANAGEPRO F&B').toUpperCase()}*\n`;
-      invoice += `No: #${trxId}\n`;
-      invoice += `Waktu: ${newTrx.date}\n`;
-      invoice += `Tipe: ${newTrx.type} | Kasir: ${newTrx.cashierName}\n`;
-      if (newTrx.type === 'Delivery') {
-        invoice += `Kurir: ${newTrx.deliveryCourier}\n`;
-      }
-      invoice += `Pemesan: ${customer}\n`;
-      invoice += `--------------------------------\n`;
-      newTrx.items.forEach(item => {
-        invoice += `${item.name} x${item.qty}  ${formatCurrency(item.price * item.qty)}\n`;
-        if (item.notes) invoice += `  _Catatan: ${item.notes}_\n`;
-      });
-      invoice += `--------------------------------\n`;
-      invoice += `Subtotal: ${formatCurrency(subtotal)}\n`;
-      if (taxAmount > 0) invoice += `Pajak (${taxRate}%): ${formatCurrency(taxAmount)}\n`;
-      if (newTrx.shipping > 0) invoice += `Ongkos Kirim (${newTrx.deliveryCourier}): ${formatCurrency(newTrx.shipping)}\n`;
-      invoice += `*TOTAL: ${formatCurrency(grandTotal)}*\n`;
-      invoice += `Bayar: ${appState.paymentMode}`;
-      if (appState.paymentMode === 'Tunai') {
-        invoice += ` (${formatCurrency(cashReceived)})\n`;
-        invoice += `Kembalian: ${formatCurrency(newTrx.change)}\n`;
-      } else {
-        invoice += `\n`;
-      }
-      invoice += `--------------------------------\n`;
-      invoice += `Terima kasih atas kunjungan Anda!\n`;
+        appState.cart.forEach(cartItem => {
+          const prod = appState.products.find(p => String(p.id) === String(cartItem.id));
+          if (prod && Array.isArray(prod.recipe)) {
+            prod.recipe.forEach(r => {
+              const inv = appState.inventory.find(i => i.sku === r.sku);
+              if (inv) {
+                inv.stock = Math.max(0, Number((inv.stock - (r.qty * cartItem.qty)).toFixed(3)));
+              }
+            });
+          }
+        });
 
-      appState.currentInvoiceText = invoice;
-      document.getElementById('invoiceTextarea').value = invoice;
+        appState.cashLogs.unshift({
+          id: 'CSH-' + Date.now().toString().slice(-4),
+          storeId: storeId,
+          date: dateStr,
+          ref: trxId,
+          desc: `Penjualan Kasir: ${customer} (${appState.orderType})`,
+          amount: grandTotal,
+          type: 'in'
+        });
 
-      closeModal('paymentModal');
-      openModal('invoiceModal');
-      updateCartBadge();
-      updateNotifications();
-      lucide.createIcons();
+        appState.transactions.unshift(newTrx);
+        saveState();
+
+        sendPostToGAS('SAVE_TRANSACTION', newTrx);
+
+        let invoice = `*${(appState.currentStore?.name || 'MANAGEPRO F&B').toUpperCase()}*\n`;
+        invoice += `No: #${trxId}\n`;
+        invoice += `Waktu: ${newTrx.date}\n`;
+        invoice += `Tipe: ${newTrx.type} | Kasir: ${newTrx.cashierName}\n`;
+        if (newTrx.type === 'Delivery') {
+          invoice += `Kurir: ${newTrx.deliveryCourier}\n`;
+        }
+        invoice += `Pemesan: ${customer}\n`;
+        invoice += `--------------------------------\n`;
+        newTrx.items.forEach(item => {
+          invoice += `${item.name} x${item.qty}  ${formatCurrency(item.price * item.qty)}\n`;
+          if (item.notes) invoice += `  _Catatan: ${item.notes}_\n`;
+        });
+        invoice += `--------------------------------\n`;
+        invoice += `Subtotal: ${formatCurrency(subtotal)}\n`;
+        if (taxAmount > 0) invoice += `Pajak (${taxRate}%): ${formatCurrency(taxAmount)}\n`;
+        if (newTrx.shipping > 0) invoice += `Ongkos Kirim (${newTrx.deliveryCourier}): ${formatCurrency(newTrx.shipping)}\n`;
+        invoice += `*TOTAL: ${formatCurrency(grandTotal)}*\n`;
+        invoice += `Bayar: ${appState.paymentMode}`;
+        if (appState.paymentMode === 'Tunai') {
+          invoice += ` (${formatCurrency(cashReceived)})\n`;
+          invoice += `Kembalian: ${formatCurrency(newTrx.change)}\n`;
+        } else {
+          invoice += `\n`;
+        }
+        invoice += `--------------------------------\n`;
+        invoice += `Terima kasih atas kunjungan Anda!\n`;
+
+        appState.currentInvoiceText = invoice;
+        document.getElementById('invoiceTextarea').value = invoice;
+
+        closeModal('paymentModal');
+        openModal('invoiceModal');
+        updateCartBadge();
+        updateNotifications();
+        lucide.createIcons();
       } finally {
         appState.isFinalizing = false;
         if (finalizeBtn) { finalizeBtn.disabled = false; finalizeBtn.classList.remove('opacity-60', 'cursor-not-allowed'); }
       }
     }
 
-    /**
-     * Isolated, fail-safe printing engine for 80mm & 58mm receipts.
-     * Prevents iframe sandbox errors, blank pages, and styling conflicts.
-     */
     function printIsolatedDocument(htmlContent, documentTitle = 'Struk Pembayaran') {
       try {
         const iframe = document.getElementById('isolatedPrintIframe');
@@ -2870,15 +3011,12 @@
       selectedInvoiceFile = null;
       selectedInvoiceMimeType = 'image/jpeg';
       aiParsedInvoiceItems = [];
+      appState.aiInvoiceMetadata = { supplierName: '', invoiceNo: '', invoiceDate: '', totalAmount: 0 };
 
       openModal('aiInvoiceModal');
       lucide.createIcons();
     }
 
-    /**
-     * Automatic client-side image downscaling to prevent payload overages,
-     * coupled with pure native PDF handling for supplier invoice documents.
-     */
     async function handleInvoiceFileSelected(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -2888,7 +3026,7 @@
       const maxBytes = 10 * 1024 * 1024;
       if ((!isImage && !allowedTypes.includes(file.type)) || file.size > maxBytes) {
         e.target.value = '';
-        showToast('File Tidak Valid', 'Gunakan JPG/PNG/WEBP atau PDF dengan ukuran maksimal 10 MB.', 'warning');
+        showToast('File Tidak Valid', 'Gunakan JPG/PNG/WEBP atau PDF maksimal 10 MB.', 'warning');
         return;
       }
 
@@ -2915,7 +3053,6 @@
         pdfIcon.classList.add('hidden');
         imgEl.classList.remove('hidden');
 
-        // Downscale image if large to guarantee zero API payload errors
         const rawBase64 = await readFileAsBase64(file);
         imgEl.src = rawBase64;
         selectedInvoiceBase64 = await compressImageBase64(rawBase64, 1600, 0.85);
@@ -2961,22 +3098,14 @@
       });
     }
 
-    /**
-     * Bulletproof Gemini AI Invoice OCR with deep regex JSON extraction
-     */
     async function startAiInvoiceAnalysis() {
       if (!selectedInvoiceBase64 || !selectedInvoiceFile) {
         showToast('Pilih File', 'Silakan unggah foto nota atau dokumen PDF.', 'warning');
         return;
       }
 
-      const apiKey = appState.geminiApiKey || (appState.settings && appState.settings.geminiApiKey) || '';
-      if (!apiKey) {
-        showToast('API Key Dibutuhkan', 'Masukkan Gemini API Key di tab Konfigurasi Toko.', 'warning');
-        navigateTab('pengaturan');
-        closeModal('aiInvoiceModal');
-        return;
-      }
+      const apiKey = (appState.geminiApiKey || (appState.settings && appState.settings.geminiApiKey) || "").trim();
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
       const uploadSec = document.getElementById('aiUploadSection');
       const loadingBox = document.getElementById('aiLoadingBox');
@@ -2987,70 +3116,102 @@
       loadingBox.classList.remove('hidden');
 
       try {
-        const prompt = "Analisis foto nota belanja atau dokumen PDF pembelian supplier F&B ini. Ekstrak setiap baris barang bahan baku/kemasan yang dibeli ke dalam array JSON murni tanpa markdown fences, format: [{\"name\":\"Nama Bahan\",\"qty\":1.5,\"unit\":\"Kg\",\"cost\":15000}]. Pastikan nama barang jelas, qty angka positif, unit satuan (Kg/Pcs/Liter/Pack/Botol), dan cost harga modal per unit.";
+        const prompt = "Analisis faktur atau struk belanja F&B ini. Ekstrak supplierName (nama toko/supplier), invoiceNo (nomor faktur), invoiceDate (tanggal), totalAmount (total akhir faktur), dan list items dengan properti: name (nama barang/bahan), qty (angka kuantitas), unit (satuan seperti Kg, Pcs, Liter, Botol, Pack), cost (harga modal per satuan unit).";
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`, {
+        const payload = {
+          contents: [{
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType: selectedInvoiceMimeType, data: selectedInvoiceBase64 } }
+            ]
+          }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: {
+                supplierName: { type: "STRING" },
+                invoiceNo: { type: "STRING" },
+                invoiceDate: { type: "STRING" },
+                totalAmount: { type: "NUMBER" },
+                items: {
+                  type: "ARRAY",
+                  items: {
+                    type: "OBJECT",
+                    properties: {
+                      name: { type: "STRING" },
+                      qty: { type: "NUMBER" },
+                      unit: { type: "STRING" },
+                      cost: { type: "NUMBER" }
+                    },
+                    required: ["name", "qty", "unit", "cost"]
+                  }
+                }
+              },
+              required: ["items"]
+            }
+          }
+        };
+
+        const response = await fetchWithRetry(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: prompt },
-                { inlineData: { mimeType: selectedInvoiceMimeType, data: selectedInvoiceBase64 } }
-              ]
-            }]
-          })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data?.error?.message || `Gemini HTTP ${response.status}`);
         }
-        let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        if (!rawText) {
-          throw new Error('Gemini tidak mengembalikan teks hasil analisis.');
-        }
 
-        // Resilient JSON RegEx Extraction
-        let cleanJsonStr = '[]';
-        const match = rawText.match(/\[\s*\{[\s\S]*\}\s*\]/);
-        if (match) {
-          cleanJsonStr = match[0];
-        } else {
-          cleanJsonStr = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-        }
-
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+        let parsed = {};
         try {
-          aiParsedInvoiceItems = JSON.parse(cleanJsonStr);
-        } catch (jsonErr) {
-          aiParsedInvoiceItems = [];
+          parsed = JSON.parse(rawText);
+        } catch (_) {
+          const match = rawText.match(/\{[\s\S]*\}/);
+          if (match) parsed = JSON.parse(match[0]);
         }
 
-        aiParsedInvoiceItems = Array.isArray(aiParsedInvoiceItems)
-          ? aiParsedInvoiceItems.map(item => ({
-              name: String(item?.name || '').trim(),
-              qty: Math.max(0, Number(item?.qty) || 0),
-              unit: String(item?.unit || 'Pcs').trim().slice(0, 30),
-              cost: Math.max(0, Number(item?.cost) || 0)
-            })).filter(item => item.name && item.qty > 0)
-          : [];
+        appState.aiInvoiceMetadata = {
+          supplierName: parsed.supplierName || 'Supplier Toko',
+          invoiceNo: parsed.invoiceNo || 'INV-' + Date.now().toString().slice(-6),
+          invoiceDate: parsed.invoiceDate || new Date().toLocaleDateString('id-ID'),
+          totalAmount: Number(parsed.totalAmount) || 0
+        };
+
+        const rawItems = Array.isArray(parsed.items) ? parsed.items : [];
+        aiParsedInvoiceItems = rawItems.map(item => {
+          const cleanName = String(item?.name || '').trim();
+          const matchedInv = appState.inventory.find(i => i.name.toLowerCase() === cleanName.toLowerCase());
+          return {
+            name: cleanName,
+            qty: Math.max(0, Number(item?.qty) || 1),
+            unit: String(item?.unit || 'Pcs').trim().slice(0, 25),
+            cost: Math.max(0, Number(item?.cost) || 0),
+            matchedSku: matchedInv ? matchedInv.sku : null,
+            matchedStock: matchedInv ? matchedInv.stock : null
+          };
+        }).filter(i => i.name);
 
         if (aiParsedInvoiceItems.length === 0) {
-          // Fallback row rather than crashing
-          aiParsedInvoiceItems = [{ name: 'Bahan Baru (Edit Manual)', qty: 1, unit: 'Pcs', cost: 0 }];
-          showToast('Catatan Deteksi', 'Data faktur dibaca sebagian. Silakan sesuaikan di tabel.', 'info');
+          aiParsedInvoiceItems = [{ name: 'Bahan Baru', qty: 1, unit: 'Pcs', cost: 0, matchedSku: null }];
         }
+
+        document.getElementById('aiExtractedSupplier').value = appState.aiInvoiceMetadata.supplierName;
+        document.getElementById('aiExtractedInvoiceNo').value = appState.aiInvoiceMetadata.invoiceNo;
+        document.getElementById('aiExtractedDate').value = appState.aiInvoiceMetadata.invoiceDate;
 
         renderAiExtractedRows();
         loadingBox.classList.add('hidden');
         resultsBox.classList.remove('hidden');
         footer.classList.remove('hidden');
-        showToast('Analisis Berhasil', `${aiParsedInvoiceItems.length} item siap ditinjau.`, 'success');
+        showToast('Faktur Terbaca', `${aiParsedInvoiceItems.length} item berhasil diekstrak dengan AI.`, 'success');
       } catch (err) {
         console.error("AI Analysis Error:", err);
         loadingBox.classList.add('hidden');
         uploadSec.classList.remove('hidden');
-        showToast('Gagal Menganalisis', 'Periksa koneksi internet atau validitas API Key Gemini.', 'error');
+        showToast('Gagal Menganalisis', 'Periksa format berkas atau koneksi API.', 'error');
       } finally {
         lucide.createIcons();
       }
@@ -3058,34 +3219,68 @@
 
     function renderAiExtractedRows() {
       const tbody = document.getElementById('aiExtractedTableBody');
-      tbody.innerHTML = aiParsedInvoiceItems.map((item, idx) => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-2"><input type="text" value="${item.name || ''}" oninput="aiParsedInvoiceItems[${idx}].name=this.value" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-slate-800 outline-none" /></td>
-          <td class="p-2"><input type="number" step="any" value="${item.qty || 1}" oninput="aiParsedInvoiceItems[${idx}].qty=parseFloat(this.value)||0" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-primary outline-none" /></td>
-          <td class="p-2"><input type="text" value="${item.unit || 'Kg'}" oninput="aiParsedInvoiceItems[${idx}].unit=this.value" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-slate-700 outline-none" /></td>
-          <td class="p-2"><input type="number" value="${item.cost || 0}" oninput="aiParsedInvoiceItems[${idx}].cost=parseFloat(this.value)||0" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-right text-slate-800 outline-none" /></td>
-          <td class="p-2 text-center">
-            <button onclick="aiParsedInvoiceItems.splice(${idx}, 1); renderAiExtractedRows();" class="text-slate-300 hover:text-rose-500 cursor-pointer">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
+      if (!tbody) return;
+
+      let calculatedTotal = 0;
+
+      tbody.innerHTML = aiParsedInvoiceItems.map((item, idx) => {
+        const subtotal = (item.qty || 0) * (item.cost || 0);
+        calculatedTotal += subtotal;
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5">
+              <input type="text" value="${escapeHtml(item.name || '')}" oninput="aiParsedInvoiceItems[${idx}].name=this.value" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-slate-800 outline-none focus:border-primary" />
+              ${item.matchedSku ? `
+                <div class="flex items-center gap-1 text-[9px] font-black text-emerald-600 mt-1">
+                  <i data-lucide="check-circle" class="w-3 h-3"></i>
+                  <span>Cocok stok lama (${item.matchedSku} · Ada: ${item.matchedStock} ${item.unit})</span>
+                </div>
+              ` : `
+                <span class="text-[9px] font-bold text-indigo-500 mt-1 inline-block">+ Tambah bahan baru</span>
+              `}
+            </td>
+            <td class="p-2.5"><input type="number" step="any" value="${item.qty || 1}" oninput="aiParsedInvoiceItems[${idx}].qty=parseFloat(this.value)||0; renderAiExtractedRows();" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-primary outline-none" /></td>
+            <td class="p-2.5"><input type="text" value="${escapeHtml(item.unit || 'Kg')}" oninput="aiParsedInvoiceItems[${idx}].unit=this.value" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-slate-700 outline-none" /></td>
+            <td class="p-2.5"><input type="number" value="${item.cost || 0}" oninput="aiParsedInvoiceItems[${idx}].cost=parseFloat(this.value)||0; renderAiExtractedRows();" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 font-bold text-right text-slate-800 outline-none" /></td>
+            <td class="p-2.5 text-right font-black text-slate-700">${formatCurrency(subtotal)}</td>
+            <td class="p-2.5 text-center">
+              <button onclick="aiParsedInvoiceItems.splice(${idx}, 1); renderAiExtractedRows();" class="text-slate-300 hover:text-rose-500 cursor-pointer">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      appState.aiInvoiceMetadata.totalAmount = calculatedTotal;
+      const totalDisplay = document.getElementById('aiExtractedTotalDisplay');
+      const expenseBadge = document.getElementById('aiExpenseAmountBadge');
+      if (totalDisplay) totalDisplay.textContent = formatCurrency(calculatedTotal);
+      if (expenseBadge) expenseBadge.textContent = formatCurrency(calculatedTotal);
       lucide.createIcons();
     }
 
     function addAiExtractedRow() {
-      aiParsedInvoiceItems.push({ name: 'Bahan Baru', qty: 1, unit: 'Pcs', cost: 0 });
+      aiParsedInvoiceItems.push({ name: 'Bahan Baru', qty: 1, unit: 'Pcs', cost: 0, matchedSku: null });
       renderAiExtractedRows();
     }
 
     function commitAiItemsToInventory() {
       const storeId = appState.currentStore?.storeId || '';
+      const supplier = document.getElementById('aiExtractedSupplier')?.value.trim() || 'Supplier';
+      const invNo = document.getElementById('aiExtractedInvoiceNo')?.value.trim() || 'INV';
+      const isRecordExpense = document.getElementById('aiRecordExpenseCheckbox')?.checked;
+
       let addedCount = 0;
       let updatedCount = 0;
+      let grandCost = 0;
 
       aiParsedInvoiceItems.forEach(aiItem => {
         if (!aiItem.name) return;
+        const subtotal = (Number(aiItem.qty) || 0) * (Number(aiItem.cost) || 0);
+        grandCost += subtotal;
+
         const existing = appState.inventory.find(inv => inv.name.toLowerCase() === aiItem.name.toLowerCase());
         if (existing) {
           existing.stock = Number((Number(existing.stock) + Number(aiItem.qty)).toFixed(3));
@@ -3107,18 +3302,33 @@
         }
       });
 
+      if (isRecordExpense && grandCost > 0) {
+        const cashLogEntry = {
+          id: 'CSH-' + Date.now().toString().slice(-4),
+          storeId: storeId,
+          date: new Date().toLocaleDateString('id-ID'),
+          ref: invNo,
+          desc: `Belanja Faktur Supplier: ${supplier} (${invNo})`,
+          amount: grandCost,
+          type: 'out',
+          createdAt: new Date().toISOString()
+        };
+        appState.cashLogs.unshift(cashLogEntry);
+      }
+
       saveState();
       renderInventoryTable();
+      renderCashLogsTable();
       updateNotifications();
       closeModal('aiInvoiceModal');
 
-      // Sync ke Google Sheets
       sendPostToGAS('SAVE_ALL', {
         storeId: storeId,
-        inventory: appState.inventory
+        inventory: appState.inventory,
+        cashLogs: appState.cashLogs
       });
 
-      showToast('Stok Berhasil Diimpor', `${addedCount} bahan baru ditambah, ${updatedCount} stok diperbarui.`, 'success');
+      showToast('Faktur Disimpan', `${addedCount} bahan baru, ${updatedCount} stok diperbarui${isRecordExpense ? ', kas keluar dicatat.' : '.'}`, 'success');
     }
 
     function renderInventoryTable() {
@@ -3581,59 +3791,126 @@
       const durationDisplay = document.getElementById('clockShiftDurationDisplay');
       const actionBtn = document.getElementById('clockActionBtn');
       const actionBtnText = document.getElementById('clockActionBtnText');
+      const shiftSelectContainer = document.getElementById('clockShiftTypeContainer');
+      const breakContainer = document.getElementById('clockBreakContainer');
+      const breakBtnText = document.getElementById('clockBreakBtnText');
+      const liveEarnedWage = document.getElementById('clockLiveEarnedWage');
 
       if (appState.activeShift) {
-        badge.className = "inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800";
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Shift Sedang Aktif';
+        shiftSelectContainer?.classList.add('hidden');
+        breakContainer?.classList.remove('hidden');
+
+        if (appState.activeShift.isOnBreak) {
+          badge.className = "inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-black bg-amber-100 text-amber-800";
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Sedang Istirahat (Break)';
+          if (breakBtnText) breakBtnText.textContent = "Selesai Istirahat (Kembali Bekerja)";
+        } else {
+          badge.className = "inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800";
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Shift Sedang Berjalan';
+          if (breakBtnText) breakBtnText.textContent = "Mulai Istirahat (Break)";
+        }
+
         actionBtn.className = "w-full py-4 rounded-2xl font-black text-white text-sm shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 shadow-rose-600/25 cursor-pointer";
-        actionBtnText.textContent = "Absen Pulang (Clock Out & Hitung Upah)";
+        actionBtnText.textContent = "Absen Pulang (Clock Out & Buat Slip)";
       } else {
+        shiftSelectContainer?.classList.remove('hidden');
+        breakContainer?.classList.add('hidden');
         badge.className = "inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-black bg-slate-100 text-slate-600";
         badge.textContent = "Belum Absen Masuk";
         durationDisplay.textContent = "00:00:00";
+        if (liveEarnedWage) liveEarnedWage.textContent = "(Est: Rp 0)";
         actionBtn.className = "w-full py-4 rounded-2xl font-black text-white text-sm shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/25 cursor-pointer";
         actionBtnText.textContent = "Absen Masuk (Clock In)";
       }
+    }
+
+    function toggleShiftBreak() {
+      if (!appState.activeShift) return;
+
+      const now = Date.now();
+      if (!appState.activeShift.isOnBreak) {
+        appState.activeShift.isOnBreak = true;
+        appState.activeShift.lastBreakStart = now;
+        showToast('Istirahat Dimulai', 'Waktu jeda istirahat tidak dihitung jam kerja.', 'info');
+      } else {
+        const breakDuration = now - (appState.activeShift.lastBreakStart || now);
+        appState.activeShift.totalBreakMs = (appState.activeShift.totalBreakMs || 0) + breakDuration;
+        appState.activeShift.isOnBreak = false;
+        appState.activeShift.lastBreakStart = null;
+        showToast('Kembali Bekerja', 'Shift aktif dilanjutkan.', 'success');
+      }
+
+      localStorage.setItem(getStoreCacheKey(appState.activeShift.storeId, `activeShift_${appState.currentUser?.username || 'user'}`), JSON.stringify(appState.activeShift));
+      updateClockModalUI();
+      checkActiveShiftTimer();
     }
 
     function handleClockActionToggle() {
       const now = new Date();
       const timeStr = now.toLocaleDateString('id-ID') + ', ' + now.toLocaleTimeString('id-ID');
       const user = appState.currentUser || { name: 'Kasir', username: 'kasir' };
+      const hourlyWage = Number(appState.settings?.hourlyWage) || 15000;
+      const overtimeThreshold = Number(appState.settings?.overtimeThreshold) || 8;
+      const overtimeMultiplier = Number(appState.settings?.overtimeMultiplier) || 1.5;
 
       if (!appState.activeShift) {
+        const shiftType = document.getElementById('clockShiftSelect')?.value || 'Shift Pagi';
         const newShift = {
           id: 'ATT-' + Date.now().toString().slice(-4),
           storeId: appState.currentStore?.storeId,
           name: user.name,
           username: user.username,
+          shiftType: shiftType,
           clockIn: timeStr,
           clockInEpoch: now.getTime(),
-          hourlyRate: Number(appState.settings?.hourlyWage) || 15000
+          hourlyRate: hourlyWage,
+          isOnBreak: false,
+          totalBreakMs: 0
         };
 
         appState.activeShift = newShift;
         localStorage.setItem(getStoreCacheKey(newShift.storeId, `activeShift_${appState.currentUser?.username || 'user'}`), JSON.stringify(newShift));
         checkActiveShiftTimer();
         updateClockModalUI();
-        showToast('Absen Masuk Berhasil', `Selamat bertugas, ${user.name}!`, 'success');
+        showToast('Absen Masuk Berhasil', `Shift [${shiftType}] aktif, ${user.name}!`, 'success');
       } else {
         const shift = appState.activeShift;
-        const durationHours = Math.max(0.01, Number(((now.getTime() - shift.clockInEpoch) / (1000 * 3600)).toFixed(2)));
-        const totalWage = Math.round(durationHours * shift.hourlyRate);
+        let totalBreakMs = shift.totalBreakMs || 0;
+        if (shift.isOnBreak && shift.lastBreakStart) {
+          totalBreakMs += (now.getTime() - shift.lastBreakStart);
+        }
+
+        const grossDurationMs = Math.max(0, now.getTime() - shift.clockInEpoch);
+        const netDurationMs = Math.max(0, grossDurationMs - totalBreakMs);
+        const effectiveHours = Math.max(0.01, Number((netDurationMs / (1000 * 3600)).toFixed(2)));
+        const breakHours = Number((totalBreakMs / (1000 * 3600)).toFixed(2));
+
+        const regularHours = Math.min(effectiveHours, overtimeThreshold);
+        const overtimeHours = Math.max(0, Number((effectiveHours - overtimeThreshold).toFixed(2)));
+
+        const regularWage = Math.round(regularHours * shift.hourlyRate);
+        const overtimeWage = Math.round(overtimeHours * (shift.hourlyRate * overtimeMultiplier));
+        const totalWage = regularWage + overtimeWage;
 
         const record = {
           id: shift.id,
           storeId: appState.currentStore?.storeId,
           name: shift.name,
           username: shift.username,
+          shiftType: shift.shiftType || 'Shift Fleksibel',
           clockIn: shift.clockIn,
           clockInEpoch: shift.clockInEpoch,
           clockOut: timeStr,
           clockOutEpoch: now.getTime(),
-          durationHours: durationHours,
+          durationHours: effectiveHours,
+          breakHours: breakHours,
+          regularHours: regularHours,
+          overtimeHours: overtimeHours,
           hourlyRate: shift.hourlyRate,
+          regularWage: regularWage,
+          overtimeWage: overtimeWage,
           totalWage: totalWage,
+          paymentStatus: 'Belum Dibayar',
           status: 'Selesai'
         };
 
@@ -3653,7 +3930,8 @@
         updateClockModalUI();
         renderAttendanceTable();
         closeModal('clockModal');
-        showToast('Shift Selesai', `Shift ${durationHours} jam selesai. Upah: ${formatCurrency(totalWage)}`, 'success');
+        openSalarySlipModal(record.id);
+        showToast('Shift Selesai', `Total jam kerja: ${effectiveHours} jam. Upah: ${formatCurrency(totalWage)}`, 'success');
       }
     }
 
@@ -3666,15 +3944,29 @@
         if (shiftTimerInterval) clearInterval(shiftTimerInterval);
 
         const updateTimer = () => {
-          const diffMs = Date.now() - appState.activeShift.clockInEpoch;
-          const secs = Math.floor((diffMs / 1000) % 60);
-          const mins = Math.floor((diffMs / (1000 * 60)) % 60);
-          const hours = Math.floor(diffMs / (1000 * 3600));
+          if (!appState.activeShift) return;
+          const now = Date.now();
+          let breakMs = appState.activeShift.totalBreakMs || 0;
+          if (appState.activeShift.isOnBreak && appState.activeShift.lastBreakStart) {
+            breakMs += (now - appState.activeShift.lastBreakStart);
+          }
+
+          const netMs = Math.max(0, (now - appState.activeShift.clockInEpoch) - breakMs);
+          const secs = Math.floor((netMs / 1000) % 60);
+          const mins = Math.floor((netMs / (1000 * 60)) % 60);
+          const hours = Math.floor(netMs / (1000 * 3600));
           const formatted = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
           
-          if (timerText) timerText.textContent = `Shift: ${formatted}`;
+          if (timerText) {
+            timerText.textContent = appState.activeShift.isOnBreak ? `Break: ${formatted}` : `Shift: ${formatted}`;
+          }
           const durationDisplay = document.getElementById('clockShiftDurationDisplay');
           if (durationDisplay) durationDisplay.textContent = formatted;
+
+          const estHours = Math.max(0.01, netMs / (1000 * 3600));
+          const estWage = Math.round(estHours * (appState.activeShift.hourlyRate || 15000));
+          const liveWageEl = document.getElementById('clockLiveEarnedWage');
+          if (liveWageEl) liveWageEl.textContent = `(Est: ${formatCurrency(estWage)})`;
         };
 
         updateTimer();
@@ -3685,46 +3977,189 @@
       }
     }
 
+    function filterAttendancePeriod(val) {
+      appState.attendancePeriodFilter = val;
+      renderAttendanceTable();
+    }
+
     function renderAttendanceTable() {
       const tbody = document.getElementById('attendanceTableBody');
       if (!tbody) return;
 
-      const totalHours = appState.attendance.reduce((s, a) => s + (a.durationHours || 0), 0);
-      const totalWages = appState.attendance.reduce((s, a) => s + (a.totalWage || 0), 0);
+      const now = new Date();
+      const todayStr = now.toLocaleDateString('id-ID');
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      const filtered = appState.attendance.filter(item => {
+        if (appState.attendancePeriodFilter === 'today') {
+          return item.clockIn && item.clockIn.includes(todayStr);
+        }
+        if (appState.attendancePeriodFilter === 'month') {
+          if (!item.clockInEpoch) return true;
+          const d = new Date(item.clockInEpoch);
+          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        }
+        return true;
+      });
+
+      const totalHours = filtered.reduce((s, a) => s + (a.durationHours || 0), 0);
+      const unpaidWages = filtered.filter(a => a.paymentStatus !== 'Lunas').reduce((s, a) => s + (a.totalWage || 0), 0);
+      const paidWages = filtered.filter(a => a.paymentStatus === 'Lunas').reduce((s, a) => s + (a.totalWage || 0), 0);
       const activeCount = appState.activeShift ? 1 : 0;
 
       const statCount = document.getElementById('statActiveShiftsCount');
       const statHours = document.getElementById('statTotalHoursWorked');
-      const statWages = document.getElementById('statTotalWages');
+      const statUnpaid = document.getElementById('statUnpaidWages');
+      const statPaid = document.getElementById('statPaidWages');
 
-      if (statCount) statCount.textContent = `${activeCount} Karyawan`;
+      if (statCount) statCount.textContent = `${activeCount} Staf`;
       if (statHours) statHours.textContent = `${totalHours.toFixed(1)} Jam`;
-      if (statWages) statWages.textContent = formatCurrency(totalWages);
+      if (statUnpaid) statUnpaid.textContent = formatCurrency(unpaidWages);
+      if (statPaid) statPaid.textContent = formatCurrency(paidWages);
 
-      if (appState.attendance.length === 0) {
+      if (filtered.length === 0) {
         tbody.innerHTML = `
-          <tr><td colspan="6" class="p-8 text-center text-xs text-slate-400 font-bold">Belum ada riwayat presensi kerja di sheet Attendance.</td></tr>
+          <tr><td colspan="6" class="p-8 text-center text-xs text-slate-400 font-bold">Belum ada riwayat presensi kerja pada filter ini.</td></tr>
         `;
         return;
       }
 
-      tbody.innerHTML = appState.attendance.map(item => `
-        <tr class="hover:bg-slate-50/60 transition-colors">
-          <td class="p-4 lg:p-5">
-            <p class="font-extrabold text-slate-800 text-sm">${escapeHtml(item.name)}</p>
-            <p class="text-[10px] text-slate-400 font-mono mt-0.5">${item.username}</p>
-          </td>
-          <td class="p-4 lg:p-5 text-xs font-semibold text-slate-600">${item.clockIn}</td>
-          <td class="p-4 lg:p-5 text-xs font-semibold text-slate-600">${item.clockOut || '-'}</td>
-          <td class="p-4 lg:p-5 font-mono text-xs font-black text-primary">${item.durationHours} Jam</td>
-          <td class="p-4 lg:p-5 text-right font-black text-emerald-600 text-sm">${formatCurrency(item.totalWage)}</td>
-          <td class="p-4 lg:p-5 text-center">
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-200">
-              ${item.status}
-            </span>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = filtered.map(item => {
+        const isPaid = (item.paymentStatus === 'Lunas');
+        return `
+          <tr class="hover:bg-slate-50/60 transition-colors">
+            <td class="p-4 lg:p-5">
+              <p class="font-extrabold text-slate-800 text-sm">${escapeHtml(item.name)}</p>
+              <p class="text-[10px] text-slate-400 font-mono mt-0.5">${escapeHtml(item.shiftType || 'Shift')} · ${escapeHtml(item.username)}</p>
+            </td>
+            <td class="p-4 lg:p-5 text-xs text-slate-600">
+              <p class="font-bold">${escapeHtml(item.clockIn)}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Pulang: ${escapeHtml(item.clockOut || '-')}</p>
+            </td>
+            <td class="p-4 lg:p-5">
+              <p class="font-mono text-xs font-black text-primary">${item.durationHours} Jam</p>
+              ${item.overtimeHours > 0 ? `<p class="text-[10px] text-amber-600 font-bold mt-0.5">Lembur: ${item.overtimeHours} jam</p>` : ''}
+              ${item.breakHours > 0 ? `<p class="text-[10px] text-slate-400 mt-0.5">Jeda: ${item.breakHours} jam</p>` : ''}
+            </td>
+            <td class="p-4 lg:p-5 text-right font-black text-slate-800 text-sm">
+              <p class="text-emerald-600">${formatCurrency(item.totalWage)}</p>
+              <p class="text-[10px] text-slate-400 font-normal mt-0.5">${formatCurrency(item.hourlyRate)}/jam</p>
+            </td>
+            <td class="p-4 lg:p-5 text-center">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black border ${
+                isPaid ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+              }">
+                ${isPaid ? 'Lunas Dibayar' : 'Belum Dibayar'}
+              </span>
+            </td>
+            <td class="p-4 lg:p-5 text-right">
+              <div class="flex justify-end gap-1.5">
+                <button onclick="openSalarySlipModal('${item.id}')" title="Buka Slip Gaji" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-bold transition-colors cursor-pointer flex items-center gap-1">
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                  <span>Slip</span>
+                </button>
+                ${appState.currentUser?.role === 'owner' && !isPaid ? `
+                  <button onclick="settleAttendanceWage('${item.id}')" title="Bayar Upah & Catat Kas Keluar" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer flex items-center gap-1">
+                    <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
+                    <span>Bayar</span>
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function settleAttendanceWage(attendanceId) {
+      const record = appState.attendance.find(a => a.id === attendanceId);
+      if (!record) return;
+
+      record.paymentStatus = 'Lunas';
+      record.paidAt = new Date().toISOString();
+
+      appState.cashLogs.unshift({
+        id: 'CSH-' + Date.now().toString().slice(-4),
+        storeId: appState.currentStore?.storeId,
+        date: new Date().toLocaleDateString('id-ID'),
+        ref: record.id,
+        desc: `Pembayaran Upah: ${record.name} (${record.durationHours} Jam)`,
+        amount: record.totalWage,
+        type: 'out',
+        createdAt: new Date().toISOString()
+      });
+
+      saveState();
+      renderAttendanceTable();
+      renderCashLogsTable();
+
+      sendPostToGAS('SAVE_ALL', {
+        storeId: appState.currentStore?.storeId,
+        attendance: appState.attendance,
+        cashLogs: appState.cashLogs
+      });
+
+      showToast('Upah Dibayarkan', `Upah ${record.name} sebesar ${formatCurrency(record.totalWage)} tercatat di Buku Kas.`, 'success');
+    }
+
+    function openSalarySlipModal(attendanceId) {
+      const record = appState.attendance.find(a => a.id === attendanceId);
+      if (!record) return;
+
+      const store = appState.currentStore || { name: 'MANAGEPRO F&B' };
+      let slip = `*SLIP UPAH KERJA - ${(store.name || 'MANAGEPRO F&B').toUpperCase()}*\n`;
+      slip += `No. Ref: #${record.id}\n`;
+      slip += `Karyawan: ${record.name} (@${record.username})\n`;
+      slip += `Shift: ${record.shiftType || 'Shift Kerja'}\n`;
+      slip += `Masuk: ${record.clockIn}\n`;
+      slip += `Pulang: ${record.clockOut || '-'}\n`;
+      slip += `--------------------------------\n`;
+      slip += `Durasi Kerja Efektif: ${record.durationHours} Jam\n`;
+      if (record.breakHours > 0) slip += `Jeda Istirahat: ${record.breakHours} Jam\n`;
+      slip += `Tarif Dasar: ${formatCurrency(record.hourlyRate)} / jam\n`;
+      if (record.overtimeHours > 0) {
+        slip += `Jam Reguler: ${record.regularHours} Jam = ${formatCurrency(record.regularWage)}\n`;
+        slip += `Jam Lembur: ${record.overtimeHours} Jam = ${formatCurrency(record.overtimeWage)}\n`;
+      }
+      slip += `--------------------------------\n`;
+      slip += `*TOTAL UPAH DITERIMA: ${formatCurrency(record.totalWage)}*\n`;
+      slip += `Status: ${record.paymentStatus || 'Selesai'}\n`;
+      slip += `--------------------------------\n`;
+      slip += `Dicetak pada: ${new Date().toLocaleString('id-ID')}\n`;
+
+      appState.currentSalarySlipText = slip;
+      const textarea = document.getElementById('salarySlipTextarea');
+      if (textarea) textarea.value = slip;
+
+      openModal('salarySlipModal');
+      lucide.createIcons();
+    }
+
+    function copySalarySlipText() {
+      const txt = appState.currentSalarySlipText;
+      try {
+        const temp = document.createElement('textarea');
+        temp.value = txt;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('Slip Disalin', 'Teks rincian upah siap dibagikan ke WhatsApp karyawan.', 'success');
+      } catch (_) {}
+    }
+
+    function printSalarySlip() {
+      const txt = appState.currentSalarySlipText;
+      const html = `
+        <div class="center bold" style="font-size: 14px;">SLIP UPAH KARYAWAN</div>
+        <div class="cut"></div>
+        <pre style="font-family: 'Courier New', monospace; font-size: 11px; white-space: pre-wrap;">${escapeHtml(txt)}</pre>
+        <div class="cut"></div>
+        <div class="center" style="font-size: 9px; color: #555;">Tanda terima pembayaran upah resmi.</div>
+      `;
+      printIsolatedDocument(html, 'Slip Gaji Karyawan');
     }
 
     function renderSettingsView() {
@@ -3732,6 +4167,8 @@
       document.getElementById('settingStoreName').value = s.name || '';
       document.getElementById('settingTaxRate').value = s.taxRate || 0;
       document.getElementById('settingHourlyWage').value = s.hourlyWage || 15000;
+      document.getElementById('settingOvertimeThreshold').value = s.overtimeThreshold || 8;
+      document.getElementById('settingOvertimeMultiplier').value = s.overtimeMultiplier || 1.5;
       document.getElementById('settingAdminPhone').value = s.adminPhone || '';
       document.getElementById('settingDriveFolderId').value = s.driveFolderId || '';
       document.getElementById('settingGeminiApiKey').value = appState.geminiApiKey || s.geminiApiKey || '';
@@ -3781,6 +4218,8 @@
       const name = document.getElementById('settingStoreName').value.trim() || 'ManagePro F&B';
       const taxRate = parseFloat(document.getElementById('settingTaxRate').value) || 0;
       const hourlyWage = parseInt(document.getElementById('settingHourlyWage').value) || 15000;
+      const overtimeThreshold = parseInt(document.getElementById('settingOvertimeThreshold').value) || 8;
+      const overtimeMultiplier = parseFloat(document.getElementById('settingOvertimeMultiplier').value) || 1.5;
       const adminPhone = document.getElementById('settingAdminPhone').value.trim();
       const driveFolderId = document.getElementById('settingDriveFolderId').value.trim();
       const geminiApiKey = document.getElementById('settingGeminiApiKey').value.trim();
@@ -3788,6 +4227,8 @@
       appState.settings.name = name;
       appState.settings.taxRate = taxRate;
       appState.settings.hourlyWage = hourlyWage;
+      appState.settings.overtimeThreshold = overtimeThreshold;
+      appState.settings.overtimeMultiplier = overtimeMultiplier;
       appState.settings.adminPhone = adminPhone;
       appState.settings.driveFolderId = driveFolderId;
       appState.settings.geminiApiKey = geminiApiKey;
@@ -3797,6 +4238,8 @@
         appState.currentStore.name = name;
         appState.currentStore.taxRate = taxRate;
         appState.currentStore.hourlyWage = hourlyWage;
+        appState.currentStore.overtimeThreshold = overtimeThreshold;
+        appState.currentStore.overtimeMultiplier = overtimeMultiplier;
         appState.currentStore.adminPhone = adminPhone;
         appState.currentStore.driveFolderId = driveFolderId;
       }
@@ -3977,7 +4420,6 @@
     }
     setInterval(updateClock, 1000);
 
-    // Live Sync on tab refocus
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && appState.currentStore?.storeId) {
         fetchStoreData(appState.currentStore.storeId, true);
