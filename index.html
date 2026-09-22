@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4F46E5" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -11,6 +10,7 @@
   <link rel="apple-touch-icon" href="icon-192.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>ManagePro F&B - Multi-Tenant Cloud POS</title>
   
   <!-- Tailwind CSS CDN -->
@@ -26,6 +26,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script>
+      let deferredPrompt = null;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('PWA Service Worker terdaftar'))
+          .catch((err) => console.warn('PWA Service Worker gagal:', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.remove('hidden');
+    });
+
+    async function triggerPwaInstall() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        showToast('Aplikasi Terpasang', 'ManagePro telah dipasang ke beranda perangkat.', 'success');
+      }
+      deferredPrompt = null;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.add('hidden');
+    }
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.add('hidden');
+      showToast('Instalasi Sukses', 'ManagePro siap digunakan langsung layaknya aplikasi native.', 'success');
+    });
+    
     tailwind.config = {
       theme: {
         extend: {
@@ -432,7 +468,6 @@
             </div>
           </div>
 
-          <!-- Tombol Install PWA -->
           <button id="pwaInstallBtn" onclick="triggerPwaInstall()" class="hidden px-3.5 py-2 rounded-xl text-xs font-black items-center gap-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-indigo-600 text-white shadow-md shadow-primary/20 transition-all cursor-pointer">
             <i data-lucide="download" class="w-4 h-4"></i>
             <span class="hidden sm:inline">Pasang Aplikasi</span>
@@ -1617,42 +1652,6 @@
   <!-- ================= APPLICATION JAVASCRIPT LOGIC ================= -->
   
   <script>
-      let deferredPrompt = null;
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(() => console.log('PWA Service Worker terdaftar'))
-          .catch((err) => console.warn('PWA Service Worker gagal:', err));
-      });
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('pwaInstallBtn');
-      if (btn) btn.classList.remove('hidden');
-    });
-
-    async function triggerPwaInstall() {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        showToast('Aplikasi Terpasang', 'ManagePro telah dipasang ke beranda perangkat.', 'success');
-      }
-      deferredPrompt = null;
-      const btn = document.getElementById('pwaInstallBtn');
-      if (btn) btn.classList.add('hidden');
-    }
-
-    window.addEventListener('appinstalled', () => {
-      deferredPrompt = null;
-      const btn = document.getElementById('pwaInstallBtn');
-      if (btn) btn.classList.add('hidden');
-      showToast('Instalasi Sukses', 'ManagePro siap digunakan langsung layaknya aplikasi native.', 'success');
-    });
-
     // URL Web App Google Apps Script Multi-Tenant Aktif
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxLx5bpRsTazN9kV-Mit93Zz2qo6Ln5kDQMPjrc24YnCIufSV8J4G2Q_5XM-gNPbx4G/exec";
 
