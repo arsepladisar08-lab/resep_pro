@@ -4171,7 +4171,7 @@
   
   <script>
     // URL Web App Google Apps Script Multi-Tenant Aktif
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyycmcpfr0JXHNXkj1MsGIjBqfEQgc3IU2WT9EbI8Ph1k4ze6jfC-375yLc9WoEXMfUwQ/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyNnSgCrUsLQPTZRPpn5956Xq-9zm0clQ46BubouOEvenASrqslYQkY9uLN6qvVCooAzA/exec";
 
     function readStorageJson(key, fallback = null) {
       try {
@@ -4911,57 +4911,58 @@ function toggleAuthView(mode) {
 
     // Submit LOGIN ke Google Apps Script
     
-    async function handleLoginSubmit(e) {
-      e.preventDefault();
-      const username = (document.getElementById('loginUsername')?.value || '').trim();
-      const password = document.getElementById('loginPassword')?.value || '';
-      const btn = document.getElementById('loginSubmitBtn');
-      const alertBox = document.getElementById('auth-error-alert');
-      const alertMsg = document.getElementById('auth-error-message');
+// 1. Modifikasi Login agar memeriksa Cache Lokal terlebih dahulu
+async function handleLoginSubmit(e) {
+  e.preventDefault();
+  const username = (document.getElementById('loginUsername')?.value || '').trim().toLowerCase();
+  const password = document.getElementById('loginPassword')?.value || '';
+  const btn = document.getElementById('loginSubmitBtn');
+  const alertBox = document.getElementById('auth-error-alert');
 
-      if (!username || !password) {
-        if (alertBox) {
-          alertBox.classList.remove('hidden');
-          alertMsg.textContent = 'Masukkan username/email dan kata sandi Anda.';
-        }
-        return;
-      }
+  if (!username || !password) return;
 
-      if (alertBox) alertBox.classList.add('hidden');
-      btn.disabled = true;
-      btn.classList.add('opacity-70', 'cursor-not-allowed');
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Memverifikasi Database...</span>`;
-      lucide.createIcons();
+  // CEK CACHE CEPAT: Jika user & store sudah tersimpan di browser, buka langsung (0.1 detik)!
+  const cachedUser = readStorageJson('managepro_auth_user', null);
+  const cachedStore = readStorageJson('managepro_current_store', null);
 
-      try {
-        const res = await fetch(`${GAS_URL}?action=LOGIN&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
-          method: 'GET',
-          redirect: 'follow'
-        });
-        const json = JSON.parse(await res.text());
+  if (cachedUser && cachedStore && 
+     (cachedUser.username === username || cachedUser.email === username)) {
+    // Buka aplikasi langsung tanpa menunggu server
+    completeLogin(cachedUser, cachedStore, null);
+    showToast('Mode Cepat Aktif', 'Membuka workstation dari cache lokal...', 'info');
+    // Sinkronkan data terbaru secara hening di latar belakang
+    fetchStoreData(cachedStore.storeId, true);
+    return;
+  }
 
-        if (json && json.status === 'success') {
-          completeLogin(json.user, json.store, json.data);
-        } else {
-          if (alertBox) {
-            alertBox.classList.remove('hidden');
-            alertMsg.textContent = json.message || 'Username atau kata sandi tidak cocok di database.';
-          }
-          showToast('Login Gagal', json.message || 'Kredensial tidak valid.', 'error');
-        }
-      } catch (err) {
-        if (alertBox) {
-          alertBox.classList.remove('hidden');
-          alertMsg.textContent = 'Koneksi ke Google Apps Script gagal. Periksa jaringan internet.';
-        }
-        showToast('Koneksi Gagal', 'Gagal menghubungi backend database Google Sheets.', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.classList.remove('opacity-70', 'cursor-not-allowed');
-        btn.innerHTML = `<span>Masuk ke Sistem Workstation</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-        lucide.createIcons();
+  // Jika belum ada cache / login pertama kali, baru lakukan fetch normal
+  btn.disabled = true;
+  btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Memuat Data...</span>`;
+  if (window.lucide) lucide.createIcons();
+
+  try {
+    const res = await fetch(`${GAS_URL}?action=LOGIN&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+      method: 'GET',
+      redirect: 'follow'
+    });
+    const json = JSON.parse(await res.text());
+
+    if (json && json.status === 'success') {
+      completeLogin(json.user, json.store, json.data);
+    } else {
+      if (alertBox) {
+        alertBox.classList.remove('hidden');
+        document.getElementById('auth-error-message').textContent = json.message || 'Kredensial tidak valid.';
       }
     }
+  } catch (err) {
+    showToast('Koneksi Gagal', 'Gagal memverifikasi akun.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<span>Masuk ke Sistem Workstation</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+    if (window.lucide) lucide.createIcons();
+  }
+}
 
     // Submit PENDAFTARAN TOKO BARU ke Google Apps Script
     
@@ -5080,25 +5081,20 @@ function toggleAuthView(mode) {
         navigateTab('dashboard');
       }
 
-      if (pollingInterval) clearInterval(pollingInterval);
-      pollingInterval = setInterval(() => {
-        if (!appState.currentStore?.storeId) return;
+// Ganti baris interval di completeLogin():
+if (pollingInterval) clearInterval(pollingInterval);
+pollingInterval = setInterval(() => {
+  if (!appState.currentStore?.storeId) return;
 
-        // Jangan sinkronisasi kalau user sedang mengetik (input/textarea fokus)
-        // atau sedang ada modal/form terbuka (mis. sedang isi Master Menu,
-        // scan faktur, dll) — supaya data yang sedang diketik tidak tertimpa
-        // atau tampilan tidak tiba-tiba refresh di tengah proses input.
-        const activeTag = document.activeElement?.tagName;
-        const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
-        const hasOpenModal = document.querySelector('.fixed.inset-0:not(.hidden)') !== null;
+  const activeTag = document.activeElement?.tagName;
+  const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+  const hasOpenModal = document.querySelector('.fixed.inset-0:not(.hidden)') !== null;
 
-        if (isTyping || hasOpenModal) {
-          console.log('Sync ditunda: user sedang input data, coba lagi nanti.');
-          return;
-        }
+  if (isTyping || hasOpenModal) return;
 
-        fetchStoreData(appState.currentStore.storeId, true);
-      }, 60000);
+  // Jalankan sync hening
+  fetchStoreData(appState.currentStore.storeId, true);
+}, 180000); // 3 menit sekali (jauh lebih hemat kuota dan responsif)
 
       showToast('Berhasil Masuk', `Selamat bertugas, ${user.name}!`, 'success');
       lucide.createIcons();
