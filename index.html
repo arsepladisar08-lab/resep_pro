@@ -3896,45 +3896,6 @@
     </div>
   </div>
 
-  <!-- Product Modal -->
-  <div id="productModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div onclick="closeModal('productModal')" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
-    <div class="bg-surface rounded-3xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden">
-      <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0"><div><h3 id="productModalTitle" class="font-extrabold text-base text-slate-800">Tambah Menu Baru</h3><p class="text-[10px] text-slate-400 font-semibold mt-0.5">Resep menghasilkan beberapa pcs; HPP per pcs lalu dikalikan isi menu.</p></div><button onclick="closeModal('productModal')" class="text-slate-400 hover:text-slate-700 cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button></div>
-      <div class="p-4 space-y-4 overflow-y-auto">
-        <input type="hidden" id="prodModalIndex" value="-1" />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="md:col-span-2"><label class="text-xs font-bold text-slate-500 mb-1 block">Nama Menu / Produk</label><input type="text" id="prodNameInput" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold outline-none focus:border-primary shadow-sm" /></div>
-          <div><label class="text-xs font-bold text-slate-500 mb-1 block">Kategori</label><select id="prodCatInput" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold outline-none focus:border-primary shadow-sm text-slate-700"><option value="Minuman">Minuman</option><option value="Makanan">Makanan</option><option value="Promo/Bundle">Promo/Bundle</option></select></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div><label class="text-xs font-bold text-slate-500 mb-1 block">Harga Jual 1 Menu (Rp)</label><input type="number" id="prodPriceInput" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-black text-primary outline-none focus:border-primary shadow-sm" /></div>
-          <div><label class="text-xs font-bold text-slate-500 mb-1 block">1 Resep Menghasilkan</label><div class="flex"><input type="number" id="prodYieldPcsInput" min="1" step="1" oninput="updateProductHppPreview()" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-black text-primary outline-none focus:border-primary shadow-sm" /><span class="px-2 flex items-center text-[10px] font-black text-slate-400">pcs</span></div></div>
-          <div><label class="text-xs font-bold text-slate-500 mb-1 block">Isi 1 Menu</label><div class="flex"><input type="number" id="prodMenuQtyInput" min="1" step="1" oninput="updateProductHppPreview()" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-black text-primary outline-none focus:border-primary shadow-sm" /><span class="px-2 flex items-center text-[10px] font-black text-slate-400">pcs</span></div></div>
-        </div>
-
-        <div>
-          <label class="text-xs font-bold text-slate-500 mb-1 block">Foto Produk</label>
-          <div class="flex items-center gap-3"><div id="prodImagePreviewBox" class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0"><img id="prodImagePreview" src="" class="w-full h-full object-cover hidden" /><i data-lucide="image" class="w-6 h-6 text-slate-300" id="prodImagePreviewIcon"></i></div><div class="flex-1 min-w-0 space-y-1.5"><button type="button" onclick="document.getElementById('prodImageFileInput').click()" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-primary font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer border border-indigo-100"><i data-lucide="upload-cloud" class="w-4 h-4"></i><span id="prodImageUploadLabel">Unggah Foto ke Drive</span></button><p id="prodImageUploadStatus" class="text-[10px] text-slate-400 font-semibold truncate">Otomatis tersimpan ke Google Drive & Sheets</p></div></div>
-          <input type="file" id="prodImageFileInput" accept="image/*" onchange="handleProductImageSelected(event)" class="hidden" /><input type="hidden" id="prodImageInput" />
-        </div>
-
-        <div class="bg-indigo-50/60 p-3.5 rounded-2xl border border-indigo-100 space-y-3">
-          <div class="flex justify-between items-center"><p class="text-xs text-indigo-800 font-extrabold flex items-center gap-1.5"><i data-lucide="chef-hat" class="w-4 h-4"></i> 1. Resep Batch (dalam satuan kecil)</p><button onclick="addRecipeRow()" type="button" class="text-[10px] bg-primary hover:bg-primary-hover text-white px-2.5 py-1 rounded-lg font-black shadow-sm cursor-pointer">+ Bahan</button></div>
-          <div id="recipeRowsContainer" class="space-y-2"></div>
-          <div id="prodHppPreview" class="bg-white border border-indigo-100 rounded-xl p-3"></div>
-        </div>
-
-        <div class="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-100 space-y-3">
-          <div class="flex justify-between items-center"><p class="text-xs text-amber-800 font-extrabold flex items-center gap-1.5"><i data-lucide="package-check" class="w-4 h-4"></i> 2. Packaging / Menu</p><button onclick="addPackagingRow()" type="button" class="text-[10px] bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded-lg font-black shadow-sm cursor-pointer">+ Packaging</button></div>
-          <div id="packagingRowsContainer" class="space-y-2"></div>
-          <p class="text-[10px] font-semibold text-slate-400">Contoh: 1 box + 2 lembar alas + 1 sambal cup untuk setiap menu.</p>
-        </div>
-      </div>
-      <div class="p-4 bg-slate-50 flex justify-end gap-2 border-t border-slate-100 shrink-0"><button onclick="closeModal('productModal')" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">Batal</button><button onclick="saveProductItem()" class="px-5 py-2.5 text-xs font-bold text-white bg-primary hover:bg-primary-hover rounded-xl shadow-md transition-all cursor-pointer">Simpan Menu + HPP</button></div>
-    </div>
-  </div>
-
   <!-- Drafts Modal -->
   <div id="draftsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div onclick="closeModal('draftsModal')" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
@@ -4195,49 +4156,79 @@
       }
     }
 
-    /**
-     * Mengambil seluruh data toko secara 2-arah dari Google Sheets
-     */
-    async function fetchStoreData(storeId, silent = true) {
-      if (!GAS_URL || !storeId) return;
-      appState.isSyncingCloud = true;
-      const indicator = document.getElementById('cloudSyncIndicator');
-      if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping mr-1.5"></span> Sinkronisasi...';
+// Mekanisme penggabungan aman (Safe Merge) agar transaksi lokal yang belum tersinkron tidak terhapus
+async function fetchStoreData(storeId, silent = true) {
+  if (!GAS_URL || !storeId) return;
+  appState.isSyncingCloud = true;
+  const indicator = document.getElementById('cloudSyncIndicator');
+  if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping mr-1.5"></span> Sinkronisasi...';
 
-      try {
-        const response = await fetch(`${GAS_URL}?action=GET_DATA&storeId=${encodeURIComponent(storeId)}`, {
-          method: 'GET',
-          redirect: 'follow'
-        });
-        const resText = await response.text();
-        let jsonResult = null;
-        try { jsonResult = JSON.parse(resText); } catch (_) {}
+  try {
+    const response = await fetch(`${GAS_URL}?action=GET_DATA&storeId=${encodeURIComponent(storeId)}`, {
+      method: 'GET',
+      redirect: 'follow'
+    });
+    const resText = await response.text();
+    let jsonResult = null;
+    try { jsonResult = JSON.parse(resText); } catch (_) {}
 
-        if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
-          const cloud = jsonResult.data;
-          appState.inventory = Array.isArray(cloud.inventory) ? cloud.inventory : [];
-          appState.products = Array.isArray(cloud.products) ? cloud.products : [];
-          appState.transactions = Array.isArray(cloud.transactions) ? cloud.transactions : [];
-          appState.cashLogs = Array.isArray(cloud.cashLogs) ? cloud.cashLogs : [];
-          appState.attendance = Array.isArray(cloud.attendance) ? cloud.attendance : [];
-          appState.purchaseHistory = Array.isArray(cloud.purchaseHistory) ? cloud.purchaseHistory : [];
-          if (cloud.settings) {
-            appState.settings = cloud.settings;
-            appState.currentStore = cloud.settings;
-          }
+    if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
+      const cloud = jsonResult.data;
 
-          saveState();
-          refreshActiveView();
-          if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Live Sync';
-          if (!silent) showToast('Data Tersinkronisasi', 'Data toko berhasil diperbarui dari Spreadsheet.', 'success');
-        }
-      } catch (err) {
-        console.warn('Gagal menarik data dari GAS:', err);
-        if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span> Offline Cache';
-      } finally {
-        appState.isSyncingCloud = false;
+      // 1. Sinkronisasi Transaksi: Gabungkan transaksi cloud dengan transaksi lokal yang belum tercatat di cloud
+      const cloudTrxIds = new Set((cloud.transactions || []).map(t => String(t.id)));
+      const unsyncedTrx = (appState.transactions || []).filter(t => !cloudTrxIds.has(String(t.id)));
+      appState.transactions = [...unsyncedTrx, ...(cloud.transactions || [])];
+
+      // 2. Sinkronisasi Buku Kas: Pertahankan catatan lokal yang belum masuk cloud
+      const cloudCashIds = new Set((cloud.cashLogs || []).map(c => String(c.id)));
+      const unsyncedCash = (appState.cashLogs || []).filter(c => !cloudCashIds.has(String(c.id)));
+      appState.cashLogs = [...unsyncedCash, ...(cloud.cashLogs || [])];
+
+      // 3. Update master data lainnya
+      appState.products = Array.isArray(cloud.products) ? cloud.products : [];
+      appState.attendance = Array.isArray(cloud.attendance) ? cloud.attendance : [];
+      appState.purchaseHistory = Array.isArray(cloud.purchaseHistory) ? cloud.purchaseHistory : [];
+
+      // 4. Update stok inventaris tanpa menimpa stok yang baru saja dipotong di workstation aktif
+      if (unsyncedTrx.length === 0) {
+        appState.inventory = Array.isArray(cloud.inventory) ? cloud.inventory : [];
+      }
+
+      if (cloud.settings) {
+        appState.settings = cloud.settings;
+        appState.currentStore = cloud.settings;
+      }
+
+      saveState();
+      refreshActiveView();
+      if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Live Sync';
+      if (!silent) showToast('Data Tersinkronisasi', 'Data toko berhasil diselaraskan dengan spreadsheet.', 'success');
+
+      // Jika ada transaksi lokal yang tertunda, kirimkan ulang ke server
+      if (unsyncedTrx.length > 0) {
+        syncPendingTransactions(unsyncedTrx);
       }
     }
+  } catch (err) {
+    console.warn('Gagal sinkronisasi dari Google Apps Script:', err);
+    if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span> Cache Offline';
+  } finally {
+    appState.isSyncingCloud = false;
+  }
+}
+
+// Fungsi pengiriman transaksi tertunda ke server
+async function syncPendingTransactions(pendingList) {
+  for (const trx of pendingList) {
+    try {
+      await sendPostToGAS('SAVE_TRANSACTION', trx);
+    } catch (e) {
+      console.warn('Gagal mengunggah transaksi tertunda:', trx.id);
+      break;
+    }
+  }
+}
 
     async function sendPostToGAS(action, data) {
       if (!GAS_URL) return { status: 'error', message: 'GAS_URL belum dikonfigurasi.' };
@@ -4541,11 +4532,21 @@
       }, 3500);
     }
 
-    function openModal(id) {
-      document.getElementById(id)?.classList.remove('hidden');
-      if (id === 'draftsModal') renderHeldOrders();
-    }
-    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+	function openModal(id) {
+	const modal = document.getElementById(id);
+	if (!modal) return;
+	modal.classList.remove('hidden');
+	modal.classList.add('flex');
+	if (id === 'draftsModal') renderHeldOrders();
+	if (window.lucide) lucide.createIcons();
+	}
+
+	function closeModal(id) {
+	const modal = document.getElementById(id);
+	if (!modal) return;
+	modal.classList.add('hidden');
+	modal.classList.remove('flex');
+	}
 
     function setLoginRole(role) {
       const ownerBtn = document.getElementById('role-owner');
@@ -4631,6 +4632,11 @@
       }
       lucide.createIcons();
     }
+	
+	// Alias pembungkus agar pemanggilan toggleAuthView tetap berfungsi normal
+function toggleAuthView(mode) {
+  switchAuthMode(mode);
+}
 
     // Role helper pill (Owner vs Kasir)
     
@@ -5076,52 +5082,64 @@
       lucide.createIcons();
     }
 
-    function updateStoreHeaderInfo() {
-      const store = appState.currentStore || { name: 'ManagePro F&B' };
-      const user = appState.currentUser || { name: 'User', role: 'owner' };
+function updateStoreHeaderInfo() {
+  const store = appState.currentStore || { name: 'ManagePro F&B' };
+  const user = appState.currentUser || { name: 'User', role: 'owner' };
 
-      document.getElementById('sidebarStoreName').textContent = store.name;
-      document.getElementById('headerStoreBadge').textContent = store.name;
-      document.getElementById('dashboardGreetingStore').textContent = `Selamat Datang, ${store.name}!`;
+  const sidebarStore = document.getElementById('sidebarStoreName');
+  if (sidebarStore) sidebarStore.textContent = store.name;
 
-      const avatar = document.getElementById('sidebarUserAvatar');
-      if (avatar) avatar.textContent = (user.name || 'US').slice(0, 2).toUpperCase();
+  const headerBadge = document.getElementById('headerStoreBadge');
+  if (headerBadge) headerBadge.textContent = store.name;
 
-      const roleText = document.getElementById('sidebarUserRoleText');
-      if (roleText) {
-        roleText.innerHTML = `
-          <i data-lucide="${user.role === 'owner' ? 'shield' : 'calculator'}" class="w-3 h-3 ${user.role === 'owner' ? 'text-amber-500' : 'text-primary'}"></i>
-          ${user.role === 'owner' ? 'Owner & Admin' : 'Kasir & Barista'}
-        `;
-      }
-      lucide.createIcons();
-    }
+  // Sesuaikan dengan ID asli di HTML
+  const dashHeroBadge = document.getElementById('dashHeroStoreBadge');
+  if (dashHeroBadge) dashHeroBadge.textContent = store.name;
 
-    function handleLogout() {
-      if (pollingInterval) clearInterval(pollingInterval);
-      appState.currentUser = null;
-      appState.currentStore = null;
-      appState.settings = null;
-      appState.inventory = [];
-      appState.products = [];
-      appState.transactions = [];
-      appState.cashLogs = [];
-      appState.attendance = [];
-      appState.purchaseHistory = [];
-      appState.heldOrders = [];
-      appState.activeShift = null;
-      appState.cart = [];
-      appState.geminiApiKey = '';
-      localStorage.removeItem('managepro_auth_user');
-      localStorage.removeItem('managepro_current_store');
-      localStorage.removeItem('managepro_gemini_key');
+  const dashGreeting = document.getElementById('dashHeroGreeting');
+  if (dashGreeting) dashGreeting.textContent = `Selamat Datang, ${store.name}!`;
 
-      document.getElementById('appScreen')?.classList.add('hidden');
-      document.getElementById('loginScreen')?.classList.remove('hidden');
-      toggleAuthView('login');
-      showToast('Sesi Berakhir', 'Anda telah keluar dari workstation.', 'info');
-      lucide.createIcons();
-    }
+  const avatar = document.getElementById('sidebarUserAvatar');
+  if (avatar) avatar.textContent = (user.name || 'US').slice(0, 2).toUpperCase();
+
+  const roleText = document.getElementById('sidebarUserRoleText');
+  if (roleText) {
+    roleText.innerHTML = `
+      <i data-lucide="${user.role === 'owner' ? 'shield' : 'calculator'}" class="w-3 h-3 ${user.role === 'owner' ? 'text-amber-500' : 'text-primary'}"></i>
+      ${user.role === 'owner' ? 'Owner & Admin' : 'Kasir & Barista'}
+    `;
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function handleLogout() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  appState.currentUser = null;
+  appState.currentStore = null;
+  appState.settings = null;
+  appState.inventory = [];
+  appState.products = [];
+  appState.transactions = [];
+  appState.cashLogs = [];
+  appState.attendance = [];
+  appState.purchaseHistory = [];
+  appState.heldOrders = [];
+  appState.activeShift = null;
+  appState.cart = [];
+  appState.geminiApiKey = '';
+  localStorage.removeItem('managepro_auth_user');
+  localStorage.removeItem('managepro_current_store');
+  localStorage.removeItem('managepro_gemini_key');
+
+  document.getElementById('appScreen')?.classList.add('hidden');
+  document.getElementById('loginScreen')?.classList.remove('hidden');
+
+  // Ganti baris ini:
+  switchAuthMode('login');
+
+  showToast('Sesi Berakhir', 'Anda telah keluar dari workstation.', 'info');
+  lucide.createIcons();
+}
 
     function openForgotPasswordModal() {
       const adminPhone = appState.currentStore?.adminPhone || appState.settings?.adminPhone || '6281234567890';
@@ -5226,19 +5244,20 @@
 
 // Logika filter pencarian pada modul panduan
 
-    function filterGuideTopics(query) {
-      const q = (query || '').toLowerCase().trim();
-      const cards = document.querySelectorAll('.guide-card');
-      cards.forEach(card => {
-        const keywords = card.getAttribute('data-keywords') || '';
-        const text = card.textContent.toLowerCase();
-        if (!q || keywords.includes(q) || text.includes(q)) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }F
-      });
-    }
+	// Perbaikan fungsi pencarian panduan (menghilangkan sintaks typo '}F')
+	function filterGuideTopics(query) {
+	const q = (query || '').toLowerCase().trim();
+	const cards = document.querySelectorAll('.guide-card');
+	cards.forEach(card => {
+		const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+		const text = card.textContent.toLowerCase();
+		if (!q || keywords.includes(q) || text.includes(q)) {
+		card.classList.remove('hidden');
+		} else {
+		card.classList.add('hidden');
+		}
+	});
+	}
 
     function refreshActiveView() {
       if (appState.activeTab === 'dashboard') renderDashboardView();
@@ -5437,22 +5456,40 @@
       renderCartItems();
     }
 
-    function renderCartItems() {
-      const container = document.getElementById('cartItemsContainer');
-      if (!container) return;
+function renderCartItems() {
+  const container = document.getElementById('cartItemsContainer');
+  if (!container) return;
 
-      const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-      const taxRate = Number(appState.settings?.taxRate) || 0;
-      const taxAmount = Math.round(subtotal * (taxRate / 100));
-      const shipping = appState.orderType === 'Delivery' ? (appState.shippingFee || 0) : 0;
-      const grandTotal = subtotal + taxAmount + shipping;
+  const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  const taxRate = Number(appState.settings?.taxRate) || 0;
+  const taxAmount = Math.round(subtotal * (taxRate / 100));
+  const shipping = appState.orderType === 'Delivery' ? (appState.shippingFee || 0) : 0;
+  const grandTotal = subtotal + taxAmount + shipping;
+  const totalQty = appState.cart.reduce((s, i) => s + i.qty, 0);
 
-      document.getElementById('cartTotalItemsCount').textContent = String(appState.cart.reduce((s, i) => s + i.qty, 0));
-      document.getElementById('cartSubtotalText').textContent = formatCurrency(subtotal);
-      document.getElementById('cartTaxPercent').textContent = String(taxRate);
-      document.getElementById('cartTaxAmountText').textContent = formatCurrency(taxAmount);
-      document.getElementById('cartShippingAmountText').textContent = formatCurrency(shipping);
-      document.getElementById('cartGrandTotalText').textContent = formatCurrency(grandTotal);
+  // Gunakan pengecekan elemen sebelum mengisi teks (Safe Guard)
+  const qtyLabel = document.getElementById('summaryQtyLabel');
+  if (qtyLabel) qtyLabel.textContent = `Subtotal (${totalQty} item)`;
+
+  const floatQty = document.getElementById('floatingCartCount');
+  if (floatQty) floatQty.textContent = String(totalQty);
+
+  const subtotalEl = document.getElementById('cartSubtotalText');
+  if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
+
+  const taxPctEl = document.getElementById('cartTaxPercent');
+  if (taxPctEl) taxPctEl.textContent = String(taxRate);
+
+  const taxAmtEl = document.getElementById('cartTaxAmountText');
+  if (taxAmtEl) taxAmtEl.textContent = formatCurrency(taxAmount);
+
+  const shipAmtEl = document.getElementById('cartShippingAmountText');
+  if (shipAmtEl) shipAmtEl.textContent = formatCurrency(shipping);
+
+  const grandTotalEl = document.getElementById('cartGrandTotalText');
+  if (grandTotalEl) grandTotalEl.textContent = formatCurrency(grandTotal);
+
+  // Lanjutan rendering daftar item keranjang...
 
       if (appState.cart.length === 0) {
         container.innerHTML = `
@@ -5503,6 +5540,11 @@
       `).join('');
       lucide.createIcons();
     }
+
+function setSafeText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
 
     function updateCheckoutTotals() {
       const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
@@ -6088,6 +6130,8 @@ let posActiveOptionProduct = null;
       calculateChangeAmount();
     }
 
+
+
     // 7. Selesaikan Transaksi, Potong Stok Gudang & Buka Nota
     async function finalizeTransaction() {
       if (appState.isFinalizing) return;
@@ -6162,11 +6206,14 @@ let posActiveOptionProduct = null;
           type: 'in'
         });
 
-        appState.transactions.unshift(newTrx);
-        saveState();
+        // Di dalam finalizeTransaction() sebelum reset
+		saveState();
 
-        // Kirim sinkronisasi ke backend Google Apps Script secara asynchronous
-        sendPostToGAS('SAVE_TRANSACTION', newTrx);
+		// Kirim data transaksi kasir DAN update stok bahan baku sekaligus ke backend Google Apps Script
+		sendPostToGAS('SAVE_TRANSACTION', {
+		...newTrx,
+		updatedInventory: appState.inventory // Kirim kondisi stok terpotong terbaru agar cloud sinkron
+		});
 
         // Format Teks WhatsApp Struk
         let invoice = `*${(appState.currentStore?.name || 'MANAGEPRO F&B').toUpperCase()}*\n`;
@@ -6447,35 +6494,48 @@ let posActiveOptionProduct = null;
       printIsolatedDocument(receiptHtml, `Struk #${trx.id}`);
     }
 
-    function printKitchenTicket() {
-      const items = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.items) || appState.cart;
-      const orderType = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.type) || appState.orderType;
-      const customer = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.customer) || document.getElementById('orderCustomerInput')?.value || 'Meja';
-      const courier = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.deliveryCourier) || appState.deliveryCourier;
+	// Penyelesaian fungsi printKitchenTicket yang terpotong
+	function printKitchenTicket() {
+	const items = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.items) || appState.cart;
+	const orderType = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.type) || appState.orderType;
+	const customer = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.customer) || document.getElementById('orderCustomerInput')?.value || 'Meja Umum';
+	const courier = (appState.lastCompletedTransaction && appState.lastCompletedTransaction.deliveryCourier) || appState.deliveryCourier;
 
-      let ticket = `
-        <div class="center bold" style="font-size: 14px; border-bottom: 2px solid #000; padding-bottom: 4px;">
-          TIKET PESANAN DAPUR / BAR
-        </div>
-        <div style="margin: 6px 0; font-size: 10px;">
-          <div>Tipe: <strong>${orderType}</strong> ${orderType === 'Delivery' ? `(${courier})` : ''}</div>
-          <div>Meja / Pemesan: <strong>${customer}</strong></div>
-          <div>Waktu: ${new Date().toLocaleTimeString('id-ID')}</div>
-        </div>
-        <div class="cut"></div>
-        <table style="font-size: 12px; font-weight: bold;">
-          ${items.map(item => `
-            <tr>
-              <td style="width: 25px;">[ ]</td>
-              <td>${item.qty}x ${item.name} ${item.notes ? `<br><span style="font-size: 10px; font-style: italic; font-weight: normal;">* ${item.notes}</span>` : ''}</td>
-            </tr>
-          `).join('')}
-        </table>
-        <div class="cut"></div>
-      `;
+	let ticket = `
+		<div class="center bold" style="font-size: 14px; border-bottom: 2px solid #000; padding-bottom: 4px;">
+		TIKET PESANAN DAPUR / BAR
+		</div>
+		<div style="margin: 6px 0; font-size: 10px;">
+		<div>Tipe: <strong>${orderType}</strong> ${orderType === 'Delivery' ? `(${courier})` : ''}</div>
+		<div>Meja / Pemesan: <strong>${escapeHtml(customer)}</strong></div>
+		<div>Waktu: ${new Date().toLocaleTimeString('id-ID')}</div>
+		</div>
+		<div class="cut"></div>
+		<table>
+		<thead>
+			<tr style="border-bottom: 1px solid #000;">
+			<th style="text-align:left;">Menu</th>
+			<th class="center" style="width: 35px;">Qty</th>
+			</tr>
+		</thead>
+		<tbody>
+			${items.map(it => `
+			<tr>
+				<td class="bold">
+				${escapeHtml(it.name)}${it.variant && it.variant !== 'Standard' ? `<br><span style="font-size: 9px; font-weight: normal;">[${escapeHtml(it.variant)}]</span>` : ''}
+				${it.notes ? `<br><span style="font-size: 9px; font-style: italic; color: #333;">Catatan: ${escapeHtml(it.notes)}</span>` : ''}
+				</td>
+				<td class="center bold" style="font-size: 13px; vertical-align: top;">x${it.qty}</td>
+			</tr>
+			`).join('')}
+		</tbody>
+		</table>
+		<div class="cut"></div>
+		<div class="center" style="font-size: 9px; margin-top: 4px;">Harap siapkan pesanan sesuai antrean.</div>
+	`;
 
-      printIsolatedDocument(ticket, 'Tiket Dapur');
-    }
+	printIsolatedDocument(ticket, 'Tiket Dapur');
+	}
 
     function resetOrder() {
       appState.cart = [];
@@ -6486,18 +6546,16 @@ let posActiveOptionProduct = null;
       closeModal('invoiceModal');
     }
 
-    function copyInvoiceText() {
-      const txt = appState.currentInvoiceText;
-      try {
-        const temp = document.createElement('textarea');
-        temp.value = txt;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        showToast('Teks Disalin', 'Format struk WhatsApp siap dibagikan.', 'success');
-      } catch (_) {}
-    }
+	// Salin teks nota untuk WhatsApp
+	function copyInvoiceText() {
+	if (!appState.currentInvoiceText) {
+		showToast('Teks Kosong', 'Tidak ada data nota yang dapat disalin.', 'warning');
+		return;
+	}
+	navigator.clipboard.writeText(appState.currentInvoiceText)
+		.then(() => showToast('Berhasil Disalin', 'Format struk WhatsApp siap ditempelkan.', 'success'))
+		.catch(() => showToast('Gagal Menyalin', 'Izin clipboard ditolak browser.', 'error'));
+	}
 
     function openAiInvoiceModal() {
       document.getElementById('aiUploadSection').classList.remove('hidden');
@@ -9821,6 +9879,95 @@ let dashboardChartRangeDays = 7;
       });
     }
 
+// Toggle menu dropdown lonceng notifikasi header
+function toggleNotificationDropdown() {
+  const dd = document.getElementById('notifDropdown');
+  if (dd) dd.classList.toggle('hidden');
+}
+
+// Handler modal presensi shift kasir
+function openClockModal() {
+  const staffSelect = document.getElementById('terminalStaffSelect');
+  if (staffSelect) {
+    const currentStaff = appState.currentUser?.name || 'Kasir';
+    staffSelect.innerHTML = `<option value="${escapeHtml(currentStaff)}" selected>${escapeHtml(currentStaff)}</option>`;
+  }
+  const clockText = document.getElementById('terminalLiveClockText');
+  if (clockText) clockText.textContent = new Date().toLocaleTimeString('id-ID');
+  openModal('modalCatatPresensi');
+}
+
+// Eksekusi masuk atau keluar shift dari terminal
+function eksekusiPresensiTerminal(type) {
+  const staff = document.getElementById('terminalStaffSelect')?.value || appState.currentUser?.name || 'Kasir';
+  const shiftType = document.querySelector('input[name="terminalShiftChoice"]:checked')?.value || 'Shift Pagi';
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString('id-ID');
+
+  if (type === 'in') {
+    appState.activeShift = {
+      storeId: appState.currentStore?.storeId,
+      staffName: staff,
+      shiftType: shiftType,
+      clockInTime: now.toISOString(),
+      clockInLabel: `${dateStr} ${timeStr}`
+    };
+    saveState();
+    checkActiveShiftTimer();
+    showToast('Shift Dimulai', `Absen masuk berhasil untuk ${staff}.`, 'success');
+  } else {
+    if (!appState.activeShift) {
+      showToast('Belum Masuk', 'Tidak ada shift aktif yang perlu di-clock out.', 'warning');
+      return;
+    }
+    const record = {
+      id: 'ATT-' + Date.now().toString().slice(-6),
+      storeId: appState.currentStore?.storeId,
+      name: staff,
+      shiftType: shiftType,
+      date: dateStr,
+      clockIn: appState.activeShift.clockInLabel || `${dateStr} ${timeStr}`,
+      clockOut: `${dateStr} ${timeStr}`,
+      status: 'Selesai'
+    };
+    appState.attendance.unshift(record);
+    appState.activeShift = null;
+    saveState();
+    checkActiveShiftTimer();
+    showToast('Shift Selesai', `Shift berakhir untuk ${staff}. Catatan presensi tersimpan.`, 'info');
+  }
+  closeModal('modalCatatPresensi');
+}
+
+// Timer indikator durasi shift kasir pada header
+function checkActiveShiftTimer() {
+  const pill = document.getElementById('headerStaffShiftPill');
+  const timerText = document.getElementById('headerShiftTimerText');
+  if (!pill) return;
+
+  if (shiftTimerInterval) clearInterval(shiftTimerInterval);
+
+  if (appState.activeShift && appState.activeShift.clockInTime) {
+    pill.classList.remove('hidden');
+    pill.classList.add('inline-flex');
+
+    const start = new Date(appState.activeShift.clockInTime).getTime();
+    const updateTime = () => {
+      const diffSec = Math.floor((Date.now() - start) / 1000);
+      const h = String(Math.floor(diffSec / 3600)).padStart(2, '0');
+      const m = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
+      const s = String(diffSec % 60).padStart(2, '0');
+      if (timerText) timerText.textContent = `Shift: ${h}:${m}:${s}`;
+    };
+    updateTime();
+    shiftTimerInterval = setInterval(updateTime, 1000);
+  } else {
+    pill.classList.add('hidden');
+    pill.classList.remove('inline-flex');
+  }
+}
+
     function toggleNotificationDropdown() {
       document.getElementById('notifDropdown')?.classList.toggle('hidden');
     }
@@ -9904,11 +10051,584 @@ let dashboardChartRangeDays = 7;
       } else {
         document.getElementById('loginScreen')?.classList.remove('hidden');
         document.getElementById('appScreen')?.classList.add('hidden');
-        toggleAuthView('login');
+        switchAuthMode('login');
       }
 
       lucide.createIcons();
     });
+	/* ==========================================================================
+   MODUL BUKU KAS, LAPORAN LABA RUGI (P&L), & ARUS KAS
+   ========================================================================== */
+
+let cashFilterType = 'all'; // 'all' | 'in' | 'out'
+let cashReportPeriod = 'month'; // 'today' | '7days' | 'month' | 'last_month'
+let cashflowChartInstance = null;
+let currentManualFlowType = 'out'; // 'in' | 'out'
+
+// 1. FUNGSI UTAMA: RENDER TABEL BUKU KAS & KPI
+function renderCashLogsTable() {
+  const desktopTbody = document.getElementById('cashLogsDesktopTableBody');
+  const mobileContainer = document.getElementById('cashLogsMobileContainer');
+  const countLabel = document.getElementById('cashLogsCountText');
+
+  const searchQuery = (document.getElementById('inputCashSearch')?.value || '').toLowerCase().trim();
+  const selectedCat = document.getElementById('selectCashCategory')?.value || 'all';
+
+  // Saring data berdasarkan periode waktu
+  const periodFilteredLogs = filterLogsByPeriod(appState.cashLogs || [], cashReportPeriod);
+
+  // Hitung KPI Keuangan Riil pada periode terpilih (sebelum filter jenis/search)
+  let totalIn = 0;
+  let totalOut = 0;
+  periodFilteredLogs.forEach(log => {
+    const val = Number(log.amount) || 0;
+    if (log.type === 'in') totalIn += val;
+    else if (log.type === 'out') totalOut += val;
+  });
+  const netBalance = totalIn - totalOut;
+
+  // Tampilkan angka ke kartu KPI
+  const elIn = document.getElementById('statTotalCashIn');
+  const elOut = document.getElementById('statTotalCashOut');
+  const elNet = document.getElementById('statNetBalance');
+  if (elIn) elIn.textContent = formatCurrency(totalIn);
+  if (elOut) elOut.textContent = formatCurrency(totalOut);
+  if (elNet) elNet.textContent = formatCurrency(netBalance);
+
+  // Saring data untuk tampilan tabel (Search, Tipe In/Out, Kategori)
+  const displayLogs = periodFilteredLogs.filter(log => {
+    const matchesSearch = !searchQuery || 
+      (log.desc || '').toLowerCase().includes(searchQuery) ||
+      (log.ref || '').toLowerCase().includes(searchQuery);
+    const matchesType = (cashFilterType === 'all') || (log.type === cashFilterType);
+    const matchesCat = (selectedCat === 'all') || (log.category === selectedCat);
+    return matchesSearch && matchesType && matchesCat;
+  });
+
+  if (countLabel) {
+    countLabel.textContent = `Menampilkan ${displayLogs.length} dari ${periodFilteredLogs.length} mutasi kas`;
+  }
+
+  // Render Tabel Desktop
+  if (desktopTbody) {
+    if (displayLogs.length === 0) {
+      desktopTbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-12 text-center text-slate-400 font-bold">
+            Tidak ada transaksi kas yang sesuai dengan filter.
+          </td>
+        </tr>
+      `;
+    } else {
+      desktopTbody.innerHTML = displayLogs.map(log => {
+        const isIncome = log.type === 'in';
+        const categoryLabel = log.category || (isIncome ? 'Penjualan Kasir' : 'Operasional');
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3.5 px-6">
+              <div class="font-extrabold text-slate-800 text-xs">${escapeHtml(log.desc || '-')}</div>
+              <div class="text-[10px] text-slate-400 font-mono mt-0.5">${escapeHtml(log.date || '-')} &bull; Ref: ${escapeHtml(log.ref || '-')}</div>
+            </td>
+            <td class="py-3.5 px-6">
+              <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${
+                isIncome ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
+              }">
+                ${escapeHtml(categoryLabel)}
+              </span>
+            </td>
+            <td class="py-3.5 px-6 text-right tabular-nums font-black ${isIncome ? 'text-emerald-600' : 'text-slate-300'}">
+              ${isIncome ? formatCurrency(log.amount) : '-'}
+            </td>
+            <td class="py-3.5 px-6 text-right tabular-nums font-black ${!isIncome ? 'text-rose-600' : 'text-slate-300'}">
+              ${!isIncome ? formatCurrency(log.amount) : '-'}
+            </td>
+            <td class="py-3.5 px-6 text-right">
+              ${log.ref && log.ref.startsWith('CSH-MANUAL') ? `
+                <button onclick="deleteCashLog('${escapeHtml(log.id)}')" title="Hapus Mutasi" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              ` : `
+                <span class="text-[10px] text-slate-400 font-semibold italic">Otomatis POS</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
+
+  // Render Tampilan Mobile (Stacked Cards)
+  if (mobileContainer) {
+    if (displayLogs.length === 0) {
+      mobileContainer.innerHTML = `
+        <div class="py-8 text-center text-slate-400 font-bold text-xs">
+          Belum ada mutasi kas untuk periode ini.
+        </div>
+      `;
+    } else {
+      mobileContainer.innerHTML = displayLogs.map(log => {
+        const isIncome = log.type === 'in';
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="font-extrabold text-xs text-slate-900">${escapeHtml(log.desc || '-')}</p>
+                <p class="text-[10px] text-slate-400 font-mono mt-0.5">${escapeHtml(log.date || '-')} &bull; ${escapeHtml(log.ref || '-')}</p>
+              </div>
+              <span class="text-xs font-black tabular-nums ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">
+                ${isIncome ? '+' : '-'}${formatCurrency(log.amount)}
+              </span>
+            </div>
+            <div class="flex items-center justify-between pt-1 border-t border-slate-50 text-[10px]">
+              <span class="px-2 py-0.5 rounded-md font-bold ${isIncome ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">
+                ${escapeHtml(log.category || (isIncome ? 'Penjualan' : 'Operasional'))}
+              </span>
+              ${log.ref && log.ref.startsWith('CSH-MANUAL') ? `
+                <button onclick="deleteCashLog('${escapeHtml(log.id)}')" class="text-rose-600 font-bold hover:underline">Hapus</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // Perbarui grafik arus kas & breakdown pengeluaran
+  renderExpenseRankedBars(periodFilteredLogs);
+  renderCashflowChart(periodFilteredLogs);
+
+  // Perbarui laporan laba rugi (P&L) akrual
+  renderProfitAndLossReport(periodFilteredLogs);
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// 2. HELPER FILTER PERIODE WAKTU
+function filterLogsByPeriod(logs, period) {
+  const now = new Date();
+  const todayStr = now.toLocaleDateString('id-ID');
+
+  return logs.filter(item => {
+    if (!item.date) return false;
+    const itemDate = parseDateString(item.date);
+    if (!itemDate) return true;
+
+    if (period === 'today') {
+      return item.date.includes(todayStr) || isSameDay(itemDate, now);
+    } else if (period === '7days') {
+      const diffTime = now.getTime() - itemDate.getTime();
+      const diffDays = diffTime / (1000 * 3600 * 24);
+      return diffDays >= 0 && diffDays <= 7;
+    } else if (period === 'month') {
+      return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
+    } else if (period === 'last_month') {
+      const prevMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+      const prevYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+      return itemDate.getMonth() === prevMonth && itemDate.getFullYear() === prevYear;
+    }
+    return true;
+  });
+}
+
+function parseDateString(dateStr) {
+  try {
+    if (dateStr.includes('/')) {
+      const parts = dateStr.split(',')[0].split('/');
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+    return new Date(dateStr);
+  } catch (_) {
+    return null;
+  }
+}
+
+function isSameDay(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
+}
+
+// 3. SWITCHER SUB-TAB: BUKU KAS VS LABA RUGI
+function switchReportTab(tabKey) {
+  const contentBukuKas = document.getElementById('tab-content-buku-kas');
+  const contentLabaRugi = document.getElementById('tab-content-laba-rugi');
+  const btnBukuKas = document.getElementById('tab-btn-buku-kas');
+  const btnLabaRugi = document.getElementById('tab-btn-laba-rugi');
+  const indBukuKas = document.getElementById('tab-indicator-buku-kas');
+  const indLabaRugi = document.getElementById('tab-indicator-laba-rugi');
+
+  if (tabKey === 'buku-kas') {
+    contentBukuKas?.classList.remove('hidden');
+    contentLabaRugi?.classList.add('hidden');
+    btnBukuKas?.classList.replace('text-slate-400', 'text-slate-900');
+    btnBukuKas?.classList.add('font-black');
+    btnLabaRugi?.classList.replace('text-slate-900', 'text-slate-400');
+    btnLabaRugi?.classList.remove('font-black');
+    indBukuKas?.classList.remove('hidden');
+    indLabaRugi?.classList.add('hidden');
+  } else {
+    contentBukuKas?.classList.add('hidden');
+    contentLabaRugi?.classList.remove('hidden');
+    btnLabaRugi?.classList.replace('text-slate-400', 'text-slate-900');
+    btnLabaRugi?.classList.add('font-black');
+    btnBukuKas?.classList.replace('text-slate-900', 'text-slate-400');
+    btnBukuKas?.classList.remove('font-black');
+    indLabaRugi?.classList.remove('hidden');
+    indBukuKas?.classList.add('hidden');
+  }
+}
+
+// 4. KONTROL PERIODE LAPORAN (Hari ini, 7 hari, Bulan ini, Bulan lalu)
+function changeReportPeriod(period, btn) {
+  cashReportPeriod = period;
+  document.querySelectorAll('.report-period-btn').forEach(b => {
+    b.className = "report-period-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer";
+  });
+  if (btn) {
+    btn.className = "report-period-btn px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-slate-900 shadow-xs transition cursor-pointer";
+  }
+
+  // Update label display tanggal
+  const dateRangeEl = document.getElementById('reportDateRangeDisplay');
+  const now = new Date();
+  if (dateRangeEl) {
+    if (period === 'today') dateRangeEl.textContent = now.toLocaleDateString('id-ID');
+    else if (period === '7days') dateRangeEl.textContent = '7 Hari Terakhir';
+    else if (period === 'month') dateRangeEl.textContent = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    else if (period === 'last_month') dateRangeEl.textContent = 'Bulan Lalu';
+  }
+
+  renderCashLogsTable();
+}
+
+// 5. FILTER TIPE KAS (Semua, Uang Masuk, Uang Keluar)
+function filterCashType(type, btn) {
+  cashFilterType = type;
+  document.querySelectorAll('.cash-type-pill').forEach(b => {
+    b.className = "cash-type-pill px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 cursor-pointer";
+  });
+  if (btn) {
+    btn.className = "cash-type-pill px-3 py-1.5 rounded-lg text-xs font-black bg-slate-900 text-white cursor-pointer";
+  }
+  renderCashLogsTable();
+}
+
+function applyCashbookFilters() {
+  renderCashLogsTable();
+}
+
+// 6. RANKED EXPENSE BREAKDOWN (Alokasi Pengeluaran Kasir/Gudang)
+function renderExpenseRankedBars(logs) {
+  const container = document.getElementById('expenseRankedBarsContainer');
+  if (!container) return;
+
+  const expenses = logs.filter(l => l.type === 'out');
+  const totalOut = expenses.reduce((sum, l) => sum + (Number(l.amount) || 0), 0);
+
+  if (totalOut === 0) {
+    container.innerHTML = `
+      <div class="py-6 text-center text-slate-400 text-xs font-bold">
+        Belum ada catatan pengeluaran pada periode ini.
+      </div>
+    `;
+    return;
+  }
+
+  // Kelompokkan per kategori
+  const catTotals = {};
+  expenses.forEach(l => {
+    const cat = l.category || 'Operasional Lainnya';
+    catTotals[cat] = (catTotals[cat] || 0) + (Number(l.amount) || 0);
+  });
+
+  const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+
+  container.innerHTML = sortedCats.map(([catName, amount]) => {
+    const percent = Math.round((amount / totalOut) * 100);
+    return `
+      <div class="space-y-1.5">
+        <div class="flex justify-between text-xs">
+          <span class="font-extrabold text-slate-700">${escapeHtml(catName)}</span>
+          <span class="font-bold text-slate-900 tabular-nums">${formatCurrency(amount)} (${percent}%)</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+          <div class="h-full bg-rose-500 rounded-full" style="width: ${percent}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 7. GRAFIK ARUS KAS (Chart.js)
+function renderCashflowChart(logs) {
+  const canvas = document.getElementById('cashflowReportChartCanvas');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  // Siapkan data tanggal harian
+  const dailyData = {};
+  logs.forEach(l => {
+    const dateKey = (l.date || '').split(',')[0].trim();
+    if (!dailyData[dateKey]) dailyData[dateKey] = { in: 0, out: 0 };
+    if (l.type === 'in') dailyData[dateKey].in += Number(l.amount) || 0;
+    else dailyData[dateKey].out += Number(l.amount) || 0;
+  });
+
+  const labels = Object.keys(dailyData).slice(-7);
+  const dataIn = labels.map(lbl => dailyData[lbl].in);
+  const dataOut = labels.map(lbl => dailyData[lbl].out);
+
+  if (cashflowChartInstance) {
+    cashflowChartInstance.destroy();
+  }
+
+  cashflowChartInstance = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels.length ? labels : ['Hari Ini'],
+      datasets: [
+        {
+          label: 'Uang Masuk',
+          data: dataIn.length ? dataIn : [0],
+          backgroundColor: '#10B981',
+          borderRadius: 6
+        },
+        {
+          label: 'Uang Keluar',
+          data: dataOut.length ? dataOut : [0],
+          backgroundColor: '#F43F5E',
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: { 
+          beginAtZero: true,
+          ticks: {
+            callback: (v) => 'Rp ' + (v >= 1000 ? (v / 1000) + 'k' : v)
+          }
+        }
+      }
+    }
+  });
+}
+
+// 8. PERHITUNGAN LAPORAN LABA RUGI (P&L AKRUAL)
+function renderProfitAndLossReport(periodLogs) {
+  // 1. Pendapatan Kasir
+  const revenue = periodLogs
+    .filter(l => l.type === 'in')
+    .reduce((sum, l) => sum + (Number(l.amount) || 0), 0);
+
+  // 2. Estimasi HPP Resep Terjual (Akrual dari transaksi POS)
+  let totalHppSold = 0;
+  const periodTrx = filterLogsByPeriod(appState.transactions || [], cashReportPeriod);
+  periodTrx.forEach(trx => {
+    (trx.items || []).forEach(it => {
+      const prod = appState.products.find(p => String(p.id) === String(it.id));
+      if (prod) {
+        const hppInfo = calculateProductHpp(prod);
+        totalHppSold += (hppInfo.hppPerMenu || 0) * (it.qty || 1);
+      }
+    });
+  });
+
+  const grossProfit = revenue - totalHppSold;
+  const grossMarginPct = revenue > 0 ? ((grossProfit / revenue) * 100).toFixed(1) : '0.0';
+
+  // 3. Biaya Operasional (OPEX)
+  const opexLogs = periodLogs.filter(l => l.type === 'out');
+  let opexPayroll = 0;
+  let opexUtilities = 0;
+  let opexRent = 0;
+  let opexOthers = 0;
+
+  opexLogs.forEach(l => {
+    const cat = l.category || '';
+    const amt = Number(l.amount) || 0;
+    if (cat.includes('Upah') || cat.includes('Gaji')) opexPayroll += amt;
+    else if (cat.includes('Listrik') || cat.includes('Air')) opexUtilities += amt;
+    else if (cat.includes('Sewa')) opexRent += amt;
+    else if (!cat.includes('Bahan Baku')) opexOthers += amt;
+  });
+
+  const totalOpex = opexPayroll + opexUtilities + opexRent + opexOthers;
+  const netProfit = grossProfit - totalOpex;
+  const netMarginPct = revenue > 0 ? ((netProfit / revenue) * 100).toFixed(1) : '0.0';
+
+  // Update Teks P&L Statement
+  const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setTxt('plRowRevenue', formatCurrency(revenue));
+  setTxt('plRowHpp', `(${formatCurrency(totalHppSold)})`);
+  setTxt('plRowHppPercent', revenue > 0 ? `${((totalHppSold / revenue) * 100).toFixed(1)}%` : '0%');
+  setTxt('plRowGrossProfit', formatCurrency(grossProfit));
+  setTxt('plRowGrossMargin', `${grossMarginPct}%`);
+  setTxt('plRowOpexPayroll', `(${formatCurrency(opexPayroll)})`);
+  setTxt('plRowOpexUtilities', `(${formatCurrency(opexUtilities)})`);
+  setTxt('plRowOpexRent', `(${formatCurrency(opexRent)})`);
+  setTxt('plRowOpexOthers', `(${formatCurrency(opexOthers)})`);
+  setTxt('plRowTotalOpex', `(${formatCurrency(totalOpex)})`);
+  setTxt('plRowTotalOpexPercent', revenue > 0 ? `${((totalOpex / revenue) * 100).toFixed(1)}%` : '0%');
+  setTxt('plRowNetProfit', formatCurrency(netProfit));
+  setTxt('plRowNetMarginFinal', `${netMarginPct}%`);
+  setTxt('plNetMarginBadge', `Margin Bersih ${netMarginPct}%`);
+
+  // Visual Bar Segmentasi (Dari Setiap Rp 100)
+  const barHpp = document.getElementById('barSegmentHpp');
+  const barOpex = document.getElementById('barSegmentOpex');
+  const barProfit = document.getElementById('barSegmentProfit');
+  if (revenue > 0) {
+    const hppPct = Math.max(0, Math.min(100, Math.round((totalHppSold / revenue) * 100)));
+    const opexPct = Math.max(0, Math.min(100, Math.round((totalOpex / revenue) * 100)));
+    const profitPct = Math.max(0, 100 - hppPct - opexPct);
+    if (barHpp) barHpp.style.width = `${hppPct}%`;
+    if (barOpex) barOpex.style.width = `${opexPct}%`;
+    if (barProfit) barProfit.style.width = `${profitPct}%`;
+    setTxt('barTextHpp', `HPP ${hppPct}%`);
+    setTxt('barTextOpex', `Ops ${opexPct}%`);
+    setTxt('barTextProfit', `Laba ${profitPct}%`);
+  }
+
+  // Rekonsiliasi Keuangan (Laba Bersih vs Saldo Kas)
+  setTxt('reconNetProfit', formatCurrency(netProfit));
+  setTxt('reconCashBalance', formatCurrency(revenue - (totalOpex + totalHppSold)));
+}
+
+// 9. MODAL: CATAT KAS MANUAL
+function openManualCashModal() {
+  const dateInput = document.getElementById('manualCashDate');
+  if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+  const catSelect = document.getElementById('manualCashCategorySelect');
+  if (catSelect) {
+    catSelect.innerHTML = `
+      <option value="Operasional Lainnya">Operasional Lainnya</option>
+      <option value="Listrik dan Air">Listrik dan Air</option>
+      <option value="Sewa Tempat">Sewa Tempat</option>
+      <option value="Packaging">Packaging</option>
+      <option value="Bahan Baku">Bahan Baku & Restock</option>
+      <option value="Setoran Modal">Setoran Modal (Kas Masuk)</option>
+    `;
+  }
+
+  setManualCashFlowType('out');
+  updateManualCashPreview();
+  openModal('modalManualCash');
+}
+
+function setManualCashFlowType(type) {
+  currentManualFlowType = type;
+  const btnOut = document.getElementById('btnManualFlowOut');
+  const btnIn = document.getElementById('btnManualFlowIn');
+
+  if (type === 'out') {
+    btnOut.className = "h-12 rounded-xl flex items-center justify-center gap-2 font-extrabold text-xs transition border-2 border-rose-500 bg-rose-50 text-rose-700 cursor-pointer";
+    btnIn.className = "h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-xs transition border-2 border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer";
+  } else {
+    btnIn.className = "h-12 rounded-xl flex items-center justify-center gap-2 font-extrabold text-xs transition border-2 border-emerald-500 bg-emerald-50 text-emerald-700 cursor-pointer";
+    btnOut.className = "h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-xs transition border-2 border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer";
+  }
+  updateManualCashPreview();
+}
+
+function updateManualCashPreview() {
+  const amount = parseFloat(document.getElementById('manualCashAmount')?.value) || 0;
+  const currentTotalIn = (appState.cashLogs || []).filter(l => l.type === 'in').reduce((s, l) => s + (Number(l.amount) || 0), 0);
+  const currentTotalOut = (appState.cashLogs || []).filter(l => l.type === 'out').reduce((s, l) => s + (Number(l.amount) || 0), 0);
+  const currentBal = currentTotalIn - currentTotalOut;
+
+  const delta = (currentManualFlowType === 'in') ? amount : -amount;
+  const newBal = currentBal + delta;
+
+  const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setTxt('manualPreviewCurrentBalance', formatCurrency(currentBal));
+  setTxt('manualPreviewDelta', (delta >= 0 ? '+' : '') + formatCurrency(delta));
+  setTxt('manualPreviewNewBalance', formatCurrency(newBal));
+}
+
+async function handleManualCashSubmit(e) {
+  e.preventDefault();
+  const desc = document.getElementById('manualCashDesc')?.value.trim();
+  const amount = parseFloat(document.getElementById('manualCashAmount')?.value) || 0;
+  const dateVal = document.getElementById('manualCashDate')?.value || new Date().toISOString().split('T')[0];
+  const cat = document.getElementById('manualCashCategorySelect')?.value || 'Operasional Lainnya';
+
+  if (!desc || amount <= 0) {
+    showToast('Input Tidak Lengkap', 'Keterangan dan nominal kas wajib diisi dengan benar.', 'warning');
+    return;
+  }
+
+  const newLog = {
+    id: 'CSH-' + Date.now().toString().slice(-6),
+    storeId: appState.currentStore?.storeId || '',
+    date: dateVal,
+    ref: 'CSH-MANUAL',
+    desc: desc,
+    amount: amount,
+    type: currentManualFlowType,
+    category: cat
+  };
+
+  appState.cashLogs.unshift(newLog);
+  saveState();
+  renderCashLogsTable();
+  closeModal('modalManualCash');
+
+  // Kirim catatan kas ke Google Apps Script backend
+  sendPostToGAS('SAVE_CASH_LOG', newLog);
+  showToast('Kas Dicatat', `Transaksi kas manual berhasil disimpan.`, 'success');
+}
+
+function deleteCashLog(id) {
+  if (!confirm('Hapus catatan kas ini?')) return;
+  appState.cashLogs = (appState.cashLogs || []).filter(l => String(l.id) !== String(id));
+  saveState();
+  renderCashLogsTable();
+  showToast('Catatan Dihapus', 'Mutasi kas telah dihapus dari sistem.', 'info');
+}
+
+// 10. FITUR EKSPOR LAPORAN (CSV & PRINT PDF)
+function toggleExportDropdown() {
+  const dd = document.getElementById('export-dropdown');
+  if (dd) dd.classList.toggle('hidden');
+}
+
+function triggerReportExport(format) {
+  toggleExportDropdown();
+  if (format === 'csv') {
+    exportCashLogsToCsv();
+  } else {
+    window.print();
+  }
+}
+
+function exportCashLogsToCsv() {
+  const logs = appState.cashLogs || [];
+  if (!logs.length) {
+    showToast('Data Kosong', 'Tidak ada data buku kas yang bisa diekspor.', 'warning');
+    return;
+  }
+
+  let csv = 'ID,Tanggal,Referensi,Keterangan,Kategori,Tipe,Nominal (Rp)\n';
+  logs.forEach(l => {
+    csv += `"${l.id}","${l.date}","${l.ref || '-'}","${(l.desc || '').replace(/"/g, '""')}","${l.category || '-'}","${l.type === 'in' ? 'Masuk' : 'Keluar'}",${l.amount}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Buku_Kas_${appState.currentStore?.name || 'Toko'}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Ekspor Selesai', 'File CSV Buku Kas berhasil diunduh.', 'success');
+}
   </script>
 </body>
 </html>
