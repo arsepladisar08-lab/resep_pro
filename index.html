@@ -4172,89 +4172,111 @@
   <script>
       
       /* ==========================================================================
-   MODUL PRODUK & BOM: PENYIMPANAN RESEP, GAMBAR, & KARTU MASTER MENU
+   MODUL STAF: FORM STAF DENGAN DUKUNGAN EDIT (ANTI-DUPLIKASI)
    ========================================================================== */
 
-// 1. FUNGSI UTAMA: MENYIMPAN MENU BARU / PERUBAHAN RESEP BOM
-async function saveProductItem() {
-  const indexInput = document.getElementById('prodModalIndex');
-  const index = indexInput ? parseInt(indexInput.value, 10) : -1;
-  const name = (document.getElementById('prodNameInput')?.value || '').trim();
-  const cat = document.getElementById('prodCatInput')?.value || 'Minuman';
-  const price = parseFloat(document.getElementById('prodPriceInput')?.value) || 0;
-  const yieldPcs = Math.max(1, parseFloat(document.getElementById('prodYieldPcsInput')?.value) || 1);
-  const menuQtyPcs = Math.max(1, parseFloat(document.getElementById('prodMenuQtyInput')?.value) || 1);
-  const imageUrl = document.getElementById('prodImageInput')?.value || '';
+function openStaffModal(staffId = '') {
+  // Buat hidden input ID staf jika belum ada di HTML
+  let idInput = document.getElementById('staffModalId');
+  if (!idInput) {
+    idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.id = 'staffModalId';
+    document.querySelector('#staffModal form')?.prepend(idInput);
+  }
 
-  if (!name || price <= 0) {
-    showToast('Validasi Gagal', 'Nama menu dan harga jual kasir wajib diisi dengan benar.', 'warning');
+  idInput.value = staffId || '';
+  const staf = staffId ? (appState.settings?.staff || []).find(s => String(s.id || s.userId) === String(staffId)) : null;
+
+  document.getElementById('newStaffName').value = staf ? staf.name : '';
+  document.getElementById('newStaffUsername').value = staf ? staf.username : '';
+  document.getElementById('newStaffRole').value = staf ? staf.role : 'karyawan';
+  document.getElementById('newStaffPin').value = staf ? (staf.pin || '') : '';
+
+  // Nonaktifkan pengubahan username saat mode edit agar referensi database tetap stabil
+  const usernameInput = document.getElementById('newStaffUsername');
+  if (usernameInput) usernameInput.readOnly = Boolean(staf);
+
+  openModal('staffModal');
+  document.getElementById('newStaffName')?.focus();
+}
+
+async function handleCreateStaffSubmit(e) {
+  e.preventDefault();
+
+  const staffId = document.getElementById('staffModalId')?.value.trim();
+  const name = document.getElementById('newStaffName')?.value.trim();
+  const username = document.getElementById('newStaffUsername')?.value.trim().toLowerCase();
+  const role = document.getElementById('newStaffRole')?.value || 'karyawan';
+  const pin = document.getElementById('newStaffPin')?.value.trim();
+  const storeId = appState.currentStore?.storeId || '';
+
+  if (!name || !username || !pin) {
+    showToast('Validasi Gagal', 'Lengkapi seluruh data staf dan PIN.', 'warning');
     return;
   }
 
-  // Kumpulkan komposisi bahan dasar resep (satuan kecil)
-  const recipe = [];
-  document.querySelectorAll('.recipe-row').forEach(row => {
-    const sku = row.querySelector('.recipe-sku')?.value;
-    const qty = parseFloat(row.querySelector('.recipe-qty')?.value) || 0;
-    if (sku && qty > 0) {
-      recipe.push({ sku, qtySmall: qty, qty: qty, componentType: 'ingredient' });
-    }
-  });
+  if (!appState.settings) appState.settings = {};
+  if (!Array.isArray(appState.settings.staff)) appState.settings.staff = [];
 
-  // Kumpulkan packaging per menu
-  const packaging = [];
-  document.querySelectorAll('.packaging-row').forEach(row => {
-    const sku = row.querySelector('.packaging-sku')?.value;
-    const qty = parseFloat(row.querySelector('.packaging-qty')?.value) || 0;
-    if (sku && qty > 0) {
-      packaging.push({ sku, qtySmall: qty, qty: qty, componentType: 'packaging' });
-    }
-  });
+  // Cari apakah staf sudah ada berdasarkan ID atau Username
+  const existingIndex = staffId
+    ? appState.settings.staff.findIndex(s => String(s.id || s.userId) === String(staffId))
+    : appState.settings.staff.findIndex(s => s.username === username);
 
-  const nowStr = new Date().toISOString();
-  const storeId = appState.currentStore?.storeId || '';
-  const existingProd = (index >= 0 && appState.products && appState.products[index]) ? appState.products[index] : null;
-  const prodId = existingProd ? existingProd.id : ('PRD-' + Date.now().toString().slice(-6));
+  const isEditMode = (existingIndex !== -1);
 
-  const productData = {
-    id: prodId,
-    storeId: storeId,
-    name: name,
-    cat: cat,
-    price: price,
-    yieldPcs: yieldPcs,
-    menuQtyPcs: menuQtyPcs,
-    imageUrl: imageUrl,
-    recipe: recipe,
-    packaging: packaging,
-    updatedAt: nowStr
-  };
-
-  if (!Array.isArray(appState.products)) appState.products = [];
-
-  // Update memori lokal
-  if (existingProd) {
-    appState.products[index] = { ...existingProd, ...productData };
+  if (isEditMode) {
+    // UPDATE DATA LAMA (JANGAN PUSH BARU)
+    const existing = appState.settings.staff[existingIndex];
+    appState.settings.staff[existingIndex] = {
+      ...existing,
+      name: name,
+      role: role,
+      pin: pin,
+      updatedAt: new Date().toISOString()
+    };
+    showToast('Staf Diperbarui', `Data staf "${name}" berhasil diubah.`, 'success');
   } else {
-    productData.createdAt = nowStr;
-    appState.products.push(productData);
+    // CEK DUPLIKASI USERNAME KHUSUS STAF BARU
+    const isDuplicate = appState.settings.staff.some(s => s.username === username);
+    if (isDuplicate) {
+      showToast('Username Terpakai', `Username "${username}" sudah digunakan.`, 'warning');
+      return;
+    }
+
+    const newStaff = {
+      id: 'STF-' + Date.now().toString().slice(-6),
+      storeId: storeId,
+      name: name,
+      username: username,
+      role: role,
+      pin: pin,
+      createdAt: new Date().toISOString()
+    };
+    appState.settings.staff.push(newStaff);
+    showToast('Staf Ditambahkan', `${name} siap login workstation.`, 'success');
   }
 
-  // Simpan ke storage dan refresh tampilan kasir & katalog menu
+  if (appState.currentStore) {
+    appState.currentStore.staff = appState.settings.staff;
+  }
+
   saveState();
-  renderProductsCards();
-  renderPosProducts();
-  closeModal('productModal');
+  renderStaffTable();
+  updateStaffDropdowns();
+  closeStaffModal();
 
-  showToast('Menu Disimpan', `"${name}" berhasil disimpan dan siap ditransaksikan di kasir.`, 'success');
-
-  // Kirim data ke Google Apps Script backend
-  try {
-    sendPostToGAS('SAVE_PRODUCT', productData);
-  } catch (err) {
-    console.warn('Gagal sinkronisasi produk ke Google Sheets:', err);
-  }
+  // Sinkronisasi ke backend
+  sendPostToGAS('SAVE_STAFF', {
+    storeId: storeId,
+    staff: appState.settings.staff[isEditMode ? existingIndex : appState.settings.staff.length - 1]
+  });
 }
+      
+      /* ==========================================================================
+   MODUL PRODUK & BOM: PENYIMPANAN RESEP, GAMBAR, & KARTU MASTER MENU
+   ========================================================================== */
 
 // 2. RENDER KARTU MASTER MENU & METRIK KESEHATAN RESEP (HPP)
 window.activeProductCategoryFilter = 'all';
@@ -4392,10 +4414,11 @@ function renderProductsCards() {
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
-          <button type="button" onclick="openProductModal(${originalIndex})" class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-            <span>Edit Resep</span>
-          </button>
+          // Ganti baris tombol edit di renderProductsCards():
+<button type="button" onclick="openProductModal('${escapeHtml(prod.id)}')" class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+  <span>Edit Resep</span>
+</button>
           <button type="button" onclick="deleteProductItem('${escapeHtml(prod.id)}')" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
@@ -4663,47 +4686,55 @@ async function fetchStoreData(storeId, silent = true) {
     let jsonResult = null;
     try { jsonResult = JSON.parse(resText); } catch (_) {}
 
-    if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
-      const cloud = jsonResult.data;
+// Ganti bagian penempatan data cloud di fetchStoreData():
+if (jsonResult && jsonResult.status === 'success' && jsonResult.data) {
+  const cloud = jsonResult.data;
 
-      // 1. Sinkronisasi Transaksi: Gabungkan transaksi cloud dengan transaksi lokal yang belum tercatat di cloud
-      const cloudTrxIds = new Set((cloud.transactions || []).map(t => String(t.id)));
-      const unsyncedTrx = (appState.transactions || []).filter(t => !cloudTrxIds.has(String(t.id)));
-      appState.transactions = [...unsyncedTrx, ...(cloud.transactions || [])];
+  // 1. DEDUPLIKASI MASTER PRODUK (Berdasarkan ID / SKU)
+  const productMap = new Map();
+  (cloud.products || []).forEach(p => {
+    const key = String(p.id || p.sku || '').trim();
+    if (key) productMap.set(key, p);
+  });
+  // Pertahankan produk lokal yang baru disimpan jika cloud belum sempat sync
+  (appState.products || []).forEach(p => {
+    const key = String(p.id || p.sku || '').trim();
+    if (key && !productMap.has(key)) productMap.set(key, p);
+  });
+  appState.products = Array.from(productMap.values());
 
-      // 2. Sinkronisasi Buku Kas: Pertahankan catatan lokal yang belum masuk cloud
-      const cloudCashIds = new Set((cloud.cashLogs || []).map(c => String(c.id)));
-      const unsyncedCash = (appState.cashLogs || []).filter(c => !cloudCashIds.has(String(c.id)));
-      appState.cashLogs = [...unsyncedCash, ...(cloud.cashLogs || [])];
+  // 2. DEDUPLIKASI GUDANG / INVENTARIS (Berdasarkan SKU)
+  const inventoryMap = new Map();
+  (cloud.inventory || []).forEach(i => {
+    const key = String(i.sku || '').trim();
+    if (key) inventoryMap.set(key, i);
+  });
+  (appState.inventory || []).forEach(i => {
+    const key = String(i.sku || '').trim();
+    if (key && !inventoryMap.has(key)) inventoryMap.set(key, i);
+  });
+  appState.inventory = Array.from(inventoryMap.values());
 
-      // 3. Update master data lainnya
-      appState.products = Array.isArray(cloud.products) ? cloud.products : [];
-      appState.attendance = Array.isArray(cloud.attendance) ? cloud.attendance : [];
-      appState.purchaseHistory = Array.isArray(cloud.purchaseHistory) ? cloud.purchaseHistory : [];
-      // Backend belum mengembalikan staffList lewat GET_DATA, jadi jangan timpa
-      // daftar staf lokal kecuali server memang sudah mengirimkannya.
-      if (Array.isArray(cloud.staffList)) appState.staffList = cloud.staffList;
+  // 3. DEDUPLIKASI TRANSAKSI (Berdasarkan No. Transaksi)
+  const trxMap = new Map();
+  (cloud.transactions || []).forEach(t => { if (t.id) trxMap.set(String(t.id), t); });
+  (appState.transactions || []).forEach(t => { if (t.id && !trxMap.has(String(t.id))) trxMap.set(String(t.id), t); });
+  appState.transactions = Array.from(trxMap.values()).sort((a,b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
 
-      // 4. Update stok inventaris tanpa menimpa stok yang baru saja dipotong di workstation aktif
-      if (unsyncedTrx.length === 0) {
-        appState.inventory = Array.isArray(cloud.inventory) ? cloud.inventory : [];
-      }
+  // 4. DEDUPLIKASI BUKU KAS (Berdasarkan ID Mutasi)
+  const cashMap = new Map();
+  (cloud.cashLogs || []).forEach(c => { if (c.id) cashMap.set(String(c.id), c); });
+  (appState.cashLogs || []).forEach(c => { if (c.id && !cashMap.has(String(c.id))) cashMap.set(String(c.id), c); });
+  appState.cashLogs = Array.from(cashMap.values());
 
-      if (cloud.settings) {
-        appState.settings = cloud.settings;
-        appState.currentStore = cloud.settings;
-      }
+  if (cloud.settings) {
+    appState.settings = cloud.settings;
+    appState.currentStore = cloud.settings;
+  }
 
-      saveState();
-      refreshActiveView();
-      if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Live Sync';
-      if (!silent) showToast('Data Tersinkronisasi', 'Data toko berhasil diselaraskan dengan spreadsheet.', 'success');
-
-      // Jika ada transaksi lokal yang tertunda, kirimkan ulang ke server
-      if (unsyncedTrx.length > 0) {
-        syncPendingTransactions(unsyncedTrx);
-      }
-    }
+  saveState();
+  refreshActiveView();
+}
   } catch (err) {
     console.warn('Gagal sinkronisasi dari Google Apps Script:', err);
     if (indicator) indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span> Cache Offline';
@@ -4715,9 +4746,8 @@ async function fetchStoreData(storeId, silent = true) {
 // Fungsi pengiriman transaksi tertunda ke server
 async function syncPendingTransactions(pendingList) {
   for (const trx of pendingList) {
-    try {
-      await sendPostToGAS('SAVE_TRANSACTION', trx);
-    } catch (e) {
+    const result = await sendPostToGAS('SAVE_TRANSACTION', trx);
+    if (result.status !== 'success') {
       console.warn('Gagal mengunggah transaksi tertunda:', trx.id);
       break;
     }
@@ -5026,21 +5056,26 @@ async function syncPendingTransactions(pendingList) {
       }, 3500);
     }
 
-	function openModal(id) {
-	const modal = document.getElementById(id);
-	if (!modal) return;
-	modal.classList.remove('hidden');
-	modal.classList.add('flex');
-	if (id === 'draftsModal') renderHeldOrders();
-	if (window.lucide) lucide.createIcons();
-	}
+        function openModal(id) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        if (id === 'draftsModal') renderHeldOrders();
+        if (window.lucide) lucide.createIcons();
+        }
 
-	function closeModal(id) {
-	const modal = document.getElementById(id);
-	if (!modal) return;
-	modal.classList.add('hidden');
-	modal.classList.remove('flex');
-	}
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      // Cek dulu apakah masih ada modal lain yang terbuka sebelum unlock,
+      // supaya scroll tidak ke-unlock kalau ada modal bertumpuk
+  const anyOpen = document.querySelector('.fixed.inset-0.flex:not(.hidden)');
+  if (!anyOpen) document.body.style.overflow = '';
+}
 
     function setLoginRole(role) {
       const ownerBtn = document.getElementById('role-owner');
@@ -6098,14 +6133,6 @@ function setSafeText(id, text) {
       document.getElementById('cashChangeDisplay').textContent = formatCurrency(Math.max(0, received - grandTotal));
     }
 
-    function setExactCash() {
-      const subtotal = appState.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-      const taxRate = Number(appState.settings?.taxRate) || 0;
-      const grandTotal = subtotal + Math.round(subtotal * (taxRate / 100)) + (appState.orderType === 'Delivery' ? appState.shippingFee : 0);
-      document.getElementById('cashReceivedInput').value = grandTotal;
-      calculateChangeAmount();
-    }
-
     function addCashAmount(val) {
       const current = parseFloat(document.getElementById('cashReceivedInput').value) || 0;
       document.getElementById('cashReceivedInput').value = current + val;
@@ -7059,15 +7086,6 @@ function toggleMobileOrderSheet() {
 	printIsolatedDocument(ticket, 'Tiket Dapur');
 	}
 
-    function resetOrder() {
-      appState.cart = [];
-      appState.shippingFee = 0;
-      document.getElementById('orderCustomerInput').value = '';
-      document.getElementById('cashReceivedInput').value = '';
-      updateCartBadge();
-      closeModal('invoiceModal');
-    }
-
 	// Salin teks nota untuk WhatsApp
 	function copyInvoiceText() {
 	if (!appState.currentInvoiceText) {
@@ -7401,112 +7419,133 @@ function toggleMobileOrderSheet() {
       renderInventoryTable();
     }
 
-    function openStockModal(sku = null) {
-      const title = document.getElementById('stockModalTitle');
-      const skuInput = document.getElementById('stockModalSku');
-      const nameInput = document.getElementById('stockNameInput');
-      const qtyInput = document.getElementById('stockQtyInput');
-      const typeInput = document.getElementById('stockItemTypeInput');
-      const purchaseUnitInput = document.getElementById('stockPurchaseUnitInput');
-      const smallUnitInput = document.getElementById('stockSmallUnitInput');
-      const conversionInput = document.getElementById('stockConversionInput');
-      const costInput = document.getElementById('stockCostInput');
+    /* ==========================================================================
+   MODUL GUDANG: MASTER STOK ANTI-DUPLIKASI (BERBASIS SKU)
+   ========================================================================== */
 
-      if (sku) {
-        const item = normalizeInventoryForHpp(appState.inventory.find(i => String(i.sku) === String(sku)));
-        if (!item) return;
-        title.textContent = 'Update Master Stok';
-        skuInput.value = item.sku;
-        nameInput.value = item.name;
-        qtyInput.value = item.stockPurchaseQty;
-        typeInput.value = item.itemType || 'ingredient';
-        purchaseUnitInput.value = item.purchaseUnit;
-        smallUnitInput.value = item.smallUnit;
-        conversionInput.value = item.conversionFactor;
-        costInput.value = item.cost || (item.avgCostSmall * item.conversionFactor);
-      } else {
-        title.textContent = 'Bahan Baku / Packaging Baru';
-        skuInput.value = '';
-        nameInput.value = '';
-        qtyInput.value = '';
-        typeInput.value = 'ingredient';
-        purchaseUnitInput.value = 'Pcs';
-        smallUnitInput.value = 'Pcs';
-        conversionInput.value = '1';
-        costInput.value = '';
-      }
-      openModal('stockModal');
-      lucide.createIcons();
-    }
+function openStockModal(sku = '') {
+  const skuInput = document.getElementById('stockModalSku');
+  const nameInput = document.getElementById('stockNameInput');
+  const typeInput = document.getElementById('stockItemTypeInput');
+  const qtyInput = document.getElementById('stockQtyInput');
+  const pUnitInput = document.getElementById('stockPurchaseUnitInput');
+  const sUnitInput = document.getElementById('stockSmallUnitInput');
+  const convInput = document.getElementById('stockConversionInput');
+  const costInput = document.getElementById('stockCostInput');
+  const title = document.getElementById('stockModalTitle');
 
-    async function saveStockItem() {
-      const sku = document.getElementById('stockModalSku').value;
-      const name = document.getElementById('stockNameInput').value.trim();
-      const qtyPurchase = parseFloat(document.getElementById('stockQtyInput').value) || 0;
-      const itemType = document.getElementById('stockItemTypeInput').value || 'ingredient';
-      const purchaseUnit = document.getElementById('stockPurchaseUnitInput').value.trim() || 'Pcs';
-      const smallUnit = document.getElementById('stockSmallUnitInput').value.trim() || purchaseUnit;
-      const conversionFactor = parseFloat(document.getElementById('stockConversionInput').value) || 1;
-      const cost = parseFloat(document.getElementById('stockCostInput').value) || 0;
+  const inv = sku ? (appState.inventory || []).find(i => String(i.sku) === String(sku)) : null;
 
-      if (!name || qtyPurchase < 0 || conversionFactor <= 0) {
-        showToast('Validasi Gagal', 'Nama, stok, dan faktor konversi wajib benar.', 'warning');
-        return;
-      }
+  if (inv) {
+    if (skuInput) skuInput.value = inv.sku;
+    if (nameInput) nameInput.value = inv.name || '';
+    if (typeInput) typeInput.value = inv.itemType || 'ingredient';
+    if (qtyInput) qtyInput.value = (Number(inv.stockSmall || 0) / (Number(inv.conversionFactor) || 1)) || inv.stock || 0;
+    if (pUnitInput) pUnitInput.value = inv.purchaseUnit || inv.unit || 'Kg';
+    if (sUnitInput) sUnitInput.value = inv.smallUnit || inv.unit || 'Gram';
+    if (convInput) convInput.value = inv.conversionFactor || 1;
+    if (costInput) costInput.value = inv.cost || inv.purchasePrice || 0;
+    if (title) title.textContent = `Ubah Bahan: ${inv.name}`;
+  } else {
+    if (skuInput) skuInput.value = '';
+    if (nameInput) nameInput.value = '';
+    if (typeInput) typeInput.value = 'ingredient';
+    if (qtyInput) qtyInput.value = '0';
+    if (pUnitInput) pUnitInput.value = 'Kg';
+    if (sUnitInput) sUnitInput.value = 'Gram';
+    if (convInput) convInput.value = '1000';
+    if (costInput) costInput.value = '';
+    if (title) title.textContent = 'Barang / Packaging Baru';
+  }
 
-      const storeId = appState.currentStore?.storeId || '';
-      if (sku) {
-        const item = appState.inventory.find(i => String(i.sku) === String(sku));
-        if (item) {
-          item.name = name;
-          item.itemType = itemType;
-          item.purchaseUnit = purchaseUnit;
-          item.smallUnit = smallUnit;
-          item.unit = purchaseUnit;
-          item.conversionFactor = conversionFactor;
-          item.stock = qtyPurchase;
-          item.stockSmall = Number((qtyPurchase * conversionFactor).toFixed(6));
-          item.cost = cost;
-          item.avgCostSmall = conversionFactor > 0 ? cost / conversionFactor : cost;
-          item.unitCostSmall = item.avgCostSmall;
-          item.purchasePrice = cost;
-          item.lastPurchasePrice = cost;
-          item.storeId = storeId;
-          item.updatedAt = new Date().toISOString();
-        }
-      } else {
-        const newSku = 'INV-' + Date.now().toString().slice(-6);
-        appState.inventory.push({
-          sku: newSku,
-          storeId,
-          name,
-          itemType,
-          stock: qtyPurchase,
-          unit: purchaseUnit,
-          stockSmall: Number((qtyPurchase * conversionFactor).toFixed(6)),
-          purchaseUnit,
-          smallUnit,
-          conversionFactor,
-          cost,
-          purchasePrice: cost,
-          lastPurchasePrice: cost,
-          avgCostSmall: conversionFactor > 0 ? cost / conversionFactor : cost,
-          unitCostSmall: conversionFactor > 0 ? cost / conversionFactor : cost,
-          updatedAt: new Date().toISOString()
-        });
-      }
+  openModal('stockModal');
+}
 
-      saveState();
-      renderInventoryTable();
-      updateNotifications();
-      closeModal('stockModal');
+async function saveStockItem() {
+  const skuInput = document.getElementById('stockModalSku');
+  const editingSku = skuInput ? skuInput.value.trim() : '';
 
-      await sendPostToGAS('SAVE_ALL', {
-        storeId,
-        inventory: appState.inventory
-      });
-      showToast('Stok Disimpan', 'Master satuan, stok, dan basis HPP tersimpan ke Spreadsheet.', 'success');
-    }
+  const name = (document.getElementById('stockNameInput')?.value || '').trim();
+  const itemType = document.getElementById('stockItemTypeInput')?.value || 'ingredient';
+  const purchaseUnit = (document.getElementById('stockPurchaseUnitInput')?.value || '').trim() || 'Pcs';
+  const smallUnit = (document.getElementById('stockSmallUnitInput')?.value || '').trim() || purchaseUnit;
+  const conversionFactor = Math.max(0.000001, parseFloat(document.getElementById('stockConversionInput')?.value) || 1);
+  const stockPurchaseQty = parseFloat(document.getElementById('stockQtyInput')?.value) || 0;
+  const cost = parseFloat(document.getElementById('stockCostInput')?.value) || 0;
+  const storeId = appState.currentStore?.storeId || '';
+
+  if (!name) {
+    showToast('Validasi Gagal', 'Nama bahan baku wajib diisi.', 'warning');
+    return;
+  }
+
+  const stockSmall = stockPurchaseQty * conversionFactor;
+  const avgCostSmall = conversionFactor > 0 ? (cost / conversionFactor) : 0;
+  const nowStr = new Date().toISOString();
+
+  if (!Array.isArray(appState.inventory)) appState.inventory = [];
+
+  // Cari berdasarkan SKU atau Nama jika SKU belum ada
+  const existingIndex = editingSku
+    ? appState.inventory.findIndex(i => String(i.sku) === String(editingSku))
+    : appState.inventory.findIndex(i => (i.name || '').trim().toLowerCase() === name.toLowerCase());
+
+  let finalSku = editingSku;
+  const isEdit = (existingIndex !== -1);
+
+  if (isEdit) {
+    finalSku = appState.inventory[existingIndex].sku || editingSku;
+    appState.inventory[existingIndex] = {
+      ...appState.inventory[existingIndex],
+      sku: finalSku,
+      storeId: storeId,
+      name: name,
+      itemType: itemType,
+      stock: stockPurchaseQty,
+      stockSmall: stockSmall,
+      purchaseUnit: purchaseUnit,
+      smallUnit: smallUnit,
+      unit: purchaseUnit,
+      conversionFactor: conversionFactor,
+      cost: cost,
+      purchasePrice: cost,
+      avgCostSmall: avgCostSmall,
+      unitCostSmall: avgCostSmall,
+      updatedAt: nowStr
+    };
+    showToast('Stok Diperbarui', `Bahan "${name}" berhasil diubah.`, 'success');
+  } else {
+    finalSku = 'INV-' + Date.now().toString().slice(-6);
+    const newItem = {
+      sku: finalSku,
+      storeId: storeId,
+      name: name,
+      itemType: itemType,
+      stock: stockPurchaseQty,
+      stockSmall: stockSmall,
+      purchaseUnit: purchaseUnit,
+      smallUnit: smallUnit,
+      unit: purchaseUnit,
+      conversionFactor: conversionFactor,
+      cost: cost,
+      purchasePrice: cost,
+      avgCostSmall: avgCostSmall,
+      unitCostSmall: avgCostSmall,
+      updatedAt: nowStr
+    };
+    appState.inventory.push(newItem);
+    showToast('Bahan Ditambahkan', `Bahan "${name}" berhasil didaftarkan.`, 'success');
+  }
+
+  saveState();
+  renderInventoryTable();
+  closeModal('stockModal');
+
+  sendPostToGAS('SAVE_ALL', {
+    storeId: storeId,
+    inventory: appState.inventory
+  });
+}
 
     function deleteStockItem(sku) {
       appState.inventory = appState.inventory.filter(i => i.sku !== sku);
@@ -7520,50 +7559,169 @@ function toggleMobileOrderSheet() {
       showToast('Item Dihapus', 'Bahan telah dihapus dari gudang.', 'info');
     }
 
-    function openProductModal(prodId = null) {
-      const modalTitle = document.getElementById('productModalTitle');
-      const idxInput = document.getElementById('prodModalIndex');
-      const nameInput = document.getElementById('prodNameInput');
-      const catInput = document.getElementById('prodCatInput');
-      const priceInput = document.getElementById('prodPriceInput');
-      const yieldInput = document.getElementById('prodYieldPcsInput');
-      const menuQtyInput = document.getElementById('prodMenuQtyInput');
-      const imgInput = document.getElementById('prodImageInput');
-      const recipeContainer = document.getElementById('recipeRowsContainer');
-      const packagingContainer = document.getElementById('packagingRowsContainer');
+/* ==========================================================================
+   MODUL PRODUK: SISTEM EDIT BERBASIS ID (ANTI-DUPLIKASI)
+   ========================================================================== */
 
-      recipeContainer.innerHTML = '';
-      packagingContainer.innerHTML = '';
-      const previewImg = document.getElementById('prodImagePreview');
-      const previewIcon = document.getElementById('prodImagePreviewIcon');
-      const uploadLabel = document.getElementById('prodImageUploadLabel');
-      const uploadStatus = document.getElementById('prodImageUploadStatus');
+// 1. Buka Modal Menu (Mendukung ID atau Objek Produk Langsung)
+function openProductModal(target = null) {
+  let prod = null;
+  let editingId = '';
 
-      if (prodId) {
-        const prod = appState.products.find(p => String(p.id) === String(prodId));
-        if (!prod) return;
-        modalTitle.textContent = 'Edit Menu Master';
-        idxInput.value = String(prod.id);
-        nameInput.value = prod.name || '';
-        catInput.value = prod.cat || 'Makanan';
-        priceInput.value = prod.price || 0;
-        yieldInput.value = prod.yieldPcs || 1;
-        menuQtyInput.value = prod.menuQtyPcs || 1;
-        imgInput.value = prod.imageUrl || '';
-        (prod.recipe || []).forEach(r => addRecipeRow(r.sku, r.qtySmall !== undefined ? r.qtySmall : r.qty));
-        (prod.packaging || []).forEach(r => addPackagingRow(r.sku, r.qtySmall !== undefined ? r.qtySmall : r.qty));
-        if (prod.imageUrl) { previewImg.src = prod.imageUrl; previewImg.classList.remove('hidden'); previewIcon.classList.add('hidden'); uploadLabel.textContent = 'Ganti Foto'; uploadStatus.textContent = 'Tersimpan di Google Drive'; }
-        else { previewImg.classList.add('hidden'); previewIcon.classList.remove('hidden'); uploadLabel.textContent = 'Unggah Foto ke Drive'; uploadStatus.textContent = 'Otomatis tersimpan ke Google Drive & Sheets'; }
-      } else {
-        modalTitle.textContent = 'Tambah Menu Baru';
-        idxInput.value = '-1'; nameInput.value = ''; catInput.value = 'Minuman'; priceInput.value = ''; yieldInput.value = '20'; menuQtyInput.value = '5'; imgInput.value = '';
-        previewImg.classList.add('hidden'); previewIcon.classList.remove('hidden'); uploadLabel.textContent = 'Unggah Foto ke Drive'; uploadStatus.textContent = 'Otomatis tersimpan ke Google Drive & Sheets';
-        addRecipeRow(); addPackagingRow();
-      }
-      updateProductHppPreview();
-      openModal('productModal');
-      lucide.createIcons();
+  // Deteksi apakah target adalah ID string, Objek, atau Index
+  if (target !== null && target !== undefined && target !== '') {
+    if (typeof target === 'object') {
+      prod = target;
+      editingId = prod.id || prod.sku || '';
+    } else if (typeof target === 'string') {
+      prod = (appState.products || []).find(p => String(p.id) === String(target) || String(p.sku) === String(target));
+      editingId = prod ? (prod.id || prod.sku) : target;
+    } else if (typeof target === 'number') {
+      prod = appState.products?.[target] || null;
+      editingId = prod ? (prod.id || prod.sku) : '';
     }
+  }
+
+  // Gunakan prodModalId permanen
+  let idInput = document.getElementById('prodModalId');
+  if (!idInput) {
+    idInput = document.getElementById('prodModalIndex');
+    if (idInput) idInput.id = 'prodModalId'; // Ubah id input secara otomatis
+  }
+  if (idInput) idInput.value = editingId;
+
+  const isEdit = Boolean(prod && editingId);
+  document.getElementById('productModalTitle').textContent = isEdit ? `Ubah Menu: ${prod.name}` : 'Racik Menu & Hitung HPP (BOM)';
+  document.getElementById('prodNameInput').value = prod ? prod.name : '';
+  document.getElementById('prodCatInput').value = prod ? prod.cat : 'Minuman';
+  document.getElementById('prodPriceInput').value = prod ? prod.price : '';
+  document.getElementById('prodYieldPcsInput').value = prod ? (prod.yieldPcs || 1) : 1;
+  document.getElementById('prodMenuQtyInput').value = prod ? (prod.menuQtyPcs || 1) : 1;
+  document.getElementById('prodImageInput').value = prod ? (prod.imageUrl || '') : '';
+
+  // Setup preview foto
+  const imgPrev = document.getElementById('prodImagePreview');
+  const imgIcon = document.getElementById('prodImagePreviewIcon');
+  if (prod?.imageUrl) {
+    imgPrev.src = prod.imageUrl;
+    imgPrev.classList.remove('hidden');
+    imgIcon.classList.add('hidden');
+  } else {
+    imgPrev.src = '';
+    imgPrev.classList.add('hidden');
+    imgIcon.classList.remove('hidden');
+  }
+
+  // Render Baris Bahan Resep
+  const recipeContainer = document.getElementById('recipeRowsContainer');
+  recipeContainer.innerHTML = '';
+  if (prod?.recipe && prod.recipe.length > 0) {
+    prod.recipe.forEach(r => addRecipeRow(r.sku, r.qtySmall ?? r.qty));
+  } else {
+    addRecipeRow();
+  }
+
+  // Render Baris Packaging
+  const packContainer = document.getElementById('packagingRowsContainer');
+  packContainer.innerHTML = '';
+  if (prod?.packaging && prod.packaging.length > 0) {
+    prod.packaging.forEach(p => addPackagingRow(p.sku, p.qtySmall ?? p.qty));
+  }
+
+  updateProductHppLivePane();
+  openModal('productModal');
+}
+
+// 2. Simpan Menu (Update In-Place jika Edit, Push jika Baru)
+async function saveProductItem() {
+  const idInput = document.getElementById('prodModalId') || document.getElementById('prodModalIndex');
+  const editingId = idInput ? idInput.value.trim() : '';
+
+  const name = (document.getElementById('prodNameInput')?.value || '').trim();
+  const cat = document.getElementById('prodCatInput')?.value || 'Minuman';
+  const price = parseFloat(document.getElementById('prodPriceInput')?.value) || 0;
+  const yieldPcs = Math.max(1, parseFloat(document.getElementById('prodYieldPcsInput')?.value) || 1);
+  const menuQtyPcs = Math.max(1, parseFloat(document.getElementById('prodMenuQtyInput')?.value) || 1);
+  const imageUrl = document.getElementById('prodImageInput')?.value || '';
+
+  if (!name || price <= 0) {
+    showToast('Validasi Gagal', 'Nama menu dan harga jual wajib diisi.', 'warning');
+    return;
+  }
+
+  // Kumpulkan bahan resep
+  const recipe = [];
+  document.querySelectorAll('.recipe-row').forEach(row => {
+    const sku = row.querySelector('.recipe-sku')?.value;
+    const qty = parseFloat(row.querySelector('.recipe-qty')?.value) || 0;
+    if (sku && qty > 0) recipe.push({ sku, qtySmall: qty, qty: qty, componentType: 'ingredient' });
+  });
+
+  // Kumpulkan packaging
+  const packaging = [];
+  document.querySelectorAll('.packaging-row').forEach(row => {
+    const sku = row.querySelector('.packaging-sku')?.value;
+    const qty = parseFloat(row.querySelector('.packaging-qty')?.value) || 0;
+    if (sku && qty > 0) packaging.push({ sku, qtySmall: qty, qty: qty, componentType: 'packaging' });
+  });
+
+  const storeId = appState.currentStore?.storeId || '';
+  const nowStr = new Date().toISOString();
+  if (!Array.isArray(appState.products)) appState.products = [];
+
+  // Cari apakah item sudah ada berdasarkan ID
+  const existingIndex = editingId
+    ? appState.products.findIndex(p => String(p.id) === String(editingId) || String(p.sku) === String(editingId))
+    : -1;
+
+  let finalId = editingId;
+  let isEditMode = (existingIndex !== -1);
+
+  if (isEditMode) {
+    // MODE EDIT: Pakai ID lama yang sudah ada, jangan buat ID baru!
+    finalId = appState.products[existingIndex].id || editingId;
+  } else {
+    // MODE BARU: Buat ID unik baru
+    finalId = 'PRD-' + Date.now().toString().slice(-6);
+  }
+
+  const productData = {
+    id: finalId,
+    storeId: storeId,
+    name: name,
+    cat: cat,
+    price: price,
+    yieldPcs: yieldPcs,
+    menuQtyPcs: menuQtyPcs,
+    imageUrl: imageUrl,
+    recipe: recipe,
+    packaging: packaging,
+    updatedAt: nowStr
+  };
+
+  if (isEditMode) {
+    // PERBARUI POSISI LAMA (IN-PLACE UPDATE) -> MENCEGAH DUPLIKASI
+    appState.products[existingIndex] = {
+      ...appState.products[existingIndex],
+      ...productData,
+      id: finalId
+    };
+    showToast('Menu Diperbarui', `Perubahan pada "${name}" berhasil disimpan.`, 'success');
+  } else {
+    // TAMBAH SEBAGAI ITEM BARU
+    productData.createdAt = nowStr;
+    appState.products.push(productData);
+    showToast('Menu Ditambahkan', `"${name}" siap dijual di workstation.`, 'success');
+  }
+
+  saveState();
+  renderProductsCards();
+  renderPosProducts();
+  closeModal('productModal');
+
+  // Kirim ke database Google Sheets
+  sendPostToGAS('SAVE_PRODUCT', productData);
+}
 
     function addRecipeRow(selectedSku = '', qty = 1) {
       const container = document.getElementById('recipeRowsContainer');
@@ -8619,6 +8777,94 @@ let activeReportTab = 'buku-kas';
       lucide.createIcons();
     }
 
+/* ==========================================================================
+   MODUL KAS MANUAL: ANTI-DUPLIKASI MUTASI
+   ========================================================================== */
+
+function openManualCashModal(logId = '') {
+  let idInput = document.getElementById('manualCashId');
+  if (!idInput) {
+    idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.id = 'manualCashId';
+    document.querySelector('#modalManualCash form')?.prepend(idInput);
+  }
+  idInput.value = logId || '';
+
+  const log = logId ? (appState.cashLogs || []).find(l => String(l.id) === String(logId)) : null;
+
+  const dateInput = document.getElementById('manualCashDate');
+  if (dateInput) dateInput.value = log ? log.date.split(',')[0] : new Date().toISOString().split('T')[0];
+
+  const descInput = document.getElementById('manualCashDesc');
+  if (descInput) descInput.value = log ? log.desc : '';
+
+  const amountInput = document.getElementById('manualCashAmount');
+  if (amountInput) amountInput.value = log ? log.amount : '';
+
+  const catSelect = document.getElementById('manualCashCategorySelect');
+  if (catSelect) {
+    catSelect.innerHTML = `
+      <option value="Operasional Lainnya">Operasional Lainnya</option>
+      <option value="Listrik dan Air">Listrik dan Air</option>
+      <option value="Sewa Tempat">Sewa Tempat</option>
+      <option value="Packaging">Packaging</option>
+      <option value="Bahan Baku">Bahan Baku & Restock</option>
+      <option value="Setoran Modal">Setoran Modal (Kas Masuk)</option>
+    `;
+    if (log?.category) catSelect.value = log.category;
+  }
+
+  setManualCashFlowType(log ? log.type : 'out');
+  updateManualCashPreview();
+  openModal('modalManualCash');
+}
+
+async function handleManualCashSubmit(e) {
+  e.preventDefault();
+  const logId = document.getElementById('manualCashId')?.value.trim();
+  const desc = document.getElementById('manualCashDesc')?.value.trim();
+  const amount = parseFloat(document.getElementById('manualCashAmount')?.value) || 0;
+  const dateVal = document.getElementById('manualCashDate')?.value || new Date().toISOString().split('T')[0];
+  const cat = document.getElementById('manualCashCategorySelect')?.value || 'Operasional Lainnya';
+  const storeId = appState.currentStore?.storeId || '';
+
+  if (!desc || amount <= 0) {
+    showToast('Input Tidak Lengkap', 'Keterangan dan nominal kas wajib diisi.', 'warning');
+    return;
+  }
+
+  if (!Array.isArray(appState.cashLogs)) appState.cashLogs = [];
+
+  const existingIndex = logId ? appState.cashLogs.findIndex(l => String(l.id) === String(logId)) : -1;
+  const isEdit = (existingIndex !== -1);
+  const finalId = isEdit ? logId : ('CSH-' + Date.now().toString().slice(-6));
+
+  const logData = {
+    id: finalId,
+    storeId: storeId,
+    date: dateVal,
+    ref: isEdit ? (appState.cashLogs[existingIndex].ref || 'CSH-MANUAL') : 'CSH-MANUAL',
+    desc: desc,
+    amount: amount,
+    type: currentManualFlowType,
+    category: cat
+  };
+
+  if (isEdit) {
+    appState.cashLogs[existingIndex] = { ...appState.cashLogs[existingIndex], ...logData };
+    showToast('Kas Diperbarui', 'Mutasi kas berhasil diperbarui.', 'success');
+  } else {
+    appState.cashLogs.unshift(logData);
+    showToast('Kas Dicatat', 'Transaksi kas berhasil disimpan.', 'success');
+  }
+
+  saveState();
+  renderCashLogsTable();
+  closeModal('modalManualCash');
+
+  sendPostToGAS('SAVE_CASH_LOG', logData);
+}
 
     // 5. Modal Catat Kas Manual & Live Balance Preview
     function openManualCashModal() {
@@ -9755,7 +10001,7 @@ let isSettingsDirty = false;
 
       const list = Array.from(staffSet.values());
 
-      tbody.innerHTML = list.map(staf => `
+      tbody.innerHTML = list.map((staf, idx) => `
         <tr class="hover:bg-slate-50 transition-colors">
           <td class="py-3.5 px-3">
             <div class="font-extrabold text-slate-900">${escapeHtml(staf.name)}</div>
@@ -9771,29 +10017,40 @@ let isSettingsDirty = false;
           <td class="py-3.5 px-3 font-mono text-[11px] text-slate-500">
             ${escapeHtml(staf.pin)}
           </td>
-          <td class="py-3.5 px-3 text-right">
-            ${staf.role !== 'owner' ? `
-              <button onclick="hapusStafUser('${escapeHtml(staf.username)}')" class="text-slate-400 hover:text-rose-600 p-1 cursor-pointer" title="Hapus Staf">
+          <td class="py-3.5 px-3 text-right flex items-center justify-end gap-1">
+              <button onclick="openStaffModal('${escapeHtml(staf.username)}')" title="Edit Staf" class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-indigo-50 transition cursor-pointer">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+              <button onclick="hapusStafUser('${escapeHtml(staf.username)}')" title="Hapus Akun" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
-            ` : '<span class="text-[10px] text-slate-400 font-bold">Utama</span>'}
-          </td>
+            </td>
         </tr>
       `).join('');
 
       lucide.createIcons();
     }
 
-    function openStaffModal() {
-      openModal('staffModal');
-      lucide.createIcons();
-    }
+    function openStaffModal(username = '') {
+  const staf = username ? (appState.staffList || []).find(s => s.username === username) : null;
+  document.getElementById('newStaffName').value = staf ? staf.name : '';
+  document.getElementById('newStaffUsername').value = staf ? staf.username : '';
+  document.getElementById('newStaffRole').value = staf ? staf.role : 'karyawan';
+  document.getElementById('newStaffPin').value = '';
+  const usernameInput = document.getElementById('newStaffUsername');
+  if (usernameInput) usernameInput.readOnly = Boolean(staf);
+  document.getElementById('staffModal').dataset.editUsername = username || '';
+  openModal('staffModal');
+  lucide.createIcons();
+}
     function closeStaffModal() {
       closeModal('staffModal');
     }
 
     async function handleCreateStaffSubmit(e) {
       e.preventDefault();
+      const editUsername = document.getElementById('staffModal')?.dataset.editUsername || '';
+      const isEdit = Boolean(editUsername);
       const name = document.getElementById('newStaffName').value.trim();
       const username = document.getElementById('newStaffUsername').value.trim().toLowerCase();
       const role = document.getElementById('newStaffRole').value;
@@ -9813,7 +10070,12 @@ let isSettingsDirty = false;
       // Simpan langsung ke state lokal (optimistic update) supaya staf baru
       // otomatis muncul di tabel Pengaturan & terminal kasir tanpa menunggu
       // mereka absen/login dulu.
+      if (isEdit) {
+      const idx = appState.staffList.findIndex(s => s.username === editUsername);
+      if (idx > -1) appState.staffList[idx] = { ...appState.staffList[idx], name, role, pin: pin || appState.staffList[idx].pin };
+      } else {
       appState.staffList.push({ name, username, role, pin });
+      }
       saveState();
       renderStaffSettingsTable();
       populateEmployeeFilterOptions();
@@ -10402,6 +10664,14 @@ function eksekusiPresensiTerminal(type) {
       showToast('Belum Masuk', 'Tidak ada shift aktif yang perlu di-clock out.', 'warning');
       return;
     }
+    
+const hourlyRate = Number(appState.settings?.hourlyWage) || 20000;
+const durationHours = (now - new Date(appState.activeShift.clockInTime)) / 3600000;
+const regularHours = Math.min(durationHours, 8);
+const overtimeHours = Math.max(0, durationHours - 8);
+const totalWage = (regularHours * hourlyRate) + (overtimeHours * hourlyRate * 1.5);
+// lalu sertakan hourlyRate, regularHours, overtimeHours, totalWage ke object record
+    
     const record = {
       id: 'ATT-' + Date.now().toString().slice(-6),
       storeId: appState.currentStore?.storeId,
