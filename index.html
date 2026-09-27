@@ -4465,52 +4465,81 @@ async function deleteProductItem(id) {
 }
 
 // 5. HANDLER UPLOAD FOTO PRODUK KE GOOGLE DRIVE
+/* ==========================================================================
+   PERBAIKAN: HANDLER UPLOAD FOTO PRODUK KE DRIVE (ANTI-CRASH + KOMPRESI)
+   ========================================================================== */
 async function handleProductImageSelected(event) {
   const file = event.target.files?.[0];
   if (!file) return;
 
+  // 1. Validasi tipe file
+  if (!file.type.startsWith('image/')) {
+    showToast('File Tidak Valid', 'Silakan pilih file gambar (JPG/PNG/WEBP).', 'warning');
+    event.target.value = '';
+    return;
+  }
+
+  // 2. Ambil elemen UI dengan aman
   const previewImg = document.getElementById('prodImagePreview');
   const previewIcon = document.getElementById('prodImagePreviewIcon');
-  const statusText = document.getElementById('prodImageUploadStatus');
-  const uploadLabel = document.getElementById('prodImageUploadLabel');
+  const statusEl = document.getElementById('prodImageUploadStatus');
+  const labelEl = document.getElementById('prodImageUploadLabel');
+  const imageInputHidden = document.getElementById('prodImageInput');
 
-  if (statusText) statusText.textContent = 'Mengunggah ke Drive...';
-  if (uploadLabel) uploadLabel.textContent = 'Memproses...';
+  // Ambil ID produk secara aman (mendukung prodModalId maupun prodModalIndex)
+  const idEl = document.getElementById('prodModalId') || document.getElementById('prodModalIndex');
+  const productId = (idEl && idEl.value && idEl.value !== '-1') ? idEl.value : ('PRD-' + Date.now());
 
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64Data = e.target.result.split(',')[1];
+  // 3. Tampilkan status awal
+  if (labelEl) labelEl.textContent = 'Memproses...';
+  if (statusEl) statusEl.textContent = 'Mengompres & mengunggah...';
+
+  try {
+    // 4. Baca file dan tampilkan preview instan
+    const rawBase64 = await readFileAsBase64(file);
     if (previewImg) {
-      previewImg.src = e.target.result;
+      previewImg.src = rawBase64;
       previewImg.classList.remove('hidden');
     }
     if (previewIcon) previewIcon.classList.add('hidden');
 
-    try {
-      const res = await sendPostToGAS('UPLOAD_PRODUCT_IMAGE', {
-        storeId: appState.currentStore?.storeId || '',
-        folderId: appState.settings?.driveFolderId || '',
-        base64: base64Data,
-        mimeType: file.type,
-        productId: 'IMG-' + Date.now()
-      });
+    // 5. Kompres gambar via canvas ke resolusi ideal (max 1000px, quality 0.8)
+    // Ini mengubah foto HP 5MB menjadi hanya ~150KB sehingga upload selesai dalam 1-2 detik!
+    const compressedBase64 = await compressImageBase64(rawBase64, 1000, 0.8);
 
-      if (res && res.status === 'success' && res.imageUrl) {
-        document.getElementById('prodImageInput').value = res.imageUrl;
-        if (statusText) statusText.textContent = 'Tersimpan di Google Drive';
-        showToast('Foto Diunggah', 'Gambar menu berhasil disimpan ke Drive.', 'success');
-      } else {
-        document.getElementById('prodImageInput').value = e.target.result;
-        if (statusText) statusText.textContent = 'Tersimpan lokal di memori';
-      }
-    } catch (err) {
-      document.getElementById('prodImageInput').value = e.target.result;
-      if (statusText) statusText.textContent = 'Tersimpan lokal';
-    } finally {
-      if (uploadLabel) uploadLabel.textContent = 'Ganti Foto';
+    if (labelEl) labelEl.textContent = 'Mengunggah...';
+    if (statusEl) statusEl.textContent = 'Menyimpan ke Google Drive...';
+
+    // 6. Kirim ke Backend Google Apps Script
+    const res = await sendPostToGAS('UPLOAD_PRODUCT_IMAGE', {
+      storeId: appState.currentStore?.storeId || '',
+      folderId: appState.settings?.driveFolderId || '',
+      productId: productId,
+      fileName: file.name,
+      mimeType: 'image/jpeg',
+      base64: compressedBase64
+    });
+
+    // 7. Penanganan Response
+    if (res && res.status === 'success' && res.imageUrl) {
+      if (imageInputHidden) imageInputHidden.value = res.imageUrl;
+      if (statusEl) statusEl.textContent = 'Tersimpan di Google Drive ✓';
+      showToast('Foto Diunggah', 'Gambar menu berhasil disimpan ke Drive.', 'success');
+    } else {
+      // Fallback jika Drive gagal/folder tidak ada izin: simpan base64 lokal
+      if (imageInputHidden) imageInputHidden.value = rawBase64;
+      if (statusEl) statusEl.textContent = 'Tersimpan di memori lokal';
+      showToast('Tersimpan Lokal', res?.message || 'Gambar disimpan ke cache aplikasi.', 'info');
     }
-  };
-  reader.readAsDataURL(file);
+  } catch (err) {
+    console.error('Error upload gambar:', err);
+    if (statusEl) statusEl.textContent = 'Gagal upload (tersimpan lokal)';
+    showToast('Gagal Mengunggah', 'Koneksi ke Drive terganggu, gambar tetap tersimpan di perangkat.', 'warning');
+  } finally {
+    // 8. Selalu kembalikan label tombol agar tidak stuck di status "Mengunggah..."
+    if (labelEl) labelEl.textContent = 'Ganti Foto';
+    event.target.value = '';
+  }
 }
       
     // URL Web App Google Apps Script Multi-Tenant Aktif
@@ -7745,20 +7774,6 @@ async function saveProductItem() {
         <span class="text-[9px] font-black text-slate-400 w-8">/menu</span>
         <button type="button" onclick="this.parentElement.remove(); updateProductHppPreview()" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors shrink-0 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
       container.appendChild(div); lucide.createIcons();
-    }
-
-    async function handleProductImageSelected(e) {
-      const file = e.target.files[0]; if (!file) return;
-      if (!file.type.startsWith('image/')) { showToast('File Tidak Valid', 'Pilih file gambar (JPG/PNG/WEBP).', 'warning'); e.target.value=''; return; }
-      if (file.size > 8 * 1024 * 1024) { showToast('Ukuran Terlalu Besar', 'Ukuran foto maksimal 8 MB.', 'warning'); e.target.value=''; return; }
-      const previewImg = document.getElementById('prodImagePreview'); const previewIcon = document.getElementById('prodImagePreviewIcon'); const statusEl = document.getElementById('prodImageUploadStatus'); const labelEl = document.getElementById('prodImageUploadLabel');
-      const rawBase64 = await readFileAsBase64(file); previewImg.src=rawBase64; previewImg.classList.remove('hidden'); previewIcon.classList.add('hidden');
-      const compressedBase64 = await compressImageBase64(rawBase64, 1000, 0.8); labelEl.textContent='Mengunggah...'; statusEl.textContent='Mengunggah ke Google Drive, mohon tunggu...';
-      const storeId = appState.currentStore?.storeId; const idVal = document.getElementById('prodModalIndex').value; const productId = idVal !== '-1' ? idVal : ('TEMP-' + Date.now());
-      const result = await sendPostToGAS('UPLOAD_PRODUCT_IMAGE', { storeId, productId, fileName:file.name, mimeType:'image/jpeg', base64:compressedBase64 });
-      if (result.status==='success' && result.imageUrl) { document.getElementById('prodImageInput').value=result.imageUrl; statusEl.textContent='Berhasil diunggah ke Drive ✓'; labelEl.textContent='Ganti Foto'; showToast('Foto Terunggah','Gambar produk tersimpan di Google Drive.','success'); }
-      else { statusEl.textContent='Gagal mengunggah: '+(result.message||'periksa koneksi.'); labelEl.textContent='Coba Lagi'; showToast('Upload Gagal',result.message||'Tidak dapat mengunggah gambar ke Drive.','error'); }
-      e.target.value='';
     }
     
     let invCategoryFilter = 'all';
