@@ -4262,6 +4262,11 @@ async function handleCreateStaffSubmit(e) {
     appState.currentStore.staff = appState.settings.staff;
   }
 
+if (Array.isArray(cloud.attendance)) appState.attendance = cloud.attendance;
+if (Array.isArray(cloud.purchaseHistory)) appState.purchaseHistory = cloud.purchaseHistory;
+const cloudStaff = cloud.staffList || cloud.staff;
+if (Array.isArray(cloudStaff)) appState.staffList = cloudStaff;
+
   saveState();
   renderStaffTable();
   updateStaffDropdowns();
@@ -4543,7 +4548,7 @@ async function handleProductImageSelected(event) {
 }
       
     // URL Web App Google Apps Script Multi-Tenant Aktif
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyPXePxQyor0F4oey77Plip-LmBxSb1emathBH0dtmyvnNy3VRWqE3gTiYIoTegaqiO/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzUotBN91bFY8l-K3_LXnW4uECwCWOJUBm_2rCtI45lv3DnKYf68WLr5X-gSM-JLDsqOQ/exec";
 
     function readStorageJson(key, fallback = null) {
       try {
@@ -4847,6 +4852,57 @@ async function syncPendingTransactions(pendingList) {
         stockPurchaseQty: Math.max(0, stockSmall / conversionFactor)
       };
     }
+
+const LOW_STOCK_PURCHASE_UNITS = 10;
+function isInventoryLow(inv) {
+  const n = normalizeInventoryForHpp(inv);
+  return n.stockSmall < n.conversionFactor * LOW_STOCK_PURCHASE_UNITS;
+}
+
+function parseLooseDate(v) {
+  if (!v) return null;
+  if (v instanceof Date) return isNaN(v) ? null : v;
+  const s = String(v).trim();
+  let m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+  m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
+function renderInventoryMetrics() {
+  const inv = appState.inventory || [];
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const now = new Date();
+
+  const totalAsset = inv.reduce((s, i) => {
+    const n = normalizeInventoryForHpp(i);
+    return s + n.stockSmall * n.avgCostSmall;
+  }, 0);
+
+  const monthRows = (appState.purchaseHistory || []).filter(h => {
+    const d = parseLooseDate(h.date) || parseLooseDate(h.createdAt);
+    return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const monthTotal = monthRows.reduce((s, h) =>
+    s + (Number(h.totalCost) || (Number(h.qtyPurchase) || 0) * (Number(h.unitPrice) || 0)), 0);
+  const trxCount = new Set(monthRows.map(h => h.invoiceNo || h.createdAt || h.id)).size;
+
+  const hikeCount = inv.filter(i => {
+    const n = normalizeInventoryForHpp(i);
+    const last = Number(i.lastPurchasePrice) || 0;
+    const avg = n.avgCostSmall * n.conversionFactor;
+    return last > 0 && avg > 0 && last - avg > 1;
+  }).length;
+
+  set('invMetricTotalAsset', formatCurrency(totalAsset));
+  set('invMetricItemCount', `Dari ${inv.length} item bahan terdaftar`);
+  set('invMetricMonthPurchase', formatCurrency(monthTotal));
+  set('invMetricPurchaseCount', `${trxCount} transaksi belanja bahan`);
+  set('invMetricCriticalCount', `${inv.filter(isInventoryLow).length} item`);
+  set('invMetricPriceHikeCount', `${hikeCount} item`);
+}
 
     function getInventorySmallQty(inv) {
       const n = normalizeInventoryForHpp(inv);
@@ -7786,13 +7842,27 @@ async function saveProductItem() {
     // 1. GUDANG & MANAJEMEN STOK LOGIC
     // ==========================================================
     function setInventoryCategoryFilter(cat, btn) {
-      invCategoryFilter = cat;
-      document.querySelectorAll('.inv-filter-chip').forEach(b => {
-        b.className = "inv-filter-chip px-4 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer";
-      });
-      btn.className = "inv-filter-chip px-4 py-2 rounded-xl text-xs font-black transition-all bg-slate-900 text-white shadow-sm cursor-pointer";
-      renderInventoryTable();
-    }
+  invCategoryFilter = cat;
+  document.querySelectorAll('.inv-filter-chip').forEach(b => {
+    b.classList.remove('bg-slate-900', 'text-white', 'shadow-sm', 'font-black');
+    b.classList.add('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200', 'font-bold');
+  });
+  if (btn) {
+    btn.classList.remove('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200', 'font-bold');
+    btn.classList.add('bg-slate-900', 'text-white', 'shadow-sm', 'font-black');
+  }
+  renderInventoryTable();
+}
+
+function updateInventoryChipCounts() {
+  const inv = appState.inventory || [];
+  const type = i => i.itemType || 'ingredient';
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('invCountAll', inv.length);
+  set('invCountIngredient', inv.filter(i => type(i) !== 'packaging').length);
+  set('invCountPackaging', inv.filter(i => type(i) === 'packaging').length);
+  set('invCountCritical', inv.filter(isInventoryLow).length);
+}
 
 function renderInventoryTable() {
   const tbody = document.getElementById('inventoryTableBody');
@@ -7801,17 +7871,24 @@ function renderInventoryTable() {
   const searchQuery = (appState.inventorySearch || '').toLowerCase().trim();
   const sortMode = document.getElementById('invSortSelect')?.value || 'stock_asc';
 
-  let items = (appState.inventory || []).filter(item => {
-    const matchesSearch = !searchQuery || 
-      (item.name || '').toLowerCase().includes(searchQuery) ||
-      (item.sku || '').toLowerCase().includes(searchQuery);
-    return matchesSearch;
-  });
+  updateInventoryChipCounts();
 
-  // Urutkan item
-  if (sortMode === 'stock_asc') items.sort((a,b) => getInventorySmallQty(a) - getInventorySmallQty(b));
-  else if (sortMode === 'name_asc') items.sort((a,b) => (a.name || '').localeCompare(b.name || ''));
-  else if (sortMode === 'cost_desc') items.sort((a,b) => getInventoryUnitCostSmall(b) - getInventoryUnitCostSmall(a));
+let items = (appState.inventory || []).filter(item => {
+  const type = item.itemType || 'ingredient';
+  if (invCategoryFilter === 'ingredient' && type === 'packaging') return false;
+  if (invCategoryFilter === 'packaging' && type !== 'packaging') return false;
+  if (invCategoryFilter === 'critical' && !isInventoryLow(item)) return false;
+
+  return !searchQuery ||
+    (item.name || '').toLowerCase().includes(searchQuery) ||
+    (item.sku || '').toLowerCase().includes(searchQuery);
+});
+
+const purchaseQty = i => { const n = normalizeInventoryForHpp(i); return n.stockSmall / n.conversionFactor; };
+if (sortMode === 'stock_asc') items.sort((a, b) => purchaseQty(a) - purchaseQty(b));
+else if (sortMode === 'name_asc') items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+else if (sortMode === 'cost_desc') items.sort((a, b) => getInventoryUnitCostSmall(b) - getInventoryUnitCostSmall(a));
+else if (sortMode === 'latest') items.sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
 
   if (items.length === 0) {
     tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-slate-400 font-bold text-xs">Belum ada bahan baku atau packaging terdaftar.</td></tr>`;
@@ -7821,7 +7898,9 @@ function renderInventoryTable() {
   tbody.innerHTML = items.map(inv => {
     const smallQty = getInventorySmallQty(inv);
     const unitCost = getInventoryUnitCostSmall(inv);
-    const isCritical = smallQty <= 10;
+    const isCritical = isInventoryLow(inv);
+    
+    renderInventoryMetrics();
 
     return `
       <!-- Desktop Row View (>= 768px) -->
@@ -9177,6 +9256,26 @@ let absenSubTab = 'presensi';
     }
 
     // 3. Render Tabel Riwayat Presensi (Filter Tanggal, Staf & Search)
+    
+    function getFilteredAttendance() {
+  const period = document.getElementById('absenPeriodFilter')?.value || 'month';
+  const emp = document.getElementById('absenEmployeeFilter')?.value || 'all';
+  const q = (document.getElementById('absenSearchInput')?.value || '').toLowerCase().trim();
+  const now = new Date();
+  const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
+
+  return (appState.attendance || []).filter(r => {
+    const t = Number(r.clockInEpoch) || (parseLooseDate(r.clockIn)?.getTime() ?? NaN);
+    if (period === 'today' && !(t >= dayStart && t < dayStart + 864e5)) return false;
+    if (period === 'month' && !(t >= monthStart && t < nextMonth)) return false;
+    if (emp !== 'all' && r.username !== emp && r.name !== emp) return false;
+    if (q && !`${r.name} ${r.username} ${r.shiftType}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+    
     function renderAttendanceTable() {
       renderLiveShiftBoard();
       populateEmployeeFilterOptions();
@@ -9194,33 +9293,7 @@ let absenSubTab = 'presensi';
       const currentYear = now.getFullYear();
 
       // Filter Data Riil
-      const filtered = appState.attendance.filter(record => {
-        // Filter Periode
-        if (period === 'today') {
-          const isToday = record.clockIn && record.clockIn.includes(todayStr);
-          if (!isToday) return false;
-        } else if (period === 'month') {
-          if (record.clockInEpoch) {
-            const d = new Date(record.clockInEpoch);
-            if (d.getMonth() !== currentMonth || d.getFullYear() !== currentYear) return false;
-          }
-        }
-
-        // Filter Staf
-        if (selectedEmp !== 'all' && record.username !== selectedEmp && record.name !== selectedEmp) {
-          return false;
-        }
-
-        // Search Filter
-        if (searchTxt) {
-          const match = (record.name || '').toLowerCase().includes(searchTxt) ||
-                        (record.username || '').toLowerCase().includes(searchTxt) ||
-                        (record.shiftType || '').toLowerCase().includes(searchTxt);
-          if (!match) return false;
-        }
-
-        return true;
-      });
+      const filtered = getFilteredAttendance();
 
       // Hitung 4 Metrik Riil
       const totalHours = filtered.reduce((s, r) => s + (Number(r.durationHours) || 0), 0);
@@ -9332,7 +9405,7 @@ let absenSubTab = 'presensi';
       let totalTerbayarAll = 0;
       let totalJamAll = 0;
 
-      appState.attendance.forEach(item => {
+      getFilteredAttendance().forEach(item => {
         const key = item.username || item.name;
         if (!empMap[key]) {
           empMap[key] = {
@@ -9422,10 +9495,16 @@ let absenSubTab = 'presensi';
 
       const staffList = Array.from(staffSet);
 
-      if (selectFilter && selectFilter.options.length <= 1) {
-        selectFilter.innerHTML = `<option value="all" selected>Semua Staf (${staffList.length})</option>` +
-          staffList.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
-      }
+      if (selectFilter) {
+  const sig = staffList.join('|');
+  if (selectFilter.dataset.sig !== sig) {
+    const prev = selectFilter.value;
+    selectFilter.innerHTML = `<option value="all">Semua Staf (${staffList.length})</option>` +
+      staffList.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+    selectFilter.dataset.sig = sig;
+    selectFilter.value = staffList.includes(prev) ? prev : 'all';
+  }
+}
 
       if (selectTerminal) {
         selectTerminal.innerHTML = staffList.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
@@ -9620,7 +9699,7 @@ let absenSubTab = 'presensi';
     }
 
     function bayarSemuaSisaGaji() {
-      const unpaidList = appState.attendance.filter(a => a.paymentStatus !== 'Lunas');
+      const unpaidList = getFilteredAttendance().filter(a => a.paymentStatus !== 'Lunas');
       if (unpaidList.length === 0) {
         showToast('Semua Gaji Lunas', 'Tidak ada upah tertunda yang perlu dibayar.', 'info');
         return;
@@ -10285,10 +10364,7 @@ let dashboardChartRangeDays = 7;
       const targetProgressText = document.getElementById('dashTargetProgressText');
       const targetProgressBar = document.getElementById('dashTargetProgressBar');
 
-      const lowStockItems = appState.inventory.filter(i => {
-        const n = normalizeInventoryForHpp(i);
-        return n.stockSmall < (Number(n.conversionFactor) || 1) * 10;
-      });
+      const lowStockItems = appState.inventory.filter(isInventoryLow);
 
       if (heroSubtext) {
         heroSubtext.innerHTML = `Omzet hari ini mencapai <strong class="text-white font-bold">${targetPercent}% dari target harian</strong>. ` +
@@ -11342,6 +11418,20 @@ async function handleManualCashSubmit(e) {
   };
 
   appState.cashLogs.unshift(newLog);
+  
+  const attMap = new Map();
+(cloud.attendance || []).forEach(a => { if (a.id) attMap.set(String(a.id), a); });
+(appState.attendance || []).forEach(a => {
+  const k = String(a.id || ''); if (!k) return;
+  const c = attMap.get(k);
+  if (!c || (a.paymentStatus === 'Lunas' && c.paymentStatus !== 'Lunas') || (a.clockOut && !c.clockOut)) attMap.set(k, a);
+});
+appState.attendance = Array.from(attMap.values());
+
+if (Array.isArray(cloud.purchaseHistory)) appState.purchaseHistory = cloud.purchaseHistory;
+const cloudStaff = cloud.staffList || cloud.staff;
+if (Array.isArray(cloudStaff)) appState.staffList = cloudStaff;
+  
   saveState();
   renderCashLogsTable();
   closeModal('modalManualCash');
