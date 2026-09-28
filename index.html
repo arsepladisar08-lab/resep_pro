@@ -7581,6 +7581,20 @@ async function saveStockItem() {
     showToast('Validasi Gagal', 'Nama bahan baku wajib diisi.', 'warning');
     return;
   }
+  if (stockPurchaseQty < 0 || cost < 0) {
+    showToast('Validasi Gagal', 'Stok dan harga tidak boleh negatif.', 'warning');
+    return;
+  }
+
+  // Cegah nama ganda saat edit (nama diganti jadi sama dengan item lain)
+  const dupe = (appState.inventory || []).find(i =>
+    String(i.sku) !== String(editingSku) &&
+    (i.name || '').trim().toLowerCase() === name.toLowerCase()
+  );
+  if (dupe) {
+    showToast('Nama Sudah Ada', `"${name}" sudah terdaftar dengan SKU ${dupe.sku}.`, 'warning');
+    return;
+  }
 
   const stockSmall = stockPurchaseQty * conversionFactor;
   const avgCostSmall = conversionFactor > 0 ? (cost / conversionFactor) : 0;
@@ -7641,6 +7655,7 @@ async function saveStockItem() {
   }
 
   saveState();
+  updateNotifications();
   renderInventoryTable();
   closeModal('stockModal');
 
@@ -7661,6 +7676,21 @@ async function saveStockItem() {
       });
       showToast('Item Dihapus', 'Bahan telah dihapus dari gudang.', 'info');
     }
+    
+    function confirmDeleteStock(sku) {
+  const inv = (appState.inventory || []).find(i => String(i.sku) === String(sku));
+  if (!inv) return;
+
+  const usedIn = (appState.products || []).filter(p =>
+    [...(p.recipe || []), ...(p.packaging || [])].some(r => String(r.sku) === String(sku))
+  );
+
+  const warn = usedIn.length
+    ? `\n\n⚠️ Item ini dipakai di ${usedIn.length} menu (${usedIn.slice(0, 3).map(p => p.name).join(', ')}${usedIn.length > 3 ? ', ...' : ''}). HPP menu tersebut akan terpengaruh.`
+    : '';
+
+  if (confirm(`Hapus "${inv.name}" dari gudang?${warn}`)) deleteStockItem(sku);
+}
 
 /* ==========================================================================
    MODUL PRODUK: SISTEM EDIT BERBASIS ID (ANTI-DUPLIKASI)
@@ -7940,10 +7970,21 @@ else if (sortMode === 'latest') items.sort((a, b) => String(b.updatedAt || '').l
           ${formatCurrency(unitCost)} <span class="text-[10px] text-slate-400 font-normal">/ ${escapeHtml(inv.smallUnit || 'unit')}</span>
         </td>
         <td class="py-3 px-6 text-right">
-          <button onclick="openPurchaseModal('${escapeHtml(inv.sku)}')" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-bold transition cursor-pointer">
-            Restock
-          </button>
-        </td>
+  <div class="flex justify-end gap-1.5">
+    <button onclick="openStockModal('${escapeHtml(inv.sku)}')" title="Edit data"
+      class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold transition cursor-pointer">
+      Edit
+    </button>
+    <button onclick="openPurchaseModal('${escapeHtml(inv.sku)}')"
+      class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-bold transition cursor-pointer">
+      Restock
+    </button>
+    <button onclick="confirmDeleteStock('${escapeHtml(inv.sku)}')" title="Hapus"
+      class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold transition cursor-pointer">
+      Hapus
+    </button>
+  </div>
+</td>
       </tr>
 
       <!-- Mobile Stacked Card View (< 768px) -->
@@ -7972,6 +8013,9 @@ else if (sortMode === 'latest') items.sort((a, b) => String(b.updatedAt || '').l
             </div>
 
             <div class="flex justify-end gap-2 pt-0.5">
+            <button onclick="openStockModal('${escapeHtml(inv.sku)}')" class="px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 text-[11px] font-bold">
+  Edit
+</button>
               <button onclick="openPurchaseHistoryModal('${escapeHtml(inv.sku)}')" class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 text-[11px] font-bold">
                 Histori
               </button>
