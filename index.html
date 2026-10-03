@@ -1001,26 +1001,27 @@
             
             <!-- Revenue Trend Chart -->
             <div class="animate-in-section delay-section-1 xl:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle flex flex-col justify-between">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-                <div>
-                  <h3 id="dashChartHeading" class="text-lg sm:text-xl font-extrabold text-slate-900">Tren omzet 7 hari terakhir</h3>
-                  <p class="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">Dihitung otomatis dari transaksi kasir real-time.</p>
-                </div>
-
-                <div class="flex items-center gap-3">
-                  <div class="flex p-1 bg-slate-100 rounded-xl border border-slate-200" role="tablist">
-                    <button id="chart-toggle-7" onclick="setDashboardChartRange(7)" type="button" class="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-white text-primary shadow-sm cursor-pointer">
-                      7 hari
-                    </button>
-                    <button id="chart-toggle-30" onclick="setDashboardChartRange(30)" type="button" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all cursor-pointer">
-                      30 hari
-                    </button>
-                  </div>
-                  <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-[11px] font-bold text-primary">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span> Live Sync
-                  </span>
-                </div>
+              <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div>
+                <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Master Menu &amp; Resep</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Tahap 1: hitung HPP dasar resep per pcs. Tahap 2: rakit menu kasir dari resep + packaging.</p>
               </div>
+              <div class="flex flex-wrap gap-2">
+                <button id="btnNewRecipe" class="inline-flex items-center space-x-2 px-5 py-3 bg-primary hover:bg-primary-hover text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 cursor-pointer" onclick="openRecipeModal()">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Racik Resep Baru</span>
+                </button>
+                <button id="btnNewMenu" class="inline-flex items-center space-x-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 cursor-pointer" onclick="openProductModal()">
+                  <i data-lucide="plus" class="w-4 h-4"></i><span>Menu Kasir Baru</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Sub-tab: Tahap 1 / Tahap 2 -->
+            <div class="pt-5 flex flex-wrap gap-2 text-xs font-black" id="prodSubTabs">
+              <button id="prodSubBtnRecipe" onclick="switchProdSubTab('recipe')" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer">1. Kalkulasi Resep (<span id="recipeCountBadge">0</span>)</button>
+              <button id="prodSubBtnMenu" onclick="switchProdSubTab('menu')" class="px-4 py-2 rounded-xl bg-slate-900 text-white shadow-xs cursor-pointer">2. Setup Menu Kasir</button>
+            </div>
 
               <div class="relative w-full h-[280px] sm:h-[300px] mt-4">
                 <canvas id="revenueChartCanvas"></canvas>
@@ -1565,23 +1566,23 @@
                   </div>
                 </div>
 
-                <div class="flex items-center space-x-3 bg-indigo-50 p-3 rounded-2xl border border-indigo-200 shadow-xs">
+                <div onclick="switchProdSubTab('recipe')" class="flex items-center space-x-3 bg-indigo-50 p-3 rounded-2xl border border-indigo-200 shadow-xs cursor-pointer">
                   <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-black text-xs">
                     3
                   </div>
                   <div class="min-w-0">
-                    <p class="text-[10px] font-black uppercase tracking-wider text-primary">Langkah 3 (Aktif)</p>
-                    <p class="text-xs font-black text-indigo-950 truncate">Racik resep &amp; BOM</p>
+                    <p class="text-[10px] font-black uppercase tracking-wider text-primary">Langkah 3</p>
+                    <p class="text-xs font-black text-indigo-950 truncate">Kalkulasi resep (HPP dasar)</p>
                   </div>
                 </div>
 
-                <div onclick="navigateTab('pos')" class="flex items-center space-x-3 bg-slate-50 hover:bg-slate-100 p-3 rounded-2xl border border-dashed border-slate-200 cursor-pointer transition-all">
+                <div onclick="switchProdSubTab('menu')" class="flex items-center space-x-3 bg-slate-50 hover:bg-slate-100 p-3 rounded-2xl border border-dashed border-slate-200 cursor-pointer transition-all">
                   <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 font-black text-xs">
                     4
                   </div>
                   <div class="min-w-0">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Langkah 4</p>
-                    <p class="text-xs font-bold text-slate-600 truncate">Jadikan menu kasir</p>
+                    <p class="text-xs font-bold text-slate-600 truncate">Setup menu kasir</p>
                   </div>
                 </div>
               </div>
@@ -1608,7 +1609,8 @@
             </div>
           </div>
 
-          <!-- 2. TOOLBAR & FILTER PRODUK -->
+<!-- 2. TOOLBAR & FILTER PRODUK -->
+          <div id="menuSubPanel" class="space-y-6">
           <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             <div class="flex flex-wrap items-center gap-3 flex-1">
               <div class="relative w-full sm:w-64">
@@ -1648,36 +1650,96 @@
 
           <!-- 3. GRID MENU & RESEP BOM -->
           <div id="productsGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12"></div>
+          
+          </div>
+
+          <!-- ================= PANEL TAHAP 1: KALKULASI RESEP ================= -->
+          <div id="recipeSubPanel" class="hidden space-y-6">
+            <div class="relative w-full sm:w-72">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="recipeSearchInput" oninput="renderRecipeCards()" placeholder="Cari resep..."
+                class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-xs" />
+            </div>
+            <div id="recipesGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12"></div>
+          </div>
         </section>
 
-        <!-- ================= MODAL: 2-PANE RESEP & BOM (MODAL DIALOG) ================= -->
-        <div id="productModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 lg:p-8 select-none">
-          <div class="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <!-- Modal Header -->
+        <!-- ================= MODAL TAHAP 1: KALKULASI RESEP (HPP DASAR) ================= -->
+        <div id="recipeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 lg:p-8 select-none">
+          <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[92vh] shadow-2xl flex flex-col overflow-hidden">
             <div class="px-7 py-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
               <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-primary flex items-center justify-center font-bold">
-                  <i data-lucide="beaker" class="w-5 h-5"></i>
-                </div>
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-primary flex items-center justify-center"><i data-lucide="beaker" class="w-5 h-5"></i></div>
                 <div>
-                  <h3 id="productModalTitle" class="font-extrabold text-lg text-slate-900 leading-tight">Racik Menu &amp; Hitung HPP (BOM)</h3>
-                  <p class="text-xs text-slate-400 font-medium">Kalkulasi modal bahan baku akurat per porsi menu kasir</p>
+                  <h3 id="recipeModalTitle" class="font-extrabold text-lg text-slate-900 leading-tight">Kalkulasi Resep Baru</h3>
+                  <p class="text-xs text-slate-400 font-medium">Hanya untuk HPP internal. Belum tampil di kasir.</p>
                 </div>
               </div>
-              <button class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" onclick="closeModal('productModal')">
-                <i data-lucide="x" class="w-5 h-5"></i>
-              </button>
+              <button class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" onclick="closeModal('recipeModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-<!-- Modal Body: Unified Single Scroll di Mobile, 2-Pane Side-by-Side di Desktop -->
-<div class="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
-  
-  <!-- LEFT PANE: Form Identitas & Racik Resep -->
-  <!-- Di mobile mengalir biasa tanpa scroll sendiri, di desktop scroll mandiri -->
-  <div class="w-full lg:w-7/12 p-5 sm:p-7 space-y-6 lg:overflow-y-auto custom-scrollbar">
-    <input type="hidden" id="prodModalIndex" value="-1" />
+            <div class="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+              <div class="w-full lg:w-7/12 p-5 sm:p-7 space-y-5 lg:overflow-y-auto custom-scrollbar">
+                <input type="hidden" id="recipeModalId" value="" />
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Resep</label>
+                    <input type="text" id="recipeNameInput" placeholder="Contoh: Base Kopi Susu / Adonan Roti" class="w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary outline-none" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">1 Batch = (pcs)</label>
+                    <input type="number" id="recipeYieldInput" min="1" step="any" value="1" oninput="updateRecipeLivePane()" class="w-full text-xs font-black px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary outline-none text-primary text-center" />
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">Komposisi Bahan (per 1 batch)</h4>
+                    <button type="button" onclick="addRecipeIngRow()" class="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah bahan</button>
+                  </div>
+                  <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div id="recipeIngRowsContainer" class="divide-y divide-slate-100 bg-white p-2 space-y-2"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full lg:w-5/12 bg-slate-900 text-white p-5 sm:p-7 space-y-4 lg:overflow-y-auto custom-scrollbar">
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><i data-lucide="calculator" class="w-4 h-4 text-indigo-400"></i> HPP Dasar Live</span>
+                <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700">
+                  <span class="text-[11px] text-slate-400 block mb-1">HPP per Pcs</span>
+                  <span class="text-2xl font-black text-white tracking-tight" id="rcpLivePerPcs">Rp 0</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700"><span class="text-[10px] text-slate-400 block mb-0.5 font-bold uppercase">Total Batch</span><span class="text-base font-black text-emerald-400" id="rcpLiveBatch">Rp 0</span></div>
+                  <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700"><span class="text-[10px] text-slate-400 block mb-0.5 font-bold uppercase">Hasil Batch</span><span class="text-base font-black text-white" id="rcpLiveYield">1 pcs</span></div>
+                </div>
+                <div class="bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700 space-y-1.5 text-[11px] text-slate-400" id="rcpLiveLines">Pilih bahan untuk melihat rincian biaya.</div>
+                <p class="text-[11px] text-slate-400 flex gap-2"><i data-lucide="info" class="w-4 h-4 text-slate-500 shrink-0"></i><span>Resep ini nanti dipanggil di Tahap 2 (Setup Menu Kasir) dengan jumlah porsi.</span></p>
+              </div>
+            </div>
+            <div class="px-7 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+              <button class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition cursor-pointer" onclick="closeModal('recipeModal')" type="button">Batal</button>
+              <button class="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold shadow-md shadow-primary/20 transition cursor-pointer" onclick="saveRecipeItem()" type="button">Simpan Resep</button>
+            </div>
+          </div>
+        </div>
+
+<!-- ================= MODAL TAHAP 2: SETUP MENU KASIR ================= -->
+        <div id="productModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 lg:p-8 select-none">
+          <div class="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-7 py-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-primary flex items-center justify-center"><i data-lucide="store" class="w-5 h-5"></i></div>
+                <div>
+                  <h3 id="productModalTitle" class="font-extrabold text-lg text-slate-900 leading-tight">Setup Menu Kasir</h3>
+                  <p class="text-xs text-slate-400 font-medium">Panggil resep + tentukan porsi, tambah packaging/pelengkap, lalu set harga jual</p>
+                </div>
+              </div>
+              <button class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" onclick="closeModal('productModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+              <div class="w-full lg:w-7/12 p-5 sm:p-7 space-y-6 lg:overflow-y-auto custom-scrollbar">
+                <input type="hidden" id="prodModalId" value="" />
     <input type="hidden" id="prodImageInput" />
 
-    <!-- 1. Informasi Menu -->
+                    <!-- 1. Informasi Menu -->
     <div class="space-y-4">
       <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">1. Informasi Menu</h4>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -1721,59 +1783,34 @@
       </div>
     </div>
 
-    <!-- 2. Konfigurasi Satuan Sajian BOM -->
-    <div class="bg-indigo-50/60 p-4 rounded-2xl border border-indigo-100 space-y-2">
-      <h4 class="text-xs font-black text-indigo-950 flex items-center gap-1.5">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-primary"></i> Satuan Sajian BOM
-      </h4>
-      <div class="grid grid-cols-2 gap-3 text-xs">
-        <div class="bg-white p-3 rounded-xl border border-indigo-200">
-          <label class="text-slate-500 text-[10px] block font-bold uppercase mb-1">1 Batch Resep Menghasilkan</label>
-          <div class="flex items-center gap-1.5">
-            <input type="number" id="prodYieldPcsInput" min="1" step="1" value="1" oninput="updateProductHppLivePane()"
-              class="w-16 p-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-black text-primary text-center outline-none" />
-            <span class="font-bold text-slate-700">pcs</span>
-          </div>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-indigo-200">
-          <label class="text-slate-500 text-[10px] block font-bold uppercase mb-1">1 Menu Kasir Berisi</label>
-          <div class="flex items-center gap-1.5">
-            <input type="number" id="prodMenuQtyInput" min="1" step="1" value="1" oninput="updateProductHppLivePane()"
-              class="w-16 p-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-black text-primary text-center outline-none" />
-            <span class="font-bold text-slate-700">pcs</span>
-          </div>
-        </div>
-      </div>
-    </div>
+                <!-- 2. Komponen dari Kalkulasi Resep -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">2. Resep &amp; Porsi</h4>
+                    <div class="flex items-center gap-3">
+                      <button type="button" onclick="openRecipeModal()" class="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1 cursor-pointer"><i data-lucide="beaker" class="w-3.5 h-3.5"></i> Racik resep baru</button>
+                      <button type="button" onclick="addMenuRecipeRow()" class="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah baris</button>
+                    </div>
+                  </div>
+                  <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div id="recipeRowsContainer" class="divide-y divide-slate-100 bg-white p-2 space-y-2"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400">Porsi = berapa pcs dari hasil resep yang ada di 1 menu. HPP per pcs diambil otomatis dari Tahap 1.</p>
+                </div>
 
-    <!-- 3. Tabel Bahan Racikan Resep (BOM) -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between">
-        <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">2. Komposisi Bahan Dasar</h4>
-        <button type="button" onclick="addRecipeRow()" class="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah bahan
-        </button>
-      </div>
-      <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div id="recipeRowsContainer" class="divide-y divide-slate-100 bg-white p-2 space-y-2"></div>
-      </div>
-    </div>
+                <!-- 3. Packaging & Pelengkap -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">3. Packaging &amp; Pelengkap</h4>
+                    <button type="button" onclick="addMenuExtraRow()" class="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1 cursor-pointer"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah item</button>
+                  </div>
+                  <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div id="packagingRowsContainer" class="divide-y divide-slate-100 bg-white p-2 space-y-2"></div>
+                  </div>
+                </div>
+              </div>
 
-    <!-- 4. Packaging / Menu -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between">
-        <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">3. Packaging &amp; Disposable</h4>
-        <button type="button" onclick="addPackagingRow()" class="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1 cursor-pointer">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah packaging
-        </button>
-      </div>
-      <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div id="packagingRowsContainer" class="divide-y divide-slate-100 bg-white p-2 space-y-2"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT PANE: Kalkulator HPP Live (Dark Theme) -->
+                <!-- RIGHT PANE: Kalkulator HPP Live (Dark Theme) -->
   <!-- Menyatu ke bawah di mobile (rounded-b-none di layar kecil), terisolasi rapi di desktop -->
   <div class="w-full lg:w-5/12 bg-slate-900 text-white p-5 sm:p-7 flex flex-col justify-between space-y-6 lg:overflow-y-auto custom-scrollbar">
     <div class="space-y-5">
@@ -1789,7 +1826,7 @@
       <!-- Stat Blocks -->
       <div class="space-y-3">
         <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700">
-          <span class="text-[11px] text-slate-400 block mb-1">Total HPP per Porsi Menu</span>
+          <span class="text-[11px] text-slate-400 block mb-1">Total Modal per Menu</span>
           <div class="flex items-baseline justify-between">
             <span class="text-2xl font-black text-white tracking-tight" id="liveModalHppTotal">Rp 0</span>
             <span class="text-xs text-slate-400 font-medium" id="liveModalHppRatio">0% dari omzet</span>
@@ -1810,6 +1847,8 @@
           </div>
         </div>
       </div>
+
+      <div class="bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700 space-y-1.5 text-[11px] text-slate-400" id="liveModalBreakdown"></div>
 
       <!-- Stacked Cost Breakdown Bar -->
       <div class="space-y-2">
@@ -1840,20 +1879,13 @@
 
     <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
       <i data-lucide="info" class="w-4 h-4 text-slate-500 shrink-0"></i>
-      <span>Harga beli di Gudang otomatis merevisi HPP menu ini secara live.</span>
+      <span>Perubahan resep &amp; harga beli gudang otomatis merevisi modal menu ini.</span>
     </div>
   </div>
-
-</div>
-
-            <!-- Modal Footer Action Bar -->
+            </div>
             <div class="px-7 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
-              <button class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition cursor-pointer" onclick="closeModal('productModal')" type="button">
-                Batal
-              </button>
-              <button class="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold shadow-md shadow-primary/20 transition cursor-pointer" onclick="saveProductItem()" type="button">
-                Simpan Menu &amp; HPP
-              </button>
+              <button class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition cursor-pointer" onclick="closeModal('productModal')" type="button">Batal</button>
+              <button class="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold shadow-md shadow-primary/20 transition cursor-pointer" onclick="saveProductItem()" type="button">Simpan Menu Kasir</button>
             </div>
           </div>
         </div>
@@ -4566,7 +4598,7 @@ async function handleProductImageSelected(event) {
 }
       
     // URL Web App Google Apps Script Multi-Tenant Aktif
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzUotBN91bFY8l-K3_LXnW4uECwCWOJUBm_2rCtI45lv3DnKYf68WLr5X-gSM-JLDsqOQ/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzczUtftl74EBezm1RYUSGGyQXc1JgWbuhjCzaMwj3ahb_TcD_fJdEm13ZM80fDgb1pWQ/exec";
 
     function readStorageJson(key, fallback = null) {
       try {
@@ -6248,7 +6280,7 @@ let posActiveOptionProduct = null;
     // 1. Hitung Sisa Porsi Riil Berdasarkan Bahan Baku Gudang (BOM)
     function getProductRealStockEstimate(prod) {
       if (!prod) return null;
-      const components = [...(prod.recipe || []), ...(prod.packaging || [])];
+      const components = expandProductComponents(prod);
       if (!components.length) return null; // Produk tanpa resep tidak dibatasi stok otomatis
 
       let minPortions = Infinity;
@@ -6278,10 +6310,11 @@ let posActiveOptionProduct = null;
       if (invPreview) invPreview.textContent = `Pesanan #${(appState.lastCompletedTransaction?.id || 'BARU').slice(-6)}`;
 
       // Hitung jumlah kategori riil
-      const countAll = appState.products.length;
-      const countMinuman = appState.products.filter(p => p.cat === 'Minuman').length;
-      const countMakanan = appState.products.filter(p => p.cat === 'Makanan').length;
-      const countPromo = appState.products.filter(p => p.cat === 'Promo/Bundle').length;
+      const posMenus = getMenuProducts();
+      const countAll = posMenus.length;
+      const countMinuman = posMenus.filter(p => p.cat === 'Minuman').length;
+      const countMakanan = posMenus.filter(p => p.cat === 'Makanan').length;
+      const countPromo = posMenus.filter(p => p.cat === 'Promo/Bundle').length;
 
       const cAll = document.getElementById('countCatAll');
       const cMin = document.getElementById('countCatMinuman');
@@ -6292,7 +6325,7 @@ let posActiveOptionProduct = null;
       if (cMak) cMak.textContent = String(countMakanan);
       if (cPro) cPro.textContent = String(countPromo);
 
-      const filtered = appState.products.filter(p => {
+      const filtered = posMenus.filter(p => {
         const matchesCat = (appState.posCategory === 'Semua' || p.cat === appState.posCategory);
         const matchesQuery = (p.name || '').toLowerCase().includes(appState.posSearch.toLowerCase());
         return matchesCat && matchesQuery;
@@ -6834,7 +6867,7 @@ function toggleMobileOrderSheet() {
         appState.cart.forEach(cartItem => {
           const prod = appState.products.find(p => String(p.id) === String(cartItem.id));
           if (!prod) return;
-          const components = [...(prod.recipe || []), ...(prod.packaging || [])];
+          const components = expandProductComponents(prod);
           components.forEach(r => {
             const inv = appState.inventory.find(i => String(i.sku) === String(r.sku));
             if (inv) {
@@ -11681,6 +11714,688 @@ function filterGuideTopics(query) {
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal('communityModal');
   });
+</script>
+<script>
+/* ==========================================================================
+   PATCH: KALKULASI RESEP (HPP dasar) -> SETUP MENU KASIR (resep + packaging)
+   Tempel blok <script> ini SEBELUM </body> (setelah script terakhir).
+   Fungsi di bawah menimpa fungsi lama dengan nama yang sama.
+   ========================================================================== */
+
+const RECIPE_ID_PREFIX = 'RCP-';
+let prodSubTab = 'menu';
+
+/* ---------- 1. HELPER DATA ---------- */
+// Resep disimpan di appState.products dengan id berawalan "RCP-" supaya
+// seluruh alur simpan/sync cloud yang sudah ada tetap dipakai tanpa ubah backend.
+function isRecipeEntity(p) { return !!p && String(p.id || '').startsWith(RECIPE_ID_PREFIX); }
+function getRecipeEntities() { return (appState.products || []).filter(isRecipeEntity); }
+function getMenuProducts() { return (appState.products || []).filter(p => !isRecipeEntity(p)); }
+function findRecipeEntity(id) { return getRecipeEntities().find(r => String(r.id) === String(id)); }
+function isRecipeRef(r) { return !!r && (r.componentType === 'recipeRef' || !!r.recipeId); }
+function findInv(sku) { return (appState.inventory || []).find(i => String(i.sku) === String(sku)); }
+
+/* ---------- 2. KALKULASI ---------- */
+// HPP dasar sebuah resep: total batch, HPP per pcs, dan rincian bahan.
+function calculateRecipeBase(rcp) {
+  const yieldPcs = Math.max(1, Number(rcp?.yieldPcs) || 1);
+  let total = 0;
+  const lines = [];
+  const missing = [];
+  (rcp?.recipe || []).forEach(r => {
+    const inv = findInv(r.sku);
+    if (!inv) { missing.push(r.sku); return; }
+    const qty = getRecipeComponentQtySmall(r, inv);
+    const cost = qty * getInventoryUnitCostSmall(inv);
+    total += cost;
+    lines.push({ sku: r.sku, name: inv.name, qty, unit: inv.smallUnit || inv.unit || '', cost });
+  });
+  return { total, yieldPcs, hppPerPcs: total / yieldPcs, lines, missing: [...new Set(missing)] };
+}
+
+// Menimpa fungsi lama: mendukung menu baru (referensi resep) DAN menu lama (bahan langsung).
+function calculateProductHpp(product) {
+  const recipe = Array.isArray(product?.recipe) ? product.recipe : [];
+  const packaging = Array.isArray(product?.packaging) ? product.packaging : [];
+  let refCost = 0;       // dari resep terkalkulasi x porsi
+  let legacyBatch = 0;   // format lama: bahan langsung per batch
+  let packagingTotal = 0;
+  const missing = [];
+
+  recipe.forEach(r => {
+    if (isRecipeRef(r)) {
+      const rcp = findRecipeEntity(r.recipeId);
+      if (!rcp) { missing.push(r.recipeId || 'resep'); return; }
+      const base = calculateRecipeBase(rcp);
+      base.missing.forEach(m => missing.push(m));
+      refCost += base.hppPerPcs * (Number(r.portionPcs) || 0);
+    } else {
+      const inv = findInv(r.sku);
+      if (!inv) { missing.push(r.sku); return; }
+      legacyBatch += getRecipeComponentQtySmall(r, inv) * getInventoryUnitCostSmall(inv);
+    }
+  });
+  packaging.forEach(r => {
+    const inv = findInv(r.sku);
+    if (!inv) { missing.push(r.sku); return; }
+    packagingTotal += getRecipeComponentQtySmall(r, inv) * getInventoryUnitCostSmall(inv);
+  });
+
+  const yieldPcs = Math.max(1, Number(product?.yieldPcs) || 1);
+  const menuQtyPcs = Math.max(1, Number(product?.menuQtyPcs) || 1);
+  const hppPerPiece = legacyBatch / yieldPcs;
+  const recipePart = refCost + (hppPerPiece * menuQtyPcs);
+  return {
+    recipeTotal: legacyBatch,
+    recipePart,
+    packagingTotal,
+    yieldPcs,
+    menuQtyPcs,
+    hppPerPiece,
+    hppPerMenu: recipePart + packagingTotal,
+    missing: [...new Set(missing)]
+  };
+}
+
+// Uraikan 1 menu menjadi kebutuhan bahan gudang (satuan kecil) per 1 porsi terjual.
+// Dipakai untuk cek sisa porsi di kasir dan pemotongan stok saat transaksi.
+function expandProductComponents(prod) {
+  const acc = new Map();
+  const add = (sku, qty, type) => {
+    if (!sku || !(qty > 0)) return;
+    const key = String(sku);
+    const cur = acc.get(key);
+    if (cur) cur.qtySmall += qty; else acc.set(key, { sku: key, qtySmall: qty, type });
+  };
+  (prod?.recipe || []).forEach(r => {
+    if (isRecipeRef(r)) {
+      const rcp = findRecipeEntity(r.recipeId);
+      if (!rcp) return;
+      const y = Math.max(1, Number(rcp.yieldPcs) || 1);
+      const portion = Number(r.portionPcs) || 0;
+      (rcp.recipe || []).forEach(ing => {
+        add(ing.sku, (getRecipeComponentQtySmall(ing, findInv(ing.sku)) / y) * portion, 'ingredient');
+      });
+    } else {
+      add(r.sku,
+  (getRecipeComponentQtySmall(r, findInv(r.sku)) / Math.max(1, Number(prod.yieldPcs) || 1))
+    * Math.max(1, Number(prod.menuQtyPcs) || 1),
+  'ingredient');
+    }
+  });
+  (prod?.packaging || []).forEach(p => add(p.sku, getRecipeComponentQtySmall(p, findInv(p.sku)), 'packaging'));
+  return [...acc.values()];
+}
+
+/* ---------- 3. SUB-TAB & RENDER ---------- */
+function switchProdSubTab(tab) {
+  prodSubTab = (tab === 'recipe') ? 'recipe' : 'menu';
+  const isRecipe = prodSubTab === 'recipe';
+  document.getElementById('menuSubPanel')?.classList.toggle('hidden', isRecipe);
+  document.getElementById('recipeSubPanel')?.classList.toggle('hidden', !isRecipe);
+  document.getElementById('btnNewRecipe')?.classList.toggle('hidden', !isRecipe);
+  document.getElementById('btnNewMenu')?.classList.toggle('hidden', isRecipe);
+  const on = 'px-4 py-2 rounded-xl bg-slate-900 text-white shadow-xs cursor-pointer';
+  const off = 'px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer';
+  const bR = document.getElementById('prodSubBtnRecipe');
+  const bM = document.getElementById('prodSubBtnMenu');
+  if (bR) bR.className = isRecipe ? on : off;
+  if (bM) bM.className = isRecipe ? off : on;
+  renderProductsCards();
+}
+
+// Menimpa fungsi lama: render dua panel sekaligus.
+function renderProductsCards() {
+  renderRecipeCards();
+  renderMenuCards();
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderRecipeCards() {
+  const container = document.getElementById('recipesGridContainer');
+  const recipes = getRecipeEntities();
+  const badge = document.getElementById('recipeCountBadge');
+  if (badge) badge.textContent = String(recipes.length);
+  if (!container) return;
+
+  const q = (document.getElementById('recipeSearchInput')?.value || '').toLowerCase().trim();
+  const list = recipes.filter(r => !q || (r.name || '').toLowerCase().includes(q));
+
+  if (!list.length) {
+    container.innerHTML = `
+      <div class="col-span-full py-16 text-center text-slate-400 bg-white rounded-3xl border border-slate-100 p-8">
+        <i data-lucide="beaker" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+        <p class="font-extrabold text-sm text-slate-700">Belum ada resep</p>
+        <p class="text-xs text-slate-400 mt-1">Tekan "+ Resep Baru" untuk menghitung HPP dasar per pcs. Resep ini belum tampil di kasir.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(rcp => {
+    const base = calculateRecipeBase(rcp);
+    const usedIn = getMenuProducts().filter(m => (m.recipe || []).some(r => isRecipeRef(r) && String(r.recipeId) === String(rcp.id)));
+    const lines = base.lines.map(l => `
+      <div class="flex justify-between items-center bg-slate-50/80 px-2 py-1 rounded">
+        <span class="truncate pr-2">${escapeHtml(l.name)}</span>
+        <span class="font-bold text-slate-800 shrink-0 font-mono text-[11px]">${l.qty} ${escapeHtml(l.unit)} <span class="text-slate-400 font-normal">(${formatCurrency(l.cost)})</span></span>
+      </div>`).join('');
+    return `
+      <article class="bg-white rounded-3xl border ${base.missing.length ? 'border-2 border-amber-300' : 'border-slate-200/90'} shadow-sm p-5 flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="font-extrabold text-base text-slate-900 leading-tight">${escapeHtml(rcp.name)}</h3>
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-indigo-50 text-primary border border-indigo-100 shrink-0">1 batch = ${base.yieldPcs} pcs</span>
+          </div>
+          <div class="mt-3 grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center text-xs">
+            <div><span class="block text-[10px] uppercase font-black text-slate-400">HPP / Batch</span><span class="font-black text-slate-900">${formatCurrency(base.total)}</span></div>
+            <div class="border-l border-slate-200"><span class="block text-[10px] uppercase font-black text-slate-400">HPP / Pcs</span><span class="font-black text-primary">${formatCurrency(base.hppPerPcs)}</span></div>
+          </div>
+          <div class="mt-3 space-y-1 text-xs text-slate-600">${lines || '<p class="text-slate-400 italic text-[11px]">Belum ada bahan.</p>'}</div>
+          ${base.missing.length ? '<p class="mt-2 text-[11px] font-bold text-amber-700">Ada bahan yang sudah dihapus dari gudang.</p>' : ''}
+        </div>
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+          <span class="font-bold text-slate-400">${usedIn.length ? `Dipakai di ${usedIn.length} menu` : 'Belum dipakai di menu'}</span>
+          <div class="flex gap-2">
+            <button onclick="openRecipeModal('${rcp.id}')" class="font-black text-primary hover:underline cursor-pointer">Edit</button>
+            <button onclick="deleteRecipeItem('${rcp.id}')" class="text-slate-300 hover:text-rose-500 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function renderMenuCards() {
+  const container = document.getElementById('productsGridContainer');
+  if (!container) return;
+  const menus = getMenuProducts();
+  const filterCat = (typeof prodCategoryFilter !== 'undefined') ? prodCategoryFilter : 'all';
+  const query = (typeof prodSearchQuery !== 'undefined') ? prodSearchQuery : '';
+
+  // Metrik
+  let marginSum = 0, evaluated = 0, incomplete = 0;
+  menus.forEach(p => {
+    const h = calculateProductHpp(p);
+    if (h.missing.length || !((p.recipe || []).length || (p.packaging || []).length)) incomplete++;
+    if (p.price > 0) { marginSum += ((p.price - h.hppPerMenu) / p.price) * 100; evaluated++; }
+  });
+  const avg = evaluated ? Math.round(marginSum / evaluated) : 0;
+  const setT = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  setT('prodHealthActiveCount', `${menus.length} menu aktif`);
+  setT('prodHealthAvgMarginText', `Margin rata-rata ${avg}% (${avg >= 50 ? 'Sehat' : 'Perlu Evaluasi'})`);
+  setT('prodHealthIncompleteCount', `${incomplete} menu belum lengkap`);
+  document.getElementById('prodHealthIncompleteAlert')?.classList.toggle('hidden', incomplete === 0);
+  setT('prodCountAll', String(menus.length));
+  setT('prodCountMinuman', String(menus.filter(p => p.cat === 'Minuman').length));
+  setT('prodCountMakanan', String(menus.filter(p => p.cat === 'Makanan').length));
+  setT('prodCountPromo', String(menus.filter(p => p.cat === 'Promo/Bundle').length));
+
+  const sortMode = document.getElementById('prodSortSelect')?.value || 'margin_desc';
+  const list = menus.filter(p => {
+    const m = (p.name || '').toLowerCase().includes(query) || (p.cat || '').toLowerCase().includes(query);
+    return m && (filterCat === 'all' || p.cat === filterCat);
+  });
+  list.sort((a, b) => {
+    const ha = calculateProductHpp(a), hb = calculateProductHpp(b);
+    const ma = a.price > 0 ? (a.price - ha.hppPerMenu) / a.price : 0;
+    const mb = b.price > 0 ? (b.price - hb.hppPerMenu) / b.price : 0;
+    if (sortMode === 'margin_desc') return mb - ma;
+    if (sortMode === 'margin_asc') return ma - mb;
+    if (sortMode === 'price_desc') return (b.price || 0) - (a.price || 0);
+    return (a.name || '').localeCompare(b.name || '');
+  });
+
+  if (!list.length) {
+    container.innerHTML = `
+      <div class="col-span-full py-16 text-center text-slate-400 bg-white rounded-3xl border border-slate-100 p-8">
+        <i data-lucide="tag" class="w-12 h-12 mx-auto mb-2 text-slate-300 opacity-60"></i>
+        <p class="font-extrabold text-sm text-slate-700">Belum ada menu kasir</p>
+        <p class="text-xs text-slate-400 mt-1">Buat resep di tahap 1, lalu rakit menu jualnya di sini.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(prod => {
+    const h = calculateProductHpp(prod);
+    const price = Number(prod.price) || 0;
+    const profit = Math.max(0, price - h.hppPerMenu);
+    const margin = price > 0 ? Math.round((profit / price) * 100) : 0;
+    const legacy = (prod.recipe || []).some(r => !isRecipeRef(r));
+    const empty = !((prod.recipe || []).length || (prod.packaging || []).length);
+    const bad = h.missing.length > 0 || empty;
+
+    const refLines = (prod.recipe || []).filter(isRecipeRef).map(r => {
+      const rcp = findRecipeEntity(r.recipeId);
+      const cost = rcp ? calculateRecipeBase(rcp).hppPerPcs * (Number(r.portionPcs) || 0) : 0;
+      return `<div class="flex justify-between bg-slate-50/80 px-2 py-1 rounded"><span class="truncate pr-2">${escapeHtml(rcp?.name || 'Resep hilang')}</span><span class="font-bold text-slate-800 shrink-0 font-mono text-[11px]">${Number(r.portionPcs) || 0} pcs <span class="text-slate-400 font-normal">(${formatCurrency(cost)})</span></span></div>`;
+    }).join('');
+    const extraLines = (prod.packaging || []).map(p => {
+      const inv = findInv(p.sku);
+      const cost = inv ? getRecipeComponentQtySmall(p, inv) * getInventoryUnitCostSmall(inv) : 0;
+      return `<div class="flex justify-between bg-amber-50/60 px-2 py-1 rounded text-amber-900"><span class="truncate pr-2">${escapeHtml(inv?.name || p.sku)}</span><span class="font-bold shrink-0 font-mono text-[11px]">${Number(p.qtySmall ?? p.qty) || 0} ${escapeHtml(inv?.smallUnit || inv?.unit || '')} <span class="text-slate-400 font-normal">(${formatCurrency(cost)})</span></span></div>`;
+    }).join('');
+
+    return `
+      <article class="bg-white rounded-3xl border ${bad ? 'border-2 border-amber-300' : 'border-slate-200/90'} shadow-sm overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all">
+        <div>
+          <div class="relative h-40 w-full bg-slate-100 overflow-hidden">
+            ${prod.imageUrl
+              ? `<img src="${prod.imageUrl}" alt="${escapeHtml(prod.name)}" class="w-full h-full object-cover" onerror="this.style.display='none'">`
+              : `<div class="w-full h-full flex items-center justify-center"><i data-lucide="${prod.cat === 'Minuman' ? 'coffee' : 'utensils'}" class="w-10 h-10 ${prod.cat === 'Minuman' ? 'text-primary' : 'text-amber-500'}"></i></div>`}
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[10px] font-black bg-white/95 text-slate-800 shadow-sm">${escapeHtml(prod.cat)}</span>
+            <button class="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white text-slate-700 rounded-xl shadow-sm cursor-pointer" onclick="openProductModal('${prod.id}')" title="Edit Menu"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+          </div>
+          <div class="p-5">
+            <div class="flex items-baseline justify-between gap-2">
+              <h3 class="font-extrabold text-base text-slate-900 leading-tight">${escapeHtml(prod.name)}</h3>
+              <span class="text-xs font-bold ${bad ? 'text-amber-700 bg-amber-50 border border-amber-200' : margin >= 50 ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-rose-700 bg-rose-50 border border-rose-200'} px-2 py-0.5 rounded-md shrink-0">${bad ? 'Belum Lengkap' : `${margin}% ${margin >= 50 ? 'Sehat' : 'Tipis'}`}</span>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center text-xs">
+              <div><span class="block text-[10px] uppercase font-black text-slate-400">Harga Jual</span><span class="font-black text-slate-900">${formatCurrency(price)}</span></div>
+              <div class="border-x border-slate-200"><span class="block text-[10px] uppercase font-black text-slate-400">Modal</span><span class="font-black text-primary">${formatCurrency(h.hppPerMenu)}</span></div>
+              <div><span class="block text-[10px] uppercase font-black text-slate-400">Laba</span><span class="font-black text-emerald-600">${formatCurrency(profit)}</span></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 space-y-1 text-xs text-slate-600">
+              <p class="text-[11px] font-black text-slate-700 mb-1">Komponen Menu:</p>
+              ${refLines}${extraLines}
+              ${legacy ? `<p class="text-[11px] text-amber-700 font-bold">Format lama (bahan langsung). <button onclick="migrateLegacyMenu('${prod.id}')" class="underline cursor-pointer">Konversi ke Resep</button></p>` : ''}
+              ${empty ? '<p class="text-slate-400 italic text-[11px]">Belum ada komponen.</p>' : ''}
+            </div>
+          </div>
+        </div>
+        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full ${bad ? 'bg-amber-500' : 'bg-emerald-500'}"></span>${bad ? 'Cek komponen' : 'Siap di Kasir'}</span>
+          <div class="flex gap-2">
+            <button onclick="openProductModal('${prod.id}')" class="font-black text-primary hover:underline cursor-pointer">Edit Menu</button>
+            <button onclick="deleteProduct('${prod.id}')" class="text-slate-300 hover:text-rose-500 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+/* ---------- 4. TAHAP 1: MODAL KALKULASI RESEP ---------- */
+function openRecipeModal(id = '') {
+  const rcp = id ? findRecipeEntity(id) : null;
+  document.getElementById('recipeModalId').value = rcp ? rcp.id : '';
+  document.getElementById('recipeModalTitle').textContent = rcp ? `Ubah Resep: ${rcp.name}` : 'Kalkulasi Resep Baru';
+  document.getElementById('recipeNameInput').value = rcp ? rcp.name : '';
+  document.getElementById('recipeYieldInput').value = rcp ? (rcp.yieldPcs || 1) : 1;
+  const box = document.getElementById('recipeIngRowsContainer');
+  box.innerHTML = '';
+  if (rcp?.recipe?.length) rcp.recipe.forEach(r => addRecipeIngRow(r.sku, r.qtySmall ?? r.qty));
+  else addRecipeIngRow();
+  updateRecipeLivePane();
+  openModal('recipeModal');
+}
+
+function addRecipeIngRow(selectedSku = '', qty = '') {
+  const box = document.getElementById('recipeIngRowsContainer');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 items-center bg-white p-2 rounded-xl shadow-sm border border-indigo-100/50 rcp-ing-row';
+  const opts = (appState.inventory || []).filter(i => i.itemType !== 'packaging').map(inv =>
+    `<option value="${escapeHtml(inv.sku)}" ${String(inv.sku) === String(selectedSku) ? 'selected' : ''}>${escapeHtml(inv.name)} (${escapeHtml(inv.smallUnit || inv.unit || 'Pcs')})</option>`).join('');
+  div.innerHTML = `
+    <select class="flex-1 min-w-0 p-2 bg-transparent text-xs font-bold text-slate-700 outline-none rcp-ing-sku" onchange="updateRecipeLivePane()"><option value="">Pilih bahan...</option>${opts}</select>
+    <input type="number" step="any" min="0" value="${qty}" placeholder="0" oninput="updateRecipeLivePane()" class="w-24 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-center outline-none focus:border-primary text-primary rcp-ing-qty" />
+    <span class="text-[9px] font-black text-slate-400 w-8">kecil</span>
+    <button type="button" onclick="this.parentElement.remove(); updateRecipeLivePane()" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors shrink-0 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
+  box.appendChild(div);
+  if (window.lucide) lucide.createIcons();
+}
+
+function collectRecipeRows() {
+  const rows = [];
+  document.querySelectorAll('.rcp-ing-row').forEach(row => {
+    const sku = row.querySelector('.rcp-ing-sku')?.value;
+    const qty = parseFloat(row.querySelector('.rcp-ing-qty')?.value) || 0;
+    if (sku && qty > 0) rows.push({ sku, qtySmall: qty, qty, componentType: 'ingredient' });
+  });
+  return rows;
+}
+
+function updateRecipeLivePane() {
+  const yieldPcs = Math.max(1, parseFloat(document.getElementById('recipeYieldInput')?.value) || 1);
+  const base = calculateRecipeBase({ yieldPcs, recipe: collectRecipeRows() });
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('rcpLiveBatch', formatCurrency(base.total));
+  set('rcpLiveYield', `${yieldPcs} pcs`);
+  set('rcpLivePerPcs', formatCurrency(base.hppPerPcs));
+  const lines = document.getElementById('rcpLiveLines');
+  if (lines) {
+    lines.innerHTML = base.lines.length
+      ? base.lines.map(l => `<div class="flex justify-between"><span class="truncate pr-2">${escapeHtml(l.name)}</span><span class="font-bold text-slate-200 shrink-0">${formatCurrency(l.cost)}</span></div>`).join('')
+      : 'Pilih bahan untuk melihat rincian biaya.';
+  }
+}
+
+async function saveRecipeItem() {
+  const editingId = (document.getElementById('recipeModalId')?.value || '').trim();
+  const name = (document.getElementById('recipeNameInput')?.value || '').trim();
+  const yieldPcs = Math.max(1, parseFloat(document.getElementById('recipeYieldInput')?.value) || 1);
+  const recipe = collectRecipeRows();
+  if (!name) { showToast('Validasi Gagal', 'Nama resep wajib diisi.', 'warning'); return; }
+  if (!recipe.length) { showToast('Validasi Gagal', 'Tambahkan minimal satu bahan dengan takaran > 0.', 'warning'); return; }
+
+  if (!Array.isArray(appState.products)) appState.products = [];
+  const idx = editingId ? appState.products.findIndex(p => String(p.id) === editingId) : -1;
+  const now = new Date().toISOString();
+  const data = {
+    id: idx !== -1 ? appState.products[idx].id : RECIPE_ID_PREFIX + Date.now().toString().slice(-6),
+    storeId: appState.currentStore?.storeId || '',
+    name, cat: 'Resep', price: 0, yieldPcs, menuQtyPcs: 1, imageUrl: '',
+    recipe, packaging: [], updatedAt: now
+  };
+  if (idx !== -1) {
+    appState.products[idx] = { ...appState.products[idx], ...data };
+    showToast('Resep Diperbarui', `HPP menu yang memakai "${name}" ikut diperbarui.`, 'success');
+  } else {
+    data.createdAt = now;
+    appState.products.push(data);
+    showToast('Resep Tersimpan', `"${name}" siap dipakai di Setup Menu Kasir.`, 'success');
+  }
+  saveState();
+  renderProductsCards();
+  renderPosProducts();
+  closeModal('recipeModal');
+  sendPostToGAS('SAVE_PRODUCT', idx !== -1 ? appState.products[idx] : data);
+}
+
+function deleteRecipeItem(id) {
+  const rcp = findRecipeEntity(id);
+  if (!rcp) return;
+  const usedIn = getMenuProducts().filter(m => (m.recipe || []).some(r => isRecipeRef(r) && String(r.recipeId) === String(id)));
+  if (usedIn.length) {
+    showToast('Tidak Bisa Dihapus', `Resep dipakai di ${usedIn.length} menu (${usedIn.slice(0, 3).map(m => m.name).join(', ')}). Lepas dulu dari menu tersebut.`, 'warning');
+    return;
+  }
+  if (!confirm(`Hapus resep "${rcp.name}"?`)) return;
+  appState.products = appState.products.filter(p => String(p.id) !== String(id));
+  saveState();
+  renderProductsCards();
+  sendPostToGAS('DELETE_PRODUCT', { storeId: appState.currentStore?.storeId, id: id });
+  showToast('Resep Dihapus', 'Resep telah dihapus.', 'info');
+}
+
+/* ---------- 5. TAHAP 2: MODAL SETUP MENU KASIR ---------- */
+function openProductModal(target = null) {
+  let prod = null;
+  if (target !== null && target !== undefined && target !== '') {
+    prod = (typeof target === 'object') ? target
+      : (appState.products || []).find(p => String(p.id) === String(target)) || null;
+  }
+  // Menu format lama (bahan langsung) harus dikonversi dulu agar tidak ada data hilang.
+  if (prod && (prod.recipe || []).some(r => !isRecipeRef(r))) {
+    if (confirm(`Menu "${prod.name}" masih memakai format lama (bahan langsung).\n\nKonversi otomatis ke Resep sekarang? HPP tidak berubah.`)) {
+      migrateLegacyMenu(prod.id);
+      prod = (appState.products || []).find(p => String(p.id) === String(prod.id));
+    } else return;
+  }
+
+  document.getElementById('prodModalId').value = prod ? prod.id : '';
+  document.getElementById('productModalTitle').textContent = prod ? `Ubah Menu Kasir: ${prod.name}` : 'Setup Menu Kasir';
+  document.getElementById('prodNameInput').value = prod ? prod.name : '';
+  document.getElementById('prodCatInput').value = prod ? prod.cat : 'Minuman';
+  document.getElementById('prodPriceInput').value = prod ? prod.price : '';
+  document.getElementById('prodImageInput').value = prod ? (prod.imageUrl || '') : '';
+  const imgPrev = document.getElementById('prodImagePreview');
+  const imgIcon = document.getElementById('prodImagePreviewIcon');
+  if (prod?.imageUrl) { imgPrev.src = prod.imageUrl; imgPrev.classList.remove('hidden'); imgIcon.classList.add('hidden'); }
+  else { imgPrev.src = ''; imgPrev.classList.add('hidden'); imgIcon.classList.remove('hidden'); }
+
+  document.getElementById('recipeRowsContainer').innerHTML = '';
+  const refs = (prod?.recipe || []).filter(isRecipeRef);
+  if (refs.length) refs.forEach(r => addMenuRecipeRow(r.recipeId, r.portionPcs));
+  else addMenuRecipeRow();
+
+  document.getElementById('packagingRowsContainer').innerHTML = '';
+  (prod?.packaging || []).forEach(p => addMenuExtraRow(p.sku, p.qtySmall ?? p.qty));
+
+  updateProductHppLivePane();
+  openModal('productModal');
+}
+
+function addMenuRecipeRow(recipeId = '', portion = 1) {
+  const box = document.getElementById('recipeRowsContainer');
+  const recipes = getRecipeEntities();
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 items-center bg-white p-2 rounded-xl shadow-sm border border-indigo-100/50 menu-recipe-row';
+  const opts = recipes.map(r => {
+    const b = calculateRecipeBase(r);
+    return `<option value="${escapeHtml(r.id)}" ${String(r.id) === String(recipeId) ? 'selected' : ''}>${escapeHtml(r.name)} (${formatCurrency(b.hppPerPcs)}/pcs)</option>`;
+  }).join('');
+  div.innerHTML = `
+    <select class="flex-1 min-w-0 p-2 bg-transparent text-xs font-bold text-slate-700 outline-none menu-recipe-id" onchange="updateProductHppLivePane()"><option value="">${recipes.length ? 'Pilih resep...' : 'Belum ada resep - buat di Tahap 1'}</option>${opts}</select>
+    <input type="number" step="any" min="0" value="${portion}" oninput="updateProductHppLivePane()" class="w-20 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-center outline-none focus:border-primary text-primary menu-recipe-portion" />
+    <span class="text-[9px] font-black text-slate-400 w-8">pcs</span>
+    <button type="button" onclick="this.parentElement.remove(); updateProductHppLivePane()" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors shrink-0 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
+  box.appendChild(div);
+  if (window.lucide) lucide.createIcons();
+}
+
+function addMenuExtraRow(selectedSku = '', qty = 1) {
+  const box = document.getElementById('packagingRowsContainer');
+  const inv = appState.inventory || [];
+  const mk = i => `<option value="${escapeHtml(i.sku)}" ${String(i.sku) === String(selectedSku) ? 'selected' : ''}>${escapeHtml(i.name)} (${escapeHtml(i.smallUnit || i.unit || 'Pcs')})</option>`;
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 items-center bg-white p-2 rounded-xl shadow-sm border border-amber-100/70 menu-extra-row';
+  div.innerHTML = `
+    <select class="flex-1 min-w-0 p-2 bg-transparent text-xs font-bold text-slate-700 outline-none menu-extra-sku" onchange="updateProductHppLivePane()">
+      <option value="">Pilih packaging / pelengkap...</option>
+      <optgroup label="Packaging">${inv.filter(i => i.itemType === 'packaging').map(mk).join('')}</optgroup>
+      <optgroup label="Bahan / pelengkap lain">${inv.filter(i => i.itemType !== 'packaging').map(mk).join('')}</optgroup>
+    </select>
+    <input type="number" step="any" min="0" value="${qty}" oninput="updateProductHppLivePane()" class="w-20 p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-center outline-none focus:border-amber-500 text-amber-700 menu-extra-qty" />
+    <span class="text-[9px] font-black text-slate-400 w-8">/menu</span>
+    <button type="button" onclick="this.parentElement.remove(); updateProductHppLivePane()" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors shrink-0 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
+  box.appendChild(div);
+  if (window.lucide) lucide.createIcons();
+}
+
+function collectMenuRows() {
+  const recipe = [];
+  document.querySelectorAll('.menu-recipe-row').forEach(row => {
+    const recipeId = row.querySelector('.menu-recipe-id')?.value;
+    const portionPcs = parseFloat(row.querySelector('.menu-recipe-portion')?.value) || 0;
+    if (recipeId && portionPcs > 0) recipe.push({ recipeId, portionPcs, componentType: 'recipeRef' });
+  });
+  const packaging = [];
+  document.querySelectorAll('.menu-extra-row').forEach(row => {
+    const sku = row.querySelector('.menu-extra-sku')?.value;
+    const qty = parseFloat(row.querySelector('.menu-extra-qty')?.value) || 0;
+    if (sku && qty > 0) packaging.push({ sku, qtySmall: qty, qty, componentType: 'packaging' });
+  });
+  return { recipe, packaging };
+}
+
+// Menimpa fungsi lama: panel kalkulator live di modal menu.
+function updateProductHppLivePane() {
+  const price = parseFloat(document.getElementById('prodPriceInput')?.value) || 0;
+  const { recipe, packaging } = collectMenuRows();
+  const h = calculateProductHpp({ recipe, packaging });
+
+  const dist = [];
+  recipe.forEach(r => {
+    const rcp = findRecipeEntity(r.recipeId);
+    if (rcp) dist.push({ name: rcp.name, cost: calculateRecipeBase(rcp).hppPerPcs * r.portionPcs });
+  });
+  packaging.forEach(p => {
+    const inv = findInv(p.sku);
+    if (inv) dist.push({ name: inv.name, cost: p.qtySmall * getInventoryUnitCostSmall(inv) });
+  });
+
+  const profit = Math.max(0, price - h.hppPerMenu);
+  const margin = price > 0 ? Math.round((profit / price) * 100) : 0;
+  const ratio = price > 0 ? ((h.hppPerMenu / price) * 100).toFixed(1) : 0;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('liveModalHppTotal', formatCurrency(h.hppPerMenu));
+  set('liveModalHppRatio', `${ratio}% dari omzet`);
+  set('liveModalGrossProfit', formatCurrency(profit));
+  set('liveModalMarginPercent', `${margin}%`);
+  const bd = document.getElementById('liveModalBreakdown');
+  if (bd) bd.innerHTML = `
+    <div class="flex justify-between"><span>Dari resep (porsi)</span><span class="font-bold text-slate-200">${formatCurrency(h.recipePart)}</span></div>
+    <div class="flex justify-between"><span>Packaging &amp; pelengkap</span><span class="font-bold text-slate-200">${formatCurrency(h.packagingTotal)}</span></div>`;
+  const badge = document.getElementById('liveModalMarginBadge');
+  if (badge) {
+    badge.textContent = margin >= 50 ? 'Sehat' : 'Tipis';
+    badge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded ${margin >= 50 ? 'text-emerald-300 bg-emerald-950' : 'text-amber-300 bg-amber-950'}`;
+  }
+  liveRecommendedPrice = Math.ceil((h.hppPerMenu / 0.35) / 500) * 500;
+  set('liveModalSuggestedPrice', formatCurrency(liveRecommendedPrice));
+
+  const bar = document.getElementById('liveModalCostBar');
+  const legend = document.getElementById('liveModalCostLegend');
+  const sum = dist.reduce((s, d) => s + d.cost, 0);
+  if (bar && legend) {
+    if (sum > 0) {
+      const colors = ['bg-amber-600', 'bg-blue-400', 'bg-emerald-400', 'bg-indigo-400', 'bg-purple-400', 'bg-rose-400'];
+      bar.innerHTML = dist.map((d, i) => `<div class="${colors[i % colors.length]}" style="width:${Math.round((d.cost / sum) * 100)}%"></div>`).join('');
+      legend.innerHTML = `<div class="grid grid-cols-2 gap-1.5 pt-1">${dist.slice(0, 6).map((d, i) => `<div class="flex items-center gap-1.5 truncate"><span class="w-2 h-2 rounded-full ${colors[i % colors.length]} shrink-0"></span><span class="truncate">${escapeHtml(d.name)} (${Math.round((d.cost / sum) * 100)}%)</span></div>`).join('')}</div>`;
+    } else {
+      bar.innerHTML = '<div class="bg-slate-700 h-full w-full"></div>';
+      legend.textContent = 'Pilih resep dan packaging untuk melihat rincian modal.';
+    }
+  }
+}
+
+// Menimpa fungsi lama: simpan menu kasir (referensi resep + packaging).
+async function saveProductItem() {
+  const editingId = (document.getElementById('prodModalId')?.value || '').trim();
+  const name = (document.getElementById('prodNameInput')?.value || '').trim();
+  const cat = document.getElementById('prodCatInput')?.value || 'Minuman';
+  const price = parseFloat(document.getElementById('prodPriceInput')?.value) || 0;
+  const imageUrl = document.getElementById('prodImageInput')?.value || '';
+  if (!name || price <= 0) { showToast('Validasi Gagal', 'Nama menu dan harga jual wajib diisi.', 'warning'); return; }
+
+  const { recipe, packaging } = collectMenuRows();
+  if (!recipe.length && !packaging.length) {
+    showToast('Validasi Gagal', 'Pilih minimal satu resep atau item packaging/pelengkap.', 'warning');
+    return;
+  }
+
+  if (!Array.isArray(appState.products)) appState.products = [];
+  const idx = editingId ? appState.products.findIndex(p => String(p.id) === editingId) : -1;
+  const now = new Date().toISOString();
+  const data = {
+    id: idx !== -1 ? appState.products[idx].id : 'PRD-' + Date.now().toString().slice(-6),
+    storeId: appState.currentStore?.storeId || '',
+    name, cat, price, yieldPcs: 1, menuQtyPcs: 1, imageUrl, recipe, packaging, updatedAt: now
+  };
+  if (idx !== -1) {
+    appState.products[idx] = { ...appState.products[idx], ...data };
+    showToast('Menu Diperbarui', `Perubahan pada "${name}" berhasil disimpan.`, 'success');
+  } else {
+    data.createdAt = now;
+    appState.products.push(data);
+    showToast('Menu Ditambahkan', `"${name}" siap dijual di kasir.`, 'success');
+  }
+  saveState();
+  renderProductsCards();
+  renderPosProducts();
+  closeModal('productModal');
+  sendPostToGAS('SAVE_PRODUCT', idx !== -1 ? appState.products[idx] : data);
+}
+
+/* ---------- 6. MIGRASI MENU LAMA -> RESEP + REFERENSI ---------- */
+function migrateLegacyMenu(prodId) {
+  const idx = (appState.products || []).findIndex(p => String(p.id) === String(prodId));
+  if (idx === -1) return;
+  const prod = appState.products[idx];
+  const legacyRows = (prod.recipe || []).filter(r => !isRecipeRef(r));
+  if (!legacyRows.length) return;
+
+  const now = new Date().toISOString();
+  const rcp = {
+    id: RECIPE_ID_PREFIX + (Date.now() + Math.floor(Math.random() * 90)).toString().slice(-6),
+    storeId: appState.currentStore?.storeId || '',
+    name: `Resep ${prod.name}`, cat: 'Resep', price: 0,
+    yieldPcs: Math.max(1, Number(prod.yieldPcs) || 1), menuQtyPcs: 1, imageUrl: '',
+    recipe: legacyRows.map(r => ({ sku: r.sku, qtySmall: r.qtySmall ?? r.qty, qty: r.qtySmall ?? r.qty, componentType: 'ingredient' })),
+    packaging: [], createdAt: now, updatedAt: now
+  };
+  const menuQty = Math.max(1, Number(prod.menuQtyPcs) || 1);
+  appState.products.push(rcp);
+  appState.products[idx] = {
+    ...prod,
+    yieldPcs: 1, menuQtyPcs: 1,
+    recipe: [
+      { recipeId: rcp.id, portionPcs: menuQty, componentType: 'recipeRef' },
+      ...(prod.recipe || []).filter(isRecipeRef)
+    ],
+    updatedAt: now
+  };
+  saveState();
+  renderProductsCards();
+  sendPostToGAS('SAVE_PRODUCT', rcp);
+  sendPostToGAS('SAVE_PRODUCT', appState.products[idx]);
+  showToast('Konversi Berhasil', `Resep "${rcp.name}" dibuat. HPP menu tetap sama.`, 'success');
+}
+</script>
+<script>
+/* ==========================================================================
+   ADD-ON: MODUL RACIK RESEP BARU (shortcut dari Setup Menu Kasir)
+   Tempel SETELAH script patch resep/menu (sebelum </body>).
+   ========================================================================== */
+
+// 1. Tombol "Racik Resep Baru" & "Menu Kasir Baru" selalu tampil di kedua sub-tab
+window.switchProdSubTab = function (tab) {
+  prodSubTab = (tab === 'recipe') ? 'recipe' : 'menu';
+  const isRecipe = prodSubTab === 'recipe';
+  document.getElementById('menuSubPanel')?.classList.toggle('hidden', isRecipe);
+  document.getElementById('recipeSubPanel')?.classList.toggle('hidden', !isRecipe);
+  const on = 'px-4 py-2 rounded-xl bg-slate-900 text-white shadow-xs cursor-pointer';
+  const off = 'px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer';
+  const bR = document.getElementById('prodSubBtnRecipe');
+  const bM = document.getElementById('prodSubBtnMenu');
+  if (bR) bR.className = isRecipe ? on : off;
+  if (bM) bM.className = isRecipe ? off : on;
+  renderProductsCards();
+};
+
+// 2. Modal resep harus tampil DI ATAS modal menu (keduanya bisa terbuka bersamaan)
+document.getElementById('recipeModal')?.classList.replace('z-50', 'z-[60]');
+
+// 3. Segarkan dropdown resep di modal menu tanpa menghapus pilihan yang sudah ada
+function refreshMenuRecipeOptions(selectId = '') {
+  const recipes = getRecipeEntities();
+  const opts = recipes.map(r =>
+    `<option value="${escapeHtml(r.id)}">${escapeHtml(r.name)} (${formatCurrency(calculateRecipeBase(r).hppPerPcs)}/pcs)</option>`
+  ).join('');
+  let assigned = !selectId;
+  document.querySelectorAll('.menu-recipe-row').forEach(row => {
+    const sel = row.querySelector('.menu-recipe-id');
+    if (!sel) return;
+    const keep = sel.value;
+    sel.innerHTML = `<option value="">${recipes.length ? 'Pilih resep...' : 'Belum ada resep'}</option>${opts}`;
+    sel.value = keep;
+    if (!assigned && !keep) { sel.value = selectId; assigned = true; }   // isi baris kosong pertama
+  });
+  if (!assigned) {                                                         // tidak ada baris kosong -> tambah baris
+    addMenuRecipeRow(selectId, 1);
+  }
+  updateProductHppLivePane();
+}
+
+// 4. Setelah resep tersimpan dari dalam modal menu: dropdown ter-update & resep baru otomatis terpilih
+const _saveRecipeOrig = window.saveRecipeItem;
+window.saveRecipeItem = async function () {
+  const before = new Set(getRecipeEntities().map(r => r.id));
+  const menuOpen = !document.getElementById('productModal')?.classList.contains('hidden');
+  await _saveRecipeOrig();
+  if (!menuOpen) return;
+  const created = getRecipeEntities().find(r => !before.has(r.id));
+  refreshMenuRecipeOptions(created ? created.id : '');
+};
+window.deleteProduct = function (prodId) {
+  const p = (appState.products || []).find(x => String(x.id) === String(prodId));
+  if (!confirm(`Hapus menu "${p?.name || ''}"?`)) return;
+  appState.products = (appState.products || []).filter(x => String(x.id) !== String(prodId));
+  saveState();
+  renderProductsCards();
+  renderPosProducts();
+  sendPostToGAS('DELETE_PRODUCT', { storeId: appState.currentStore?.storeId, id: prodId });
+  showToast('Menu Dihapus', 'Menu telah dihapus dari katalog.', 'info');
+};
 </script>
 </body>
 </html>
